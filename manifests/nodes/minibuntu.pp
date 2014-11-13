@@ -1,2 +1,0 @@
-node /^minibuntu/ inherits basenode {
-}

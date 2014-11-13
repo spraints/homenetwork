@@ -53,4 +53,4 @@ else
 fi
 
 step Apply
-sudo puppet apply --modulepath ${repo_path}/modules ${repo_path}/manifests/site.pp
+sudo puppet apply --modulepath ${repo_path}/modules ${repo_path}/manifests/
