@@ -3,7 +3,7 @@
 
 set -e
 
-sudo -p "We need sudo privileges to run puppet" /bin/true
+sudo -p "We need sudo privileges to run puppet. Please type your password: " /bin/true
 
 step() {
   echo '====>' "$@"
@@ -33,7 +33,7 @@ if [ -n "${packages_to_install}" ]; then
 fi
 
 repo_path=/var/local/homenetwork-puppet
-if ! -d ${repo_path}; then
+if ! test -d ${repo_path}; then
   step Initialize repository
   sudo mkdir -p ${repo_path}
   sudo chown `id -u` ${repo_path}
