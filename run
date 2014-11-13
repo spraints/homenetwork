@@ -11,8 +11,14 @@ step() {
 
 if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
   step Install puppet per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
-  curl -O https://apt.puppetlabs.com/puppetlabs-release-trusty.deb
-  dpkg -i puppetlabs-release-trusty.deb
+  (
+    set -e
+    cd tmp
+    deb=puppetlabs-release-trusty.deb
+    curl -O https://apt.puppetlabs.com/${deb}
+    sudo dpkg -i ${deb}
+    rm ${deb}
+  )
   packages_to_install="${packages_to_install} puppet"
 fi
 
