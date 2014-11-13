@@ -13,7 +13,7 @@ if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
   step Install puppet per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
   (
     set -e
-    cd tmp
+    cd /tmp
     deb=puppetlabs-release-trusty.deb
     curl -O https://apt.puppetlabs.com/${deb}
     sudo dpkg -i ${deb}
@@ -38,12 +38,13 @@ if ! -d ${repo_path}; then
   sudo mkdir -p ${repo_path}
   sudo chown `id -u` ${repo_path}
   git init ${repo_path}
-  git --git-dir ${repo_path} remote add origin https://github.com/spraints/
 fi
 
 cd ${repo_path}
 
 step Get latest version
+git remote rm origin >/dev/null 2>/dev/null || true
+git remote add origin https://github.com/spraints/homenetwork
 git fetch origin
 if [ -f .branch ]; then
   git reset --hard origin/`cat .branch`
@@ -52,4 +53,4 @@ else
 fi
 
 step Apply
-sudo puppet apply site.pp
+sudo puppet apply --modulepath ${repo_path}/modules ${repo_path}/manifests/site.pp
