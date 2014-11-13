@@ -1,0 +1,49 @@
+#!/bin/bash
+#/ Usage: curl -L https://github.com/spraints/homenetwork/raw/master/run | bash
+
+set -e
+
+sudo -p "We need sudo privileges to run puppet" /bin/true
+
+step() {
+  echo '====>' "$@"
+}
+
+if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
+  step Install puppet per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
+  curl -O https://apt.puppetlabs.com/puppetlabs-release-trusty.deb
+  dpkg -i puppetlabs-release-trusty.deb
+  packages_to_install="${packages_to_install} puppet"
+fi
+
+if ! dpkg -s git >/dev/null 2>/dev/null; then
+  step Install git
+  packages_to_install="${packages_to_install} git"
+fi
+
+if [ -n "${packages_to_install}" ]; then
+  sudo apt-get update
+  sudo apt-get install -y ${packages_to_install}
+fi
+
+repo_path=/var/local/homenetwork-puppet
+if ! -d ${repo_path}; then
+  step Initialize repository
+  sudo mkdir -p ${repo_path}
+  sudo chown `id -u` ${repo_path}
+  git init ${repo_path}
+  git --git-dir ${repo_path} remote add origin https://github.com/spraints/
+fi
+
+cd ${repo_path}
+
+step Get latest version
+git fetch origin
+if [ -f .branch ]; then
+  git reset --hard origin/`cat .branch`
+else
+  git reset --hard origin/master
+fi
+
+step Apply
+sudo puppet apply site.pp
