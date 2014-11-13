@@ -1,3 +1,3 @@
 node /^minibuntu/ {
-  spraints::role::collectd_master { $::hostname }
+  spraints::role::collectd_master { $::hostname: }
 }
