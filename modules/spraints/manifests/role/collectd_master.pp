@@ -1,6 +1,6 @@
 define spraints::role::collectd_master {
-  require spraints::services::collectd
-  require spraints::services::snmp
+  include spraints::services::collectd
+  include spraints::services::snmp
 
   file { "/etc/collectd/collectd.conf.d/airport-snmp.conf":
     notify  => Service["collectd"],
