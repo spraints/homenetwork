@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+bundle install --binstubs bin --local --path .bundle
+bin/librarian-puppet install --local

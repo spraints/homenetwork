@@ -1,0 +1,4 @@
+.librarian
+.tmp
+bin/
+modules/vcsrepo

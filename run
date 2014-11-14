@@ -51,6 +51,7 @@ if [ -f .branch ]; then
 else
   git reset --hard origin/master
 fi
+script/bootstrap
 
 step Apply
 sudo puppet apply --modulepath ${repo_path}/modules ${repo_path}/manifests/
