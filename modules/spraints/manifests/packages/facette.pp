@@ -1,6 +1,8 @@
 class spraints::packages::facette {
+  include spraints::tools::go
+
   exec { "build and install facette":
-    command => "make PREFIX=/opt/facette install",
+    command => "/usr/bin/make PREFIX=/opt/facette install",
     creates => "/opt/facette/bin/facette",
     cwd     => "/opt/src/facette",
     require => [
@@ -9,8 +11,8 @@ class spraints::packages::facette {
       Package["pkg-config"],
       Package["npm"],
       Package["pandoc"],
-      Vcsrepo["/opt/src/facette"],
     ],
+    subscribe => Vcsrepo["/opt/src/facette"],
   }
 
   vcsrepo { "/opt/src/facette":
