@@ -1,4 +1,4 @@
-class spraints::services::snmp {
+class spraints::tools::snmp {
   package {
     "snmp":
       ensure => "installed";
