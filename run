@@ -27,6 +27,11 @@ if ! dpkg -s git >/dev/null 2>/dev/null; then
   packages_to_install="${packages_to_install} git"
 fi
 
+if ! dpkg -s bundler >/dev/null 2>/dev/null; then
+  step Install bundler
+  packages_to_install="${packages_to_install} bundler"
+fi
+
 if [ -n "${packages_to_install}" ]; then
   sudo apt-get update
   sudo apt-get install -y ${packages_to_install}
