@@ -1,5 +1,5 @@
 node /^minibuntu/ {
   include spraints::basenode
 
-  spraints::role::collectd_master { $::hostname: }
+  include spraints::role::network_monitor
 }
