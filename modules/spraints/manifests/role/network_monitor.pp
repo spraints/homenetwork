@@ -34,5 +34,4 @@ class spraints::role::network_monitor {
 
   #####
 
-  include spraints::services::facette
 }
