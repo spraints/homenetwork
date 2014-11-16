@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+visage_root=`bundle show visage`
+exec ./bin/unicorn --daemonize --config-file unicorn.rb -p 12004 --env production ${visage_root}/config.ru
