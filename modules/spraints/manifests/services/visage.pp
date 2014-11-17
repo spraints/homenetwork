@@ -16,6 +16,29 @@ class spraints::services::visage {
     ensure => present,
   }
 
+  $visage_config_path = "/var/local/visage"
+
+  file { $visage_config_path:
+    owner => "visage",
+    group => "visage",
+    ensure => directory,
+    mode => 755,
+    require => [
+      User["visage"],
+      Group["visage"],
+    ],
+  }
+
+  file { "/opt/visage/server":
+    ensure => present,
+    source => "puppet:///modules/spraints/opt/visage/server",
+    mode => 755,
+    require => [
+      File["/opt/visage"],
+      File["/var/local/visage"],
+    ],
+  }
+
   service { "visage":
     ensure => running,
     require => [

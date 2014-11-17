@@ -9,13 +9,6 @@ class spraints::app::visage {
     require => File["/opt/visage"],
   }
 
-  file { "/opt/visage/server":
-    ensure => present,
-    source => "puppet:///modules/spraints/opt/visage/server",
-    mode => 755,
-    require => File["/opt/visage"],
-  }
-
   file { "/opt/visage/unicorn.rb":
     ensure => present,
     source => "puppet:///modules/spraints/opt/visage/unicorn.rb",
@@ -33,7 +26,6 @@ class spraints::app::visage {
       Package["librrd-ruby"],
       Package["ruby"],
       Package["ruby-dev"],
-      Package["rubygems"],
     ],
   }
 
@@ -47,8 +39,6 @@ class spraints::app::visage {
     "ruby":
       ensure => installed;
     "ruby-dev":
-      ensure => installed;
-    "rubygems":
       ensure => installed;
   }
 }
