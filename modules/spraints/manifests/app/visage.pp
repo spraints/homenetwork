@@ -12,6 +12,7 @@ class spraints::app::visage {
   file { "/opt/visage/server":
     ensure => present,
     source => "puppet:///modules/spraints/opt/visage/server",
+    mode => 755,
     require => File["/opt/visage"],
   }
 
