@@ -31,10 +31,6 @@ class spraints::services::visage {
     ],
   }
 
-  file { "/opt/visage/server":
-    ensure => absent,
-  }
-
   service { "visage":
     ensure => running,
     require => [
