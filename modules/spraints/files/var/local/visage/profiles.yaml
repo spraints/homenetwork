@@ -1,0 +1,27 @@
+external_traffic:
+  :metrics:
+    - snmp/if_octets-mgi1
+  :url: ext-traffic
+  :profile_name: External Net Connection Traffic
+  :hosts:
+    - airport
+
+external_packets:
+  :metrics:
+    - snmp/if_packets-mgi1
+    - snmp/if_errors-mgi1
+  :url: ext-packets
+  :profile_name: External Net Connection Packets
+  :hosts:
+    - airport
+
+ping:
+  :metrics:
+    - ping/ping-10.5.49.1
+    - ping/ping-192.168.3.1
+    - ping/ping-github.com
+    - ping/ping-8.8.8.8
+  :hosts:
+    - minibuntu
+  :url: ping
+  :profile_name: Ping Misc Hosts
