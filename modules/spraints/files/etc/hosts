@@ -1,0 +1,21 @@
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1	localhost
+255.255.255.255	broadcasthost
+::1             localhost 
+fe80::1%lo0	    localhost
+ff02::1         ip6-allnodes
+ff02::2         ip6-allrouters
+
+192.168.100.52  printer.local
+192.168.100.1   router.local
+192.168.100.99  airport.local
+192.168.3.1     antenna.zig
+10.5.49.1       kempton.zig   in-kempton-aprtr-01.zig
+10.5.48.253     kempton2.zig  in-kempton-bhrtr-01.zig
+10.249.1.169    thorntown.zig in-thorntown-bhrtr-01.zig
+10.249.1.252    cherry.zig    in-cherry-bhrtr-01.zig
