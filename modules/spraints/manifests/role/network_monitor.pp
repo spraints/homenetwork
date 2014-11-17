@@ -44,7 +44,7 @@ class spraints::role::network_monitor {
 
   include spraints::services::visage
 
-  file { "${visage_config_path}/profiles.yaml":
+  file { "/var/local/visage/profiles.yaml":
     ensure => present,
     owner => "visage",
     group => "visage",
