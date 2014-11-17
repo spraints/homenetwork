@@ -1,17 +1,17 @@
-external_traffic:
+exttraffic:
   :metrics:
     - snmp/if_octets-mgi1
-  :url: ext-traffic
-  :profile_name: External Net Connection Traffic
+  :url: exttraffic
+  :profile_name: exttraffic
   :hosts:
     - airport
 
-external_packets:
+extpackets:
   :metrics:
     - snmp/if_packets-mgi1
     - snmp/if_errors-mgi1
-  :url: ext-packets
-  :profile_name: External Net Connection Packets
+  :url: extpackets
+  :profile_name: extpackets
   :hosts:
     - airport
 
@@ -24,4 +24,4 @@ ping:
   :hosts:
     - minibuntu
   :url: ping
-  :profile_name: Ping Misc Hosts
+  :profile_name: ping
