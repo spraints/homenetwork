@@ -25,3 +25,14 @@ ping:
     - minibuntu
   :url: ping
   :profile_name: ping
+
+pingdrop:
+  :metrics:
+    - ping/ping_droprate-10.5.49.1
+    - ping/ping_droprate-192.168.3.1
+    - ping/ping_droprate-github.com
+    - ping/ping_droprate-8.8.8.8
+  :hosts:
+    - minibuntu
+  :url: pingdrop
+  :profile_name: pingdrop
