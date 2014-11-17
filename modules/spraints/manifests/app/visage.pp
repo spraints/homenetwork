@@ -27,5 +27,13 @@ class spraints::app::visage {
     cwd => "/opt/visage",
     subscribe => File["/opt/visage/Gemfile"],
     refreshonly => true,
+    require => [
+      Package["build-essential"],
+      Package["bundler"],
+      Package["librrd-ruby"],
+      Package["ruby"],
+      Package["ruby-dev"],
+      Package["rubygems"],
+    ],
   }
 }
