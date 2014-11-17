@@ -1,7 +1,0 @@
-#!/bin/sh
-
-set -e
-
-export CONFIG_PATH=<%= @visage_config_path %>
-visage_root=`bundle show visage`
-exec ./bin/unicorn --daemonize --config-file unicorn.rb -p 12004 --env production ${visage_root}/lib/visage-app/config.ru

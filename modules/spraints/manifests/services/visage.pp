@@ -1,9 +1,13 @@
 class spraints::services::visage {
   include spraints::app::visage
 
+  $visage_config_path = "/var/local/visage"
+
   file { "/etc/init/visage.conf":
     ensure => present,
-    source => "puppet:///modules/spraints/etc/init/visage.conf",
+    content => template("spraints/opt/visage/server.erb"),
+    owner => "root",
+    group => "root",
   }
 
   user { "visage":
@@ -15,8 +19,6 @@ class spraints::services::visage {
   group { "visage":
     ensure => present,
   }
-
-  $visage_config_path = "/var/local/visage"
 
   file { $visage_config_path:
     owner => "visage",
@@ -30,13 +32,7 @@ class spraints::services::visage {
   }
 
   file { "/opt/visage/server":
-    ensure => present,
-    content => template("spraints/opt/visage/server.erb"),
-    mode => 755,
-    require => [
-      File["/opt/visage"],
-      File["/var/local/visage"],
-    ],
+    ensure => absent,
   }
 
   service { "visage":
@@ -45,7 +41,11 @@ class spraints::services::visage {
       File["/etc/init/visage.conf"],
       User["visage"],
       Class["spraints::app::visage"],
+      File["/var/local/visage"],
     ],
-    subscribe => Exec["bundle visage"],
+    subscribe => [
+      File["/etc/init/visage.conf"],
+      Exec["bundle visage"],
+    ],
   }
 }
