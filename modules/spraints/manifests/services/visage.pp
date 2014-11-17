@@ -16,7 +16,7 @@ class spraints::services::visage {
     owner => "visage",
     group => "visage",
     mode => 644,
-    source => "puppett:///modules/spraints/opt/visage/config.ru",
+    source => "puppet:///modules/spraints/opt/visage/config.ru",
   }
 
   user { "visage":
