@@ -31,7 +31,7 @@ class spraints::services::visage {
 
   file { "/opt/visage/server":
     ensure => present,
-    source => "puppet:///modules/spraints/opt/visage/server",
+    content => template("spraints/opt/visage/server.erb"),
     mode => 755,
     require => [
       File["/opt/visage"],
