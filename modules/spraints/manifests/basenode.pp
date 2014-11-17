@@ -5,6 +5,8 @@ class spraints::basenode {
   file { "/etc/hosts":
     ensure => present,
     mode => 644,
+    owner => root,
+    group => root,
     source => "puppet:///modules/spraints/etc/hosts",
   }
 }
