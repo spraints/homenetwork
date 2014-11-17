@@ -36,4 +36,19 @@ class spraints::app::visage {
       Package["rubygems"],
     ],
   }
+
+  package {
+    "build-essential":
+      ensure => installed;
+    "bundler":
+      ensure => installed;
+    "librrd-ruby":
+      ensure => installed;
+    "ruby":
+      ensure => installed;
+    "ruby-dev":
+      ensure => installed;
+    "rubygems":
+      ensure => installed;
+  }
 }
