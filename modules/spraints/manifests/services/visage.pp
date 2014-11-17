@@ -8,6 +8,15 @@ class spraints::services::visage {
     content => template("spraints/etc/init/visage.conf.erb"),
     owner => "root",
     group => "root",
+    require => File["/opt/visage/config.ru"],
+  }
+
+  file { "/opt/visage/config.ru":
+    ensure => present,
+    owner => "visage",
+    group => "visage",
+    mode => 644,
+    source => "puppett:///modules/spraints/opt/visage/config.ru",
   }
 
   user { "visage":
