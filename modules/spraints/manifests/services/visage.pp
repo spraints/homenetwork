@@ -6,10 +6,21 @@ class spraints::services::visage {
     source => "puppet:///modules/spraints/etc/init/visage.conf",
   }
 
+  user { "visage":
+    ensure => present,
+    gid => "visage",
+    require => Group["visage"],
+  }
+
+  group { "visage":
+    ensure => present,
+  }
+
   service { "visage":
     ensure => running,
     require => [
       File["/etc/init/visage.conf"],
+      User["visage"],
       Class["spraints::app::visage"],
     ],
     subscribe => Exec["bundle visage"],
