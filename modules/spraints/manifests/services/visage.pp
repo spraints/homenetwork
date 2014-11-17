@@ -5,7 +5,7 @@ class spraints::services::visage {
 
   file { "/etc/init/visage.conf":
     ensure => present,
-    content => template("spraints/opt/visage/server.erb"),
+    content => template("spraints/etc/init/visage.conf.erb"),
     owner => "root",
     group => "root",
   }
