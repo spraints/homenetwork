@@ -59,4 +59,4 @@ fi
 script/bootstrap
 
 step Apply
-sudo puppet apply --modulepath ${repo_path}/modules ${repo_path}/manifests/
+sudo puppet apply "$@" --modulepath ${repo_path}/modules ${repo_path}/manifests/
