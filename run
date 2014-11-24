@@ -55,6 +55,7 @@ if [ -f .branch ]; then
 fi
 if [ -n "${PUPPET_BRANCH}" ]; then
   new_branch="${PUPPET_BRANCH}"
+  echo "${new_branch}" > .branch
 fi
 if [ "${old_branch}" != "${new_branch}" ]; then
   echo Switching from ${old_branch} to ${new_branch}
