@@ -36,3 +36,27 @@ pingdrop:
     - minibuntu
   :url: pingdrop
   :profile_name: pingdrop
+
+weatherpressure:
+  :metrics:
+    - weather-kinpicka2/gauge-pressure_inhg
+  :hosts:
+    - minibuntu
+  :url: weatherpressure
+  :profile_name: weatherpressure
+
+weatheroutdoortemp:
+  :metrics:
+    - weather-kinpicka2/temperature-outdoor_f
+  :hosts:
+    - minibuntu
+  :url: weatheroutdoortemp
+  :profile_name: weatheroutdoortemp
+
+weatherindoortemp:
+  :metrics:
+    - weather-kinpicka2/temperature-indoor_f
+  :hosts:
+    - minibuntu
+  :url: weatherindoortemp
+  :profile_name: weatherindoortemp
