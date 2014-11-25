@@ -3,6 +3,8 @@ class spraints::app::fowsr {
     ensure => present,
     provider => git,
     user => "root",
+    source => "https://github.com/spraints/fowsr",
+    revision => "servers-collectd-wunderground",
   }
 
   package { "libusb-dev":

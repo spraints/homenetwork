@@ -1,21 +1,29 @@
 class spraints::role::weather_station {
-  include spraints::app::fowsr
-
   include spraints::services::collectd
+  include spraints::services::fowsr
 
-  # todo - fowsr + collectd
-  # todo - fowsr + wunderground (KINPICKA2)
+  # fowsr + collectd
+  file { "/etc/collectd/collectd.conf.d/fowsr.conf":
+    ensure => present,
+    owner => "root",
+    group => "root",
+    source => "puppet:///modules/spraints/etc/collectd.conf.d/fowsr.conf",
+  }
 
-  # ruby controller.rb
-  # - listen on a socket
-  # - run fowsr
-  # - foward data to the socket
-  #
-  # ruby collectd-fowsr.rb
-  # - open the socket
-  # - write the required data
-  #
-  # ruby collectd-wunderground.sh
-  # - open the socket
-  # - every Ns report the last seen values to wunderground.
+  # fowsr + wunderground (KINPICKA2)
+  service { "fowsr-wunderground":
+    ensure => running,
+    require => [
+      User["fowsr"],
+      File["/etc/init/fowsr-wunderground.conf"],
+      Class["spraints::services::fowsr"],
+    ],
+  }
+
+  file { "/etc/init/fowsr-wunderground.conf":
+    ensure => present,
+    source => "puppet:///modules/spraints/etc/init/fowsr-wunderground.conf",
+    owner => "root",
+    group => "root",
+  }
 }
