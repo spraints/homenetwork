@@ -3,6 +3,7 @@ class spraints::services::fowsr {
 
   service { "fowsr":
     ensure => running,
+    subscribe => Vcsrepo["/opt/fowsr"],
     require => [
       User["fowsr"],
       File["/etc/init/fowsr.conf"],
