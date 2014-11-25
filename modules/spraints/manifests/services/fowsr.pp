@@ -19,7 +19,7 @@ class spraints::services::fowsr {
 
   user { "fowsr":
     ensure => present,
-    gid => "fowsr"
+    gid => "fowsr",
     require => Group["fowsr"],
   }
 

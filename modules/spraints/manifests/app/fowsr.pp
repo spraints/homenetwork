@@ -13,7 +13,7 @@ class spraints::app::fowsr {
 
   exec { "build fowsr":
     command => "/usr/bin/make clean all",
-    cwd => "/opt/fowsr/fowsr.src"
+    cwd => "/opt/fowsr/fowsr.src",
     user => "root",
     refreshonly => true,
     subscribe => Vcsrepo["/opt/fowsr"],

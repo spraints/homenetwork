@@ -7,7 +7,7 @@ class spraints::role::weather_station {
     ensure => present,
     owner => "root",
     group => "root",
-    source => "puppet:///modules/spraints/etc/collectd.conf.d/fowsr.conf",
+    source => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/fowsr.conf",
   }
 
   # fowsr + wunderground (KINPICKA2)
