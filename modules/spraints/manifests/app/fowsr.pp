@@ -4,7 +4,7 @@ class spraints::app::fowsr {
     provider => git,
     user => "root",
     source => "https://github.com/spraints/fowsr",
-    revision => "db4b529975253f27af979f001aa8420e76973b0a",
+    revision => "fb58aced71dc4636f9694ac9f8989f7beeb4a350",
   }
 
   package { "libusb-dev":
