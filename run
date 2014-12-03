@@ -9,6 +9,12 @@ step() {
   echo '====>' "$@"
 }
 
+banner() {
+  echo ========================================================================
+  echo = "$@"
+  echo ========================================================================
+}
+
 if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
   step Install puppet per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
   (
@@ -58,7 +64,7 @@ if [ -n "${PUPPET_BRANCH}" ]; then
   echo "${new_branch}" > .branch
 fi
 if [ "${old_branch}" != "${new_branch}" ]; then
-  echo Switching from ${old_branch} to ${new_branch}
+  banner Switching from ${old_branch} to ${new_branch}
 fi
 
 step Get latest version
@@ -69,7 +75,7 @@ git fetch --prune origin
 
 ref="origin/${new_branch}"
 if ! git rev-parse "${ref}" >/dev/null 2>/dev/null; then
-  echo "${new_branch} has been deleted. Reverting to master."
+  banner "${new_branch} has been deleted. Reverting to master."
   rm .branch
   ref="origin/master"
 fi
