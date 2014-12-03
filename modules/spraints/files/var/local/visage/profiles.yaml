@@ -45,6 +45,14 @@ weatherpressure:
   :url: weatherpressure
   :profile_name: weatherpressure
 
+weatheroutdoortemp_c:
+  :metrics:
+    - weather-kinpicka2/temperature-outdoor_c
+  :hosts:
+    - minibuntu
+  :url: weatheroutdoortemp_c
+  :profile_name: weatheroutdoortemp_c
+
 weatheroutdoortemp:
   :metrics:
     - weather-kinpicka2/temperature-outdoor_f
@@ -60,3 +68,31 @@ weatherindoortemp:
     - minibuntu
   :url: weatherindoortemp
   :profile_name: weatherindoortemp
+
+indooroutdoortemp:
+  :metrics:
+    - weather-kinpicka2/temperature-indoor_f
+    - weather-kinpicka2/temperature-outdoor_f
+  :hosts:
+    - minibuntu
+  :url: indooroutdoortemp
+  :profile_name: indooroutdoortemp
+
+load:
+  :metrics:
+    - load/load
+    - processes/fork_rate
+  :hosts:
+    - minibuntu
+  :url: load
+  :profile_name: load
+
+df:
+  :metrics:
+    - df-root/df_complex-free
+    - df-root/df_complex-reserved
+    - df-root/df_complex-used
+  :hosts:
+    - minibuntu
+  :url: df
+  :profile_name: df
