@@ -1,4 +1,9 @@
 .librarian
 .tmp
+
+.bundle
 bin/
+
 modules/vcsrepo
+
+.branch
