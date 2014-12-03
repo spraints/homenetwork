@@ -62,10 +62,20 @@ if [ "${old_branch}" != "${new_branch}" ]; then
 fi
 
 step Get latest version
-git remote rm origin >/dev/null 2>/dev/null || true
-git remote add origin https://github.com/spraints/homenetwork
-git fetch origin
-git reset --hard "origin/${new_branch}"
+if ! git remote set-url origin https://github.com/spraints/homenetwork; then
+  git remote add origin https://github.com/spraints/homenetwork
+fi
+git fetch --prune origin
+
+ref="origin/${new_branch}"
+if ! git rev-parse "${ref}" >/dev/null 2>/dev/null; then
+  echo "${new_branch} has been deleted. Reverting to master."
+  rm .branch
+  ref="origin/master"
+fi
+git reset --hard "${ref}"
+git clean -d -n
+
 script/bootstrap
 
 step Apply
