@@ -47,15 +47,25 @@ fi
 
 cd ${repo_path}
 
+old_branch=master
+new_branch=master
+if [ -f .branch ]; then
+  old_branch="$(cat .branch)"
+  new_branch="${old_branch}"
+fi
+if [ -n "${PUPPET_BRANCH}" ]; then
+  new_branch="${PUPPET_BRANCH}"
+  echo "${new_branch}" > .branch
+fi
+if [ "${old_branch}" != "${new_branch}" ]; then
+  echo Switching from ${old_branch} to ${new_branch}
+fi
+
 step Get latest version
 git remote rm origin >/dev/null 2>/dev/null || true
 git remote add origin https://github.com/spraints/homenetwork
 git fetch origin
-if [ -f .branch ]; then
-  git reset --hard origin/`cat .branch`
-else
-  git reset --hard origin/master
-fi
+git reset --hard "origin/${new_branch}"
 script/bootstrap
 
 step Apply
