@@ -86,4 +86,4 @@ script/bootstrap
 
 step Apply
 set -x
-sudo puppet apply "$@" --modulepath ${repo_path}/modules ${repo_path}/manifests/
+sudo puppet apply --show_diff "$@" --modulepath ${repo_path}/modules ${repo_path}/manifests/
