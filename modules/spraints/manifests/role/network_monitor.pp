@@ -1,6 +1,14 @@
 class spraints::role::network_monitor {
   include spraints::services::collectd
 
+  file { "/etc/default/collectd":
+    notify  => Service["collectd"],
+    mode    => 644,
+    owner   => "root",
+    group   => "root",
+    source  => "puppet:///modules/spraints/etc/default/collectd",
+  }
+
   file { "/etc/collectd/collectd.conf.d/airport-snmp.conf":
     notify  => Service["collectd"],
     mode    => 644,

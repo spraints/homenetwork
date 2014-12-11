@@ -85,4 +85,5 @@ git clean -d -n
 script/bootstrap
 
 step Apply
-sudo puppet apply "$@" --modulepath ${repo_path}/modules ${repo_path}/manifests/
+set -x
+sudo puppet apply --show_diff "$@" --modulepath ${repo_path}/modules ${repo_path}/manifests/
