@@ -97,20 +97,20 @@ df:
   :url: df
   :profile_name: df
 
-matts-laptop-signal:
+mattslaptopsignal:
   :hosts:
     - airport
   :metrics:
     - snmp/signal_power-14:10:9F:D2:6F:57
     - snmp/signal_noise-14:10:9F:D2:6F:57
-  :profile_name: matts-laptop-signal
-  :url: matts-laptop-signal
+  :profile_name: mattslaptopsignal
+  :url: mattslaptopsignal
 
-aiport-clients:
+aiportclients:
   :hosts:
     - airport
   :metrics:
     - snmp/current_connections-wireless_clients
     - snmp/current_sessions-dhcp_clients
-  :profile_name: airport-clients
-  :url: airport-clients
+  :profile_name: airportclients
+  :url: airportclients
