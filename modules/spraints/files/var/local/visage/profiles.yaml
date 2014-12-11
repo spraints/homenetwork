@@ -106,7 +106,7 @@ mattslaptopsignal:
   :profile_name: mattslaptopsignal
   :url: mattslaptopsignal
 
-aiportclients:
+airportclients:
   :hosts:
     - airport
   :metrics:
