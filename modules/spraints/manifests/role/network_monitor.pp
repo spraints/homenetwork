@@ -6,7 +6,7 @@ class spraints::role::network_monitor {
     mode    => 644,
     owner   => "root",
     group   => "root",
-    source  => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/airport-snmp.conf",
+    source  => "puppet:///modules/spraints/etc/default/collectd",
   }
 
   file { "/etc/collectd/collectd.conf.d/airport-snmp.conf":
