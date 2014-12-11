@@ -85,4 +85,5 @@ git clean -d -n
 script/bootstrap
 
 step Apply
+set -x
 sudo puppet apply "$@" --modulepath ${repo_path}/modules ${repo_path}/manifests/
