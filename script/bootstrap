@@ -2,5 +2,5 @@
 
 set -e
 
-bundle install --binstubs bin --path .bundle
+bundle check || bundle install --binstubs bin --path .bundle
 bin/librarian-puppet install
