@@ -49,6 +49,6 @@ class spraints::role::network_monitor {
     owner => "visage",
     group => "visage",
     mode => 644,
-    source => "puppet:///modules/spraints/var/local/visage/profiles.yaml",
+    content => template("spraints/var/local/visage/profiles.yaml.erb"),
   }
 }
