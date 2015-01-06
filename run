@@ -81,6 +81,7 @@ if ! git rev-parse "${ref}" >/dev/null 2>/dev/null; then
 fi
 git reset --hard "${ref}"
 git clean -d -n
+git show -q HEAD
 
 script/bootstrap
 
