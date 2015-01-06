@@ -15,6 +15,15 @@ extpackets:
   :hosts:
     - airport
 
+extpacketsgauge:
+  :metrics:
+    - snmp/gauge-if_octets_gauge_txmgi1
+    - snmp/gauge-if_octets_gauge_rxmgi1
+  :url: extpacketsgauge
+  :profile_name: extpacketsgauge
+  :hosts:
+    - airport
+
 ping:
   :metrics:
     - ping/ping-10.5.49.1
