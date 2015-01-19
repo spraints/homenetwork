@@ -10,3 +10,4 @@ modules/vcsrepo
 
 hiera.yaml
 hieradata/common.yaml
+.hiera_config
