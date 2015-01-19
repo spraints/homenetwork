@@ -85,6 +85,13 @@ git show -q HEAD
 
 script/bootstrap
 
+if [ -f .hiera_config ]; then
+  step Update hieradata
+  . .hiera_config
+  script/update-hieradata "${HIERA_GIST_ID}"
+  hiera_opts="--hiera_config ${repo_path}/hiera.yaml"
+fi
+
 step Apply
 set -x
-sudo puppet apply --show_diff "$@" --modulepath ${repo_path}/modules ${repo_path}/manifests/
+sudo puppet apply --show_diff "$@" --modulepath ${repo_path}/modules ${hiera_opts} ${repo_path}/manifests/

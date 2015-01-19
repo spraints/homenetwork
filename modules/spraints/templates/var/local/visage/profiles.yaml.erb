@@ -15,12 +15,12 @@ extpackets:
   :hosts:
     - airport
 
-extpacketsgauge:
+exttrafficgauge:
   :metrics:
     - snmp/gauge-if_octets_gauge_txmgi1
     - snmp/gauge-if_octets_gauge_rxmgi1
-  :url: extpacketsgauge
-  :profile_name: extpacketsgauge
+  :url: exttrafficgauge
+  :profile_name: exttrafficgauge
   :hosts:
     - airport
 
@@ -106,13 +106,7 @@ df:
   :url: df
   :profile_name: df
 
-<% {
-  "90:27:E4:F3:00:D4" => "lisaslaptop", # slick
-  "14:10:9F:D2:6F:57" => "mattslaptop", # octo
-  "D8:D1:CB:A1:0C:21" => "mattsphone",  # the-mattphone
-  "B0:65:BD:4E:47:29" => "ipad", # max
-  "8C:7B:9D:D1:09:5C" => "ipod", # touchy
-}.each do |addr, label| %>
+<% @wifi_hosts.each do |label, addr| %>
 wifisignal<%=label%>:
   :hosts:
     - airport

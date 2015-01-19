@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+require "net/https"
+require "json"
+
+def main(gist_id)
+  write_hiera_config
+  fetch_hiera_data(gist_id)
+end
+
+def write_hiera_config
+  File.write File.join(root, "hiera.yaml"), <<HIERA
+---
+:hierarchy:
+  - common
+
+:backends:
+  - yaml
+
+:yaml:
+  :datadir: "#{hiera_dir}"
+HIERA
+end
+
+def fetch_hiera_data(gist_id)
+  run "mkdir", "-p", hiera_dir
+  gist_info(gist_id)["files"].each do |name, file_info|
+    run "curl", "-Lf", "-o", File.join(hiera_dir, name), file_info["raw_url"]
+  end
+end
+
+def gist_info(gist_id)
+  http = Net::HTTP.new("api.github.com", 443)
+  http.use_ssl = true
+  http.start do |http|
+    res = http.request_get("/gists/#{gist_id}")
+    return JSON.load(res.body)
+  end
+end
+
+def run(*command)
+  puts "$ #{command.join(" ")}"
+  system(*command) or raise $!.inspect
+end
+
+def root
+  File.dirname(File.dirname(__FILE__))
+end
+
+def hiera_dir
+  File.join(root, "hieradata")
+end
+
+main(*ARGV)
