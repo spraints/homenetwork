@@ -3,9 +3,9 @@
 require "net/https"
 require "json"
 
-def main(gist_id)
+def main
   write_hiera_config
-  fetch_hiera_data(gist_id)
+  fetch_hiera_data
 end
 
 def write_hiera_config
@@ -22,18 +22,19 @@ def write_hiera_config
 HIERA
 end
 
-def fetch_hiera_data(gist_id)
+def fetch_hiera_data
   run "mkdir", "-p", hiera_dir
-  gist_info(gist_id)["files"].each do |name, file_info|
+  gist_info["files"].each do |name, file_info|
     run "curl", "-Lf", "-o", File.join(hiera_dir, name), file_info["raw_url"]
   end
 end
 
-def gist_info(gist_id)
+def gist_info
   http = Net::HTTP.new("api.github.com", 443)
   http.use_ssl = true
   http.start do |http|
     res = http.request_get("/gists/#{gist_id}")
+    res.value # raises, if error
     return JSON.load(res.body)
   end
 end
@@ -41,6 +42,10 @@ end
 def run(*command)
   puts "$ #{command.join(" ")}"
   system(*command) or raise $!.inspect
+end
+
+def gist_id
+  ENV["HIERA_GIST_ID"] or raise "HIERA_GIST_ID was not defined!"
 end
 
 def root
@@ -51,4 +56,16 @@ def hiera_dir
   File.join(root, "hieradata")
 end
 
-main(*ARGV)
+def hiera_config_path
+  File.join(root, ".hiera_config")
+end
+
+def load_config
+  File.read(hiera_config_path).lines.each do |line|
+    name, value = line.chomp.split("=", 2)
+    ENV[name] ||= value
+  end
+end
+
+load_config
+main
