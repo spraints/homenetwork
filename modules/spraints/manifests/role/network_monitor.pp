@@ -1,4 +1,6 @@
-class spraints::role::network_monitor {
+class spraints::role::network_monitor(
+  $wifi_hosts = {},
+) {
   include spraints::services::collectd
 
   file { "/etc/default/collectd":
