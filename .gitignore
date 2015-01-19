@@ -7,3 +7,6 @@ bin/
 modules/vcsrepo
 
 .branch
+
+hiera.yaml
+hieradata/common.yaml
