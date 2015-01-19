@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require "net/http"
+require "net/https"
 require "json"
 
 def main(gist_id)
@@ -24,9 +24,17 @@ end
 
 def fetch_hiera_data(gist_id)
   run "mkdir", "-p", hiera_dir
-  gist_info = JSON.load(Net::HTTP.get(URI("https://api.github.com/gists/#{gist_id}")))
-  gist_info["files"].each do |name, file_info|
+  gist_info(gist_id)["files"].each do |name, file_info|
     run "curl", "-Lf", "-o", File.join(hiera_dir, name), file_info["raw_url"]
+  end
+end
+
+def gist_info(gist_id)
+  http = Net::HTTP.new("api.github.com", 443)
+  http.use_ssl = true
+  http.start do |http|
+    res = http.request_get("/gists/#{gist_id}")
+    return JSON.load(res.body)
   end
 end
 
