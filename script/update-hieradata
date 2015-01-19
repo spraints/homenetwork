@@ -18,7 +18,7 @@ def write_hiera_config
   - yaml
 
 :yaml:
-  :datadir: "#{root}/hieradata
+  :datadir: "#{hiera_dir}"
 HIERA
 end
 
