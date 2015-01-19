@@ -9,5 +9,5 @@ modules/vcsrepo
 .branch
 
 hiera.yaml
-hieradata/common.yaml
+hieradata/
 .hiera_config
