@@ -176,4 +176,6 @@
 # By default all users have access to their home directories.
 ~/			"Home Directory"
 
+/var/time-capsule TimeMachine allow:timecapsule cnidscheme:dbd options:usedots,upriv,tm
+
 # End of File

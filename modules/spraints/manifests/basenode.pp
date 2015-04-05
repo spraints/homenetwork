@@ -1,6 +1,7 @@
 class spraints::basenode {
   include spraints::est
   include spraints::services::ntp
+  include spraints::mdns
 
   file { "/etc/hosts":
     ensure => present,
