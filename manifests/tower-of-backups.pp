@@ -1,5 +1,5 @@
 # The old production computer from church.
-node /^fish-for-bytes\./ {
+node /^tower-of-backups\./ {
   include spraints::basenode
 
   include spraints::role::time_capsule
