@@ -2,25 +2,39 @@
 
 require "net/https"
 require "json"
+require "socket"
 require "yaml"
 
 def main
-  write_hiera_config
   fetch_hiera_data
+  write_hiera_config(hiera_files)
 end
 
-def write_hiera_config(files = ['common'])
-  File.write File.join(root, "hiera.yaml"), YAML.dump \
-    :hierarchy => files,
-    :backends => ['yaml'],
-    :yaml => {:datadir => hiera_dir}
+def write_hiera_config(files)
+  config_file = File.join(root, "hiera.yaml")
+  if files.any?
+    config = {
+      :hierarchy => files,
+      :backends => ['yaml'],
+      :yaml => {:datadir => hiera_dir},
+    }
+    File.write config_file, YAML.dump(config)
+  elsif File.exist?(config_file)
+    File.unlink config_file
+  end
 end
 
 def fetch_hiera_data
   run "mkdir", "-p", hiera_dir
-  gist_info["files"].each do |name, file_info|
-    run "curl", "-Lf", "-o", File.join(hiera_dir, name), file_info["raw_url"]
+  if gist_id
+    gist_info["files"].each do |name, file_info|
+      run "curl", "-Lf", "-o", File.join(hiera_dir, name), file_info["raw_url"]
+    end
   end
+end
+
+def hiera_files
+  ["common", shorthostname].select { |name| File.exist?("#{hiera_dir}/#{name}.yaml") }
 end
 
 def gist_info
@@ -39,7 +53,11 @@ def run(*command)
 end
 
 def gist_id
-  ENV["HIERA_GIST_ID"] or raise "HIERA_GIST_ID was not defined!"
+  ENV["HIERA_GIST_ID"]
+end
+
+def shorthostname
+  Socket.gethostname.split(".").first.encode("UTF-8")
 end
 
 def root
