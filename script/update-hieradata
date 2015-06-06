@@ -73,9 +73,11 @@ def hiera_config_path
 end
 
 def load_config
-  File.read(hiera_config_path).lines.each do |line|
-    name, value = line.chomp.split("=", 2)
-    ENV[name] ||= value
+  if File.exist?(hiera_config_path)
+    File.read(hiera_config_path).lines.each do |line|
+      name, value = line.chomp.split("=", 2)
+      ENV[name] ||= value
+    end
   end
 end
 
