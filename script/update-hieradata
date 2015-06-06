@@ -2,24 +2,18 @@
 
 require "net/https"
 require "json"
+require "yaml"
 
 def main
   write_hiera_config
   fetch_hiera_data
 end
 
-def write_hiera_config
-  File.write File.join(root, "hiera.yaml"), <<HIERA
----
-:hierarchy:
-  - common
-
-:backends:
-  - yaml
-
-:yaml:
-  :datadir: "#{hiera_dir}"
-HIERA
+def write_hiera_config(files = ['common'])
+  File.write File.join(root, "hiera.yaml"), YAML.dump \
+    :hierarchy => files,
+    :backends => ['yaml'],
+    :yaml => {:datadir => hiera_dir}
 end
 
 def fetch_hiera_data
