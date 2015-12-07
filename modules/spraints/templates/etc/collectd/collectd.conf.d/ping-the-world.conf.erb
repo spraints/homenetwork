@@ -2,7 +2,7 @@ LoadPlugin ping
 
 <Plugin ping>
 <% @ping_targets.each do |ip| %>
-  Host "ip"
+  Host "<%= ip %>"
 <% end %>
 
   Interval 1.0
