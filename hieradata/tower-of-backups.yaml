@@ -1,1 +1,3 @@
 "spraints::basenode::location": church
+"spraints::role::network_monitor::ping_targets":
+  - 8.8.8.8

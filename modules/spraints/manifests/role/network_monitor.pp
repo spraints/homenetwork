@@ -2,6 +2,7 @@ class spraints::role::network_monitor(
   $wifi_hosts = {},
   $airport = false,
   $weather = false,
+  $ping_targets = [],
 ) {
   include spraints::services::collectd
 
@@ -32,7 +33,7 @@ class spraints::role::network_monitor(
     mode    => 644,
     owner   => "root",
     group   => "root",
-    source  => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/ping-the-world.conf",
+    content => template("spraints/etc/collectd/collectd.conf.d/ping-the-world.conf.erb"),
   }
 
   #####

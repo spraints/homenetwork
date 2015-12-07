@@ -28,11 +28,9 @@ exttrafficgauge:
 
 ping:
   :metrics:
-    - ping/ping-192.168.100.1
-    - ping/ping-192.168.3.1
-    - ping/ping-10.5.49.1
-    - ping/ping-github.com
-    - ping/ping-8.8.8.8
+<% @ping_targets.each do |ip| %>
+    - ping/ping-<%= ip %>
+<% end %>
   :hosts:
     - minibuntu
   :url: ping
@@ -40,11 +38,9 @@ ping:
 
 pingdrop:
   :metrics:
-    - ping/ping_droprate-192.168.100.1
-    - ping/ping_droprate-192.168.3.1
-    - ping/ping_droprate-10.5.49.1
-    - ping/ping_droprate-github.com
-    - ping/ping_droprate-8.8.8.8
+<% @ping_targets.each do |ip| %>
+    - ping/ping_droprate-<%= ip %>
+<% end %>
   :hosts:
     - minibuntu
   :url: pingdrop
