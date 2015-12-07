@@ -1,5 +1,7 @@
 class spraints::role::network_monitor(
   $wifi_hosts = {},
+  $airport = false,
+  $weather = false,
 ) {
   include spraints::services::collectd
 
@@ -11,16 +13,18 @@ class spraints::role::network_monitor(
     source  => "puppet:///modules/spraints/etc/default/collectd",
   }
 
-  file { "/etc/collectd/collectd.conf.d/airport-snmp.conf":
-    notify  => Service["collectd"],
-    mode    => 644,
-    owner   => "root",
-    group   => "root",
-    source  => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/airport-snmp.conf",
-    require => [
-      Package["snmp-mibs-downloader"],
-      File["/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt"],
-    ],
+  if($airport) {
+    file { "/etc/collectd/collectd.conf.d/airport-snmp.conf":
+      notify  => Service["collectd"],
+      mode    => 644,
+      owner   => "root",
+      group   => "root",
+      source  => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/airport-snmp.conf",
+      require => [
+        Package["snmp-mibs-downloader"],
+        File["/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt"],
+      ],
+    }
   }
 
   file { "/etc/collectd/collectd.conf.d/ping-the-world.conf":
@@ -33,13 +37,15 @@ class spraints::role::network_monitor(
 
   #####
 
-  include spraints::tools::snmp
+  if($airport) {
+    include spraints::tools::snmp
 
-  file { "/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt":
-    mode    => 644,
-    owner   => "root",
-    group   => "root",
-    source  => "puppet:///modules/spraints/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt",
+    file { "/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt":
+      mode    => 644,
+      owner   => "root",
+      group   => "root",
+      source  => "puppet:///modules/spraints/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt",
+    }
   }
 
   #####

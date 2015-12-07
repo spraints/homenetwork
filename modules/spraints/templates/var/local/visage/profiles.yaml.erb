@@ -1,3 +1,4 @@
+<% if @airport %>
 exttraffic:
   :metrics:
     - snmp/if_octets-mgi1
@@ -23,6 +24,7 @@ exttrafficgauge:
   :profile_name: exttrafficgauge
   :hosts:
     - airport
+<% end %>
 
 ping:
   :metrics:
@@ -48,6 +50,7 @@ pingdrop:
   :url: pingdrop
   :profile_name: pingdrop
 
+<% if @weather %>
 weatherpressure:
   :metrics:
     - weather-kinpicka2/gauge-pressure_inhg
@@ -88,6 +91,7 @@ indooroutdoortemp:
     - minibuntu
   :url: indooroutdoortemp
   :profile_name: indooroutdoortemp
+<% end %>
 
 load:
   :metrics:
@@ -108,6 +112,7 @@ df:
   :url: df
   :profile_name: df
 
+<% if @airport %>
 <% @wifi_hosts.each do |label, addr| %>
 wifisignal<%=label%>:
   :hosts:
@@ -127,3 +132,4 @@ wificlients:
     - snmp/current_sessions-dhcp_clients
   :profile_name: wificlients
   :url: wificlients
+<% end %>
