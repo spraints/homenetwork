@@ -32,7 +32,7 @@ ping:
     - ping/ping-<%= ip %>
 <% end %>
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: ping
   :profile_name: ping
 
@@ -42,7 +42,7 @@ pingdrop:
     - ping/ping_droprate-<%= ip %>
 <% end %>
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: pingdrop
   :profile_name: pingdrop
 
@@ -51,7 +51,7 @@ weatherpressure:
   :metrics:
     - weather-kinpicka2/gauge-pressure_inhg
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatherpressure
   :profile_name: weatherpressure
 
@@ -59,7 +59,7 @@ weatheroutdoortemp_c:
   :metrics:
     - weather-kinpicka2/temperature-outdoor_c
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatheroutdoortemp_c
   :profile_name: weatheroutdoortemp_c
 
@@ -67,7 +67,7 @@ weatheroutdoortemp:
   :metrics:
     - weather-kinpicka2/temperature-outdoor_f
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatheroutdoortemp
   :profile_name: weatheroutdoortemp
 
@@ -75,7 +75,7 @@ weatherindoortemp:
   :metrics:
     - weather-kinpicka2/temperature-indoor_f
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatherindoortemp
   :profile_name: weatherindoortemp
 
@@ -84,7 +84,7 @@ indooroutdoortemp:
     - weather-kinpicka2/temperature-indoor_f
     - weather-kinpicka2/temperature-outdoor_f
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: indooroutdoortemp
   :profile_name: indooroutdoortemp
 <% end %>
@@ -94,7 +94,7 @@ load:
     - load/load
     - processes/fork_rate
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: load
   :profile_name: load
 
@@ -104,7 +104,7 @@ df:
     - df-root/df_complex-reserved
     - df-root/df_complex-used
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: df
   :profile_name: df
 
