@@ -9,6 +9,7 @@ class spraints::role::att_wireless(
     owner => "root",
     group => "root",
     source => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/att_wireless.conf",
+    notify => Service["collectd"],
   }
 
   file { "/opt/collectd/att_wirless":
@@ -24,7 +25,8 @@ class spraints::role::att_wireless(
     require => [
       File["/opt/collectd"],
       Package["jq"],
-    ]
+    ],
+    notify => Service["collectd"],
   }
 
   file { "/opt/collectd":
