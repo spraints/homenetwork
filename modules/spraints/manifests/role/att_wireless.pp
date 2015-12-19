@@ -8,7 +8,7 @@ class spraints::role::att_wireless(
     ensure => present,
     owner => "root",
     group => "root",
-    source => "puppet:///modules/spraints/etc/collectd.collectd.conf.d/att_wireless.conf",
+    source => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/att_wireless.conf",
   }
 
   file { "/opt/collectd/att_wirless":
