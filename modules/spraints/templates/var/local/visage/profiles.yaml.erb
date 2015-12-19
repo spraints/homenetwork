@@ -1,3 +1,4 @@
+<% if @airport %>
 exttraffic:
   :metrics:
     - snmp/if_octets-mgi1
@@ -23,36 +24,34 @@ exttrafficgauge:
   :profile_name: exttrafficgauge
   :hosts:
     - airport
+<% end %>
 
 ping:
   :metrics:
-    - ping/ping-192.168.100.1
-    - ping/ping-192.168.3.1
-    - ping/ping-10.5.49.1
-    - ping/ping-github.com
-    - ping/ping-8.8.8.8
+<% @ping_targets.each do |ip| %>
+    - ping/ping-<%= ip %>
+<% end %>
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: ping
   :profile_name: ping
 
 pingdrop:
   :metrics:
-    - ping/ping_droprate-192.168.100.1
-    - ping/ping_droprate-192.168.3.1
-    - ping/ping_droprate-10.5.49.1
-    - ping/ping_droprate-github.com
-    - ping/ping_droprate-8.8.8.8
+<% @ping_targets.each do |ip| %>
+    - ping/ping_droprate-<%= ip %>
+<% end %>
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: pingdrop
   :profile_name: pingdrop
 
+<% if @weather %>
 weatherpressure:
   :metrics:
     - weather-kinpicka2/gauge-pressure_inhg
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatherpressure
   :profile_name: weatherpressure
 
@@ -60,7 +59,7 @@ weatheroutdoortemp_c:
   :metrics:
     - weather-kinpicka2/temperature-outdoor_c
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatheroutdoortemp_c
   :profile_name: weatheroutdoortemp_c
 
@@ -68,7 +67,7 @@ weatheroutdoortemp:
   :metrics:
     - weather-kinpicka2/temperature-outdoor_f
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatheroutdoortemp
   :profile_name: weatheroutdoortemp
 
@@ -76,7 +75,7 @@ weatherindoortemp:
   :metrics:
     - weather-kinpicka2/temperature-indoor_f
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: weatherindoortemp
   :profile_name: weatherindoortemp
 
@@ -85,16 +84,17 @@ indooroutdoortemp:
     - weather-kinpicka2/temperature-indoor_f
     - weather-kinpicka2/temperature-outdoor_f
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: indooroutdoortemp
   :profile_name: indooroutdoortemp
+<% end %>
 
 load:
   :metrics:
     - load/load
     - processes/fork_rate
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: load
   :profile_name: load
 
@@ -104,10 +104,11 @@ df:
     - df-root/df_complex-reserved
     - df-root/df_complex-used
   :hosts:
-    - minibuntu
+    - <%= @hostname %>
   :url: df
   :profile_name: df
 
+<% if @airport %>
 <% @wifi_hosts.each do |label, addr| %>
 wifisignal<%=label%>:
   :hosts:
@@ -127,3 +128,4 @@ wificlients:
     - snmp/current_sessions-dhcp_clients
   :profile_name: wificlients
   :url: wificlients
+<% end %>

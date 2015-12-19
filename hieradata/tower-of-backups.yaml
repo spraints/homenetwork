@@ -1,1 +1,5 @@
 "spraints::basenode::location": church
+"spraints::role::network_monitor::ping_targets":
+  - 192.168.1.254
+  - 107.221.224.2
+  - 8.8.8.8
