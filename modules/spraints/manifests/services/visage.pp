@@ -72,7 +72,6 @@ class spraints::services::visage {
   exec { "build visage profile":
     command => "cat $visage_config_path/profiles.yaml.d/* > $visage_config_path/profiles.yaml",
     creates => "$visage_config_path/profiles.yaml",
-    refreshonly => true,
     path => "/bin",
     user => "visage",
     group => "visage",
