@@ -65,7 +65,7 @@ class spraints::services::visage {
     owner => "visage",
     group => "visage",
     mode => "0444",
-    content => "# This file is created by puppet.\n# Add files to $visage_config_path with puppet.\n",
+    content => "# This file is created by puppet.\n# Add files to $visage_config_path with puppet.\n\n",
     notify => Exec["build visage profile"],
   }
 
