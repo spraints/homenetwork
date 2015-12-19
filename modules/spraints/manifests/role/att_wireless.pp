@@ -12,10 +12,6 @@ class spraints::role::att_wireless(
     notify => Service["collectd"],
   }
 
-  file { "/opt/collectd/att_wirless":
-    ensure => absent,
-  }
-
   file { "/opt/collectd/att_wireless":
     ensure => present,
     owner => "root",
@@ -48,7 +44,7 @@ class spraints::role::att_wireless(
     owner => "visage",
     group => "visage",
     mode => 644,
-    content => template("spraints/var/local/visage/profiles.yaml.d/att_wirless.yaml.erb"),
+    content => template("spraints/var/local/visage/profiles.yaml.d/att_wireless.yaml.erb"),
     notify => Exec["build visage profile"],
   }
 }
