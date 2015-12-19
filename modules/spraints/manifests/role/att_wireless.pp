@@ -12,6 +12,10 @@ class spraints::role::att_wireless(
   }
 
   file { "/opt/collectd/att_wirless":
+    ensure => absent,
+  }
+
+  file { "/opt/collectd/att_wireless":
     ensure => present,
     owner => "root",
     group => "root",
