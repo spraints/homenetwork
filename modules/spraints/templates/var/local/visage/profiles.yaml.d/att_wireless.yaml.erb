@@ -1,0 +1,16 @@
+attsignal:
+  :metrics:
+    - attwireless/signal_power-lte_rssi
+  :url: attsignal
+  :profile_name: attsignal
+  :hosts:
+    - <%= @hostname %>
+
+attusage:
+  :metrics:
+    - attwireless/bytes-data_used
+    - attwireless/bytes-data_plan
+  :url: attusage
+  :profile_name: attusage
+  :hosts:
+    - <%= @hostname %>

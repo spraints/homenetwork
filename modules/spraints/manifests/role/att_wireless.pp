@@ -38,4 +38,17 @@ class spraints::role::att_wireless(
   package { "jq":
     ensure => installed,
   }
+
+  #####
+
+  include spraints::services::visage
+
+  file { "/var/local/visage/profiles.yaml.d/att_wireless.yaml":
+    ensure => present,
+    owner => "visage",
+    group => "visage",
+    mode => 644,
+    content => template("spraints/var/local/visage/profiles.yaml.d/att_wirless.yaml.erb"),
+    notify => Exec["build visage profile"],
+  }
 }

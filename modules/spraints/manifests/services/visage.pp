@@ -53,4 +53,27 @@ class spraints::services::visage {
       Exec["bundle visage"],
     ],
   }
+
+  file { "$visage_config_path/profiles.yaml.d":
+    ensure => directory,
+    owner => "visage",
+    group => "visage",
+  }
+
+  file { "$visage_config_path/profiles.yaml.d/README":
+    ensure => present,
+    owner => "visage",
+    group => "visage",
+    mode => "0444",
+    content => "# This file is created by puppet.\n# Add files to $visage_config_path with puppet.",
+  }
+
+  exec { "build visage profile":
+    command => "cat $visage_config_path/profiles.yaml.d/* > $visage_config_path/profiles.yaml",
+    creates => "$visage_config_path/profiles.yaml",
+    refreshonly => true,
+    path => "/bin",
+    user => "visage",
+    group => "visage",
+  }
 }

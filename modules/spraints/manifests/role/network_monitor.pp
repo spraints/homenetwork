@@ -53,11 +53,12 @@ class spraints::role::network_monitor(
 
   include spraints::services::visage
 
-  file { "/var/local/visage/profiles.yaml":
+  file { "/var/local/visage/profiles.yaml.d/network_monitor.yaml":
     ensure => present,
     owner => "visage",
     group => "visage",
     mode => 644,
-    content => template("spraints/var/local/visage/profiles.yaml.erb"),
+    content => template("spraints/var/local/visage/profiles.yaml.d/network_monitor.yaml.erb"),
+    notify => Exec["build visage profile"],
   }
 }
