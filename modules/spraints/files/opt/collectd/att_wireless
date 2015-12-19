@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -e
+
+# Input variables
+: ${ROUTER_IP:=192.168.0.1}
+: ${PASSWORD:=attadmin}
+: ${INTERVAL:=10}
+
+# Need to get these commands:
+#  /bin/echo
+#  /bin/sleep
+#  /bin/hostname
+#  /usr/bin/base64
+#  /usr/bin/jq
+#  /usr/bin/curl
+#  /usr/bin/test
+export PATH=/bin:/usr/bin
+
+# The URL that tells us the data.
+CMDS="rssi%2Cfluxatt_cur_total_data%2Cfluxatt_allote_data"
+QUERY="multi_data=1&isTest=false&cmd=${CMDS}"
+DATA_URL="http://${ROUTER_IP}/goform/goform_get_cmd_process?${QUERY}"
+
+# My name. :)
+HOSTNAME=$(hostname -s)
+
+# curl + global options for this script
+req() {
+  curl -s "$@"
+}
+
+# produce a line for collectd
+report() {
+  local field="$1"
+  local metric_name="$2"
+  local type="$3"
+  echo PUTVAL ${HOSTNAME}/attwireless/${type}-${metric_name} interval=$INTERVAL ${now}:$(echo "${data}" | jq -r ".${field}")
+}
+
+# get the data and report it
+report_att_data() {
+  # These need to be global so that report() can see them
+  now=$(date +%s)
+  data="$(req "${DATA_URL}")"
+
+  if [ -z "$(echo "${data}" | jq -r .rssi)" ]; then
+    B64_PASS="$(echo -n "${PASSWORD}" | base64)"
+    login="$(req -X POST -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" \
+      -d "isTest=false&goformId=LOGIN&password=${B64_PASS}" \
+      "http://${ROUTER_IP}/goform/goform_set_cmd_process")"
+    if [ "$(echo "${login}" | jq -r .result)" = 0 ]; then
+      data="$(req "${DATA_URL}")"
+    else
+      echo could not log in 1>&2
+      echo "${login}" | jq . 1>&2
+    fi
+  fi
+
+  report rssi                    lte_rssi  signal_power
+  report fluxatt_cur_total_data  data_used bytes
+  report fluxatt_allote_data     data_plan bytes
+}
+
+while true; do
+  test -f /var/lock/stop-attwireless || (report_att_data)
+  sleep ${INTERVAL}
+done
