@@ -3,9 +3,9 @@
 set -e
 
 # Input variables
-ROUTER_IP=192.168.0.1
-PASSWORD=attadmin
-INTERVAL=10
+: ${ROUTER_IP:=192.168.0.1}
+: ${PASSWORD:=attadmin}
+: ${INTERVAL:=10}
 
 # The URL that tells us the data.
 CMDS="rssi%2Cfluxatt_cur_total_data%2Cfluxatt_allote_data"
