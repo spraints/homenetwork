@@ -3,22 +3,19 @@
 # AT&T for all of their traffic for a limited time.
 class spraints::role::router(
   $zig_if = "en1",
-  $zig_ip = "192.168.3.1",
-  $local_zig_ip = "192.168.3.2",
   $att_if = "en2",
-  $att_ip = "192.168.0.1",
-  $local_att_ip = "192.168.0.2",
   $inf_if = "en3",
   $int_ip = "192.168.100.2",
+  $int_bcast = "192.168.100.255",
 ) {
   include spraints::app::zig-or-att
 
   # IP addresses
 
   $hostname_ifs = {
-    "hostname.${zig_if}" => "inet $local_zig_ip 255.255.255.0 $zig_bcast",
-    "hostname.${att_if}" => "inet $local_att_ip 255.255.255.0 $att_bcast",
-    "hostname.${int_if}" => "inet $int_ip       255.255.255.0 $int_bcast",
+    "hostname.${zig_if}" => "dhcp",
+    "hostname.${att_if}" => "dhcp",
+    "hostname.${int_if}" => "inet $int_ip 255.255.255.0 $int_bcast",
   }
 
   file { [
