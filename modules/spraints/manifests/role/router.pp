@@ -13,15 +13,43 @@ class spraints::role::router(
 ) {
   include spraints::app::zig-or-att
 
+  # IP addresses
+
+  $hostname_ifs = {
+    "hostname.${zig_if}" => "inet $local_zig_ip 255.255.255.0 $zig_bcast",
+    "hostname.${att_if}" => "inet $local_att_ip 255.255.255.0 $att_bcast",
+    "hostname.${int_if}" => "inet $int_ip       255.255.255.0 $int_bcast",
+  }
+
+  file { [
+           "/etc/hostname.${zig_if}",
+           "/etc/hostname.${att_if}",
+           "/etc/hostname.${int_if}",
+         ]:
+    ensure  => present,
+    owner   => "root",
+    group   => "root",
+    mode    => "444",
+    content => $hostname_ifs[$name],
+    notify  => Exec["restart networking"],
+  }
+
+  exec { "restart networking":
+    command => "sh /etc/netstart ${zig_if} && sh /etc/netstart ${att_if} && sh /etc/netstart ${int_if}",
+    path    => "/bin:/usr/bin:/sbin:/usr/sbin",
+    user    => "root",
+    group   => "root",
+  }
+
   # Firewall
 
   file { "/etc/pf.conf":
-    ensure => present,
-    owner  => "root",
-    group  => "root",
-    mode   => "444",
-    source => template("spraints/etc/pf.conf.erb"),
-    notify => Exec["reload pf.conf"],
+    ensure  => present,
+    owner   => "root",
+    group   => "root",
+    mode    => "444",
+    content => template("spraints/etc/pf.conf.erb"),
+    notify  => Exec["reload pf.conf"],
   }
 
   exec { "reload pf.conf":
