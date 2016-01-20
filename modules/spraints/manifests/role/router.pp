@@ -6,16 +6,19 @@ class spraints::role::router(
   $att_if = "en2",
   $inf_if = "en3",
   $int_ip = "192.168.100.2",
-  $int_bcast = "192.168.100.255",
+  $int_net = "192.168.100",
+  $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
 ) {
   include spraints::app::zig-or-att
+
+  $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin"
 
   # IP addresses
 
   $hostname_ifs = {
     "hostname.${zig_if}" => "dhcp",
     "hostname.${att_if}" => "dhcp",
-    "hostname.${int_if}" => "inet $int_ip 255.255.255.0 $int_bcast",
+    "hostname.${int_if}" => "inet $int_ip 255.255.255.0 $int_net.255",
   }
 
   file { [
@@ -33,7 +36,7 @@ class spraints::role::router(
 
   exec { "restart networking":
     command => "sh /etc/netstart ${zig_if} && sh /etc/netstart ${att_if} && sh /etc/netstart ${int_if}",
-    path    => "/bin:/usr/bin:/sbin:/usr/sbin",
+    path    => $exec_path,
     user    => "root",
     group   => "root",
   }
@@ -51,7 +54,7 @@ class spraints::role::router(
 
   exec { "reload pf.conf":
     command => "pfctl -e -f /etc/pf.conf",
-    path    => "/sbin",
+    path    => $exec_path,
     user    => "root",
     group   => "root",
   }
@@ -60,4 +63,19 @@ class spraints::role::router(
   # todo
 
   # DHCP server
+
+  exec { "enable dhcp $int_if":
+    command => "rcctl enable dhcpd && rcctl set dhcpd flags $int_if",
+    path    => $exec_path,
+    user    => "root",
+    group   => "root",
+  }
+
+  file { "/etc/dhcpd.conf":
+    ensure  => present,
+    owner   => "root",
+    group   => "root",
+    mode    => "444",
+    content => template("spraints/etc/dhcpd.conf.erb"),
+  }
 }

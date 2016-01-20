@@ -1,0 +1,11 @@
+option domain-name-servers <%= @int_ip %>;
+subnet <%= @int_net %>.0 netmask 255.255.255.0 {
+  option routers <%= @int_ip %>;
+  range <%= @int_net %>.100 <%= @int_net %>.199;
+  <% @dhcpd_reservations.each do |name, attrs| %>
+  host <%= name %> {
+    fixed-address <%= attrs["ip"] %>;
+    hardware ethernet <%= attrs["mac"] %>;
+  }
+  <% end %>
+}
