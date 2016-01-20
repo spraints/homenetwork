@@ -60,12 +60,27 @@ class spraints::role::router(
   }
 
   # DNS mirror
-  # todo
+
+  exec { "start unbound":
+    command => "rcctl enable unbound && rcctl stop unbound && rcctl start unbound",
+    path    => $exec_path,
+    user    => "root",
+    group   => "root",
+  }
+
+  file { "/var/unbound/etc/unbound.conf":
+    ensure  => present,
+    owner   => "root",
+    group   => "root",
+    mode    => "444",
+    content => template("spraints/var/unbound/etc/unbound.conf.erb"),
+    notify  => Exec["start unbound"],
+  }
 
   # DHCP server
 
-  exec { "enable dhcp $int_if":
-    command => "rcctl enable dhcpd && rcctl set dhcpd flags $int_if",
+  exec { "start dhcpd $int_if":
+    command => "rcctl enable dhcpd && rcctl set dhcpd flags $int_if && rcctl stop dhcpd && rcctl start dhcpd",
     path    => $exec_path,
     user    => "root",
     group   => "root",
@@ -77,5 +92,6 @@ class spraints::role::router(
     group   => "root",
     mode    => "444",
     content => template("spraints/etc/dhcpd.conf.erb"),
+    notify  => Exec["start dhcpd $int_if"],
   }
 }
