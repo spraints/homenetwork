@@ -15,9 +15,20 @@ int_ifs=$int_if
 set block-policy drop
 set skip on lo0
 
+# This table will be manipulated at runtime
+table <turbo_hosts> counters
+
 match in all scrub (no-df random-id max-mss 1440)
-match out on $att_if inet from $int_net to any nat-to $att_if
-match out on $zig_if inet from $int_net to any nat-to $zig_if
+
+# Default all traffic to zig
+match out on $zig_if inet proto tcp modulate state from $int_net to any nat-to $zig_if
+match out on $zig_if inet proto udp     keep state from $int_net to any nat-to $zig_if
+match out on $zig_if inet                          from $int_net to any nat-to $zig_if
+
+# <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
+match out on $att_if inet from <turbo_hosts> to any nat-to $att_if
+# Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
+match out on $att_if inet proto tcp from any to any port 22 nat-to $att_if
 
 block all
 pass out quick inet
