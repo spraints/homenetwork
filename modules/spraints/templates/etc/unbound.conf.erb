@@ -1,10 +1,12 @@
 # Based on http://www.openbsd.org/faq/pf/example1.html
 server:
-<% @listen.each do |addr| %>  interface: <%= addr %>
-<% end %><% @allowed.each do |cidr| %>  access-control: <%= cidr %> allow
-<% end %>  hide-identity: yes
+  hide-identity: yes
   hide-version: yes
+<% @listen.each do |addr| %>  interface: <%= addr %>
+<% end %><% @allowed_clients.each do |cidr| %>  access-control: <%= cidr %> allow
+<% end %>
 
 forward-zone:
   name: "."
-  forward-addr: 8.8.8.8
+<% @root_nameservers.each do |addr| %>  forward-addr: <%= addr %>
+<% end %>

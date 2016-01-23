@@ -1,6 +1,7 @@
 class spraints::role::caching_dns(
-  $listen = ["0.0.0.0"],
-  $allowed = ["0.0.0.0/0"],
+  $listen           = ["0.0.0.0"],
+  $allowed_clients  = ["0.0.0.0/0"],
+  $root_nameservers = ["8.8.8.8@53"],
 ){
   package { "unbound":
     ensure => installed,
