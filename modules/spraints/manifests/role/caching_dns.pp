@@ -1,4 +1,7 @@
-class spraints::role::caching_dns {
+class spraints::role::caching_dns(
+  $listen = ["0.0.0.0"],
+  $allowed = ["0.0.0.0/0"],
+){
   package { "unbound":
     ensure => installed,
   }
@@ -7,5 +10,14 @@ class spraints::role::caching_dns {
     ensure  => "running",
     enable  => "true",
     require => Package["unbound"],
+  }
+
+  file { "/etc/unbound/unbound.conf.d/cache-the-google.conf":
+    ensure  => present,
+    owner   => "root",
+    group   => "root",
+    mode    => 444,
+    content => template("spraints/etc/unbound.conf.erb"),
+    notify  => Service["unbound"],
   }
 }

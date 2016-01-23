@@ -1,0 +1,14 @@
+# Based on http://www.openbsd.org/faq/pf/example1.html
+server:
+<% @listen.each do |addr| %>  interface: <%= addr %>
+<% end %>
+  interface: <%= @int_ip %>
+  interface: 127.0.0.1
+<% @allowed.each do |cidr| %>  access-control: <%= cidr %> allow
+<% end %>
+  hide-identity: yes
+  hide-version: yes
+
+forward-zone:
+  name: "."
+  forward-addr: 8.8.8.8
