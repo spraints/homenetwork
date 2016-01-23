@@ -21,4 +21,13 @@ class spraints::role::caching_dns(
     content => template("spraints/etc/unbound.conf.erb"),
     notify  => Service["unbound"],
   }
+
+  file { "/etc/default/unbound":
+    ensure  => present,
+    owner   => "root",
+    group   => "root",
+    mode    => 444,
+    content => template("spraints/etc/default/unbound.erb"),
+    notify  => Service["unbound"],
+  }
 }
