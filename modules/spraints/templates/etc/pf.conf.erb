@@ -11,6 +11,10 @@ set skip on lo0
 # This table will be manipulated at runtime
 table <turbo_hosts> counters
 
+# This table will also be manipulated at runtime, but maybe not as much.
+# dominion
+table <turbo_sites> counters { <%= @turbo_sites.join(" ") %> }
+
 match in all scrub (no-df random-id max-mss 1440)
 
 # Default all traffic to zig
@@ -20,6 +24,8 @@ match out on $zig_if inet                          from $int_net to any nat-to $
 
 # <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
 match out on $att_if inet from <turbo_hosts> to any nat-to $att_if
+# <turbo_sites> is a list of sites that should always be FAST
+match out on $att_if inet from any to <turbo_sites> nat-to $att_if
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
 match out on $att_if inet proto tcp from any to any port 22 nat-to $att_if
 

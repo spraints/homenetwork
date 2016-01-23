@@ -8,6 +8,7 @@ class spraints::role::router(
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
+  $turbo_sites = [ "10.10.10.0/31" ],
 ) {
   include spraints::app::zig-or-att
 
