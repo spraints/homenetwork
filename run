@@ -3,8 +3,22 @@
 
 set -e
 
+sudodoas() {
+  echo Running "$@"
+  doas "$@"
+}
+
 if which sudo >/dev/null 2>/dev/null; then
-  sudo -p "We need sudo privileges to run puppet. Please type your password: " /bin/true
+  sudo -p "We need sudo privileges to run puppet. Please type your password: " true
+  sudo=sudo
+else
+  if which doas >/dev/null 2>/dev/null; then
+    if ! sudodoas true; then
+      echo You gotta enable doas first.
+      exit 1
+    fi
+    sudo=sudodoas
+  fi
 fi
 
 step() {
@@ -50,6 +64,11 @@ case `uname -s` in
 
     ;;
 
+  OpenBSD)
+    echo TODO
+    exit 1
+    ;;
+
   *)
     echo `uname -s` is not supported.
     exit 1
@@ -59,8 +78,8 @@ esac
 repo_path=/var/local/homenetwork-puppet
 if ! test -d ${repo_path}; then
   step Initialize repository
-  sudo mkdir -p ${repo_path}
-  sudo chown `id -u` ${repo_path}
+  $sudo mkdir -p ${repo_path}
+  $sudo chown `id -u` ${repo_path}
   git init ${repo_path}
 fi
 
@@ -110,4 +129,4 @@ fi
 
 step Apply
 set -x
-sudo puppet apply --show_diff "$@" --modulepath ${repo_path}/modules ${hiera_opts} ${repo_path}/manifests/
+$sudo puppet apply --show_diff "$@" --modulepath ${repo_path}/modules ${hiera_opts} ${repo_path}/manifests/
