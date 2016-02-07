@@ -1,6 +1,7 @@
 zig_if=<%= @zig_if %>
 att_if=<%= @att_if %>
 int_if=<%= @int_if %>
+mgm_if=<%= @mgm_if %>
 
 ext_ifs="{" $zig_if $att_if "}"
 int_ifs=$int_if
@@ -32,3 +33,4 @@ match out on $att_if inet proto tcp from any to any port 22 nat-to $att_if
 block all
 pass out quick inet
 pass in on $int_if inet
+pass in on $mgm_if inet

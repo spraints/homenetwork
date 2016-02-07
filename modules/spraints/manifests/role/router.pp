@@ -2,9 +2,10 @@
 # are routed to AT&T always. Some hosts can self-select
 # AT&T for all of their traffic for a limited time.
 class spraints::role::router(
-  $zig_if = "en1",
-  $att_if = "en2",
-  $inf_if = "en3",
+  $zig_if = "re0",
+  $att_if = "re1",
+  $inf_if = "re2",
+  $mgm_if = "re3"
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
@@ -20,12 +21,14 @@ class spraints::role::router(
     "hostname.${zig_if}" => "dhcp",
     "hostname.${att_if}" => "dhcp",
     "hostname.${int_if}" => "inet $int_ip 255.255.255.0 $int_net.255",
+    "hostname.${mgm_if}" => "dhcp",
   }
 
   file { [
            "/etc/hostname.${zig_if}",
            "/etc/hostname.${att_if}",
            "/etc/hostname.${int_if}",
+           "/etc/hostname.${mgm_if}",
          ]:
     ensure  => present,
     owner   => "root",
@@ -36,7 +39,7 @@ class spraints::role::router(
   }
 
   exec { "restart networking":
-    command => "sh /etc/netstart ${zig_if} && sh /etc/netstart ${att_if} && sh /etc/netstart ${int_if}",
+    command => "sh /etc/netstart ${zig_if} && sh /etc/netstart ${att_if} && sh /etc/netstart ${int_if} && sh /etc/netstart ${mgm_if}",
     path    => $exec_path,
     user    => "root",
     group   => "root",
