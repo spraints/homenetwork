@@ -77,7 +77,7 @@ case `uname -s` in
 
     for exe in bundle erb gem hiera irb rake rdoc ri ruby; do
       if [ ! -f /usr/local/bin/$exe ]; then
-        ln -s "$exe"22 /usr/local/bin/$exe
+        doas ln -s "$exe"22 /usr/local/bin/$exe
       fi
     done
     ;;
