@@ -3,7 +3,9 @@
 
 set -e
 
-sudo -p "We need sudo privileges to run puppet. Please type your password: " /bin/true
+if which sudo >/dev/null 2>/dev/null; then
+  sudo -p "We need sudo privileges to run puppet. Please type your password: " /bin/true
+fi
 
 step() {
   echo '====>' "$@"
@@ -15,33 +17,44 @@ banner() {
   echo ========================================================================
 }
 
-if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
-  step Install puppet per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
-  (
-    set -e
-    cd /tmp
-    deb=puppetlabs-release-trusty.deb
-    curl -O https://apt.puppetlabs.com/${deb}
-    sudo dpkg -i ${deb}
-    rm ${deb}
-  )
-  packages_to_install="${packages_to_install} puppet"
-fi
+# Ensure that puppet, curl, git, bundler, and sudo are installed.
+case `uname -s` in
+  Linux)
+    if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
+      step Install puppet per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
+      (
+        set -e
+        cd /tmp
+        deb=puppetlabs-release-trusty.deb
+        curl -O https://apt.puppetlabs.com/${deb}
+        sudo dpkg -i ${deb}
+        rm ${deb}
+      )
+      packages_to_install="${packages_to_install} puppet"
+    fi
 
-if ! dpkg -s git >/dev/null 2>/dev/null; then
-  step Install git
-  packages_to_install="${packages_to_install} git"
-fi
+    if ! dpkg -s git >/dev/null 2>/dev/null; then
+      step Install git
+      packages_to_install="${packages_to_install} git"
+    fi
 
-if ! dpkg -s bundler >/dev/null 2>/dev/null; then
-  step Install bundler
-  packages_to_install="${packages_to_install} bundler"
-fi
+    if ! dpkg -s bundler >/dev/null 2>/dev/null; then
+      step Install bundler
+      packages_to_install="${packages_to_install} bundler"
+    fi
 
-if [ -n "${packages_to_install}" ]; then
-  sudo apt-get update
-  sudo apt-get install -y ${packages_to_install}
-fi
+    if [ -n "${packages_to_install}" ]; then
+      sudo apt-get update
+      sudo apt-get install -y ${packages_to_install}
+    fi
+
+    ;;
+
+  *)
+    echo `uname -s` is not supported.
+    exit 1
+    ;;
+esac
 
 repo_path=/var/local/homenetwork-puppet
 if ! test -d ${repo_path}; then
