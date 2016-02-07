@@ -69,7 +69,11 @@ case `uname -s` in
     ;;
 
   OpenBSD)
-    doas pkg_add facter puppet git curl ruby22-bundler
+    case `uname -r` in
+      5.8)
+        facter_version=-2.4.4p2 ;;
+    esac
+    doas pkg_add facter${facter_version} puppet git curl ruby22-bundler
     ;;
 
   *)
