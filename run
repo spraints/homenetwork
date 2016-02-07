@@ -73,11 +73,11 @@ case `uname -s` in
       5.8)
         facter_version=-2.4.4p2 ;;
     esac
-    doas pkg_add facter${facter_version} puppet git curl ruby22-bundler
+    $sudo pkg_add facter${facter_version} puppet git curl ruby22-bundler
 
     for exe in bundle erb gem hiera irb rake rdoc ri ruby; do
       if [ ! -f /usr/local/bin/$exe ]; then
-        doas ln -s "$exe"22 /usr/local/bin/$exe
+        $sudo ln -s "$exe"22 /usr/local/bin/$exe
       fi
     done
     ;;
