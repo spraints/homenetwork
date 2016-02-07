@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #/ Usage: curl -L https://github.com/spraints/homenetwork/raw/master/run | bash
 
 set -e
@@ -12,12 +12,12 @@ step() {
 }
 
 banner() {
-  echo ========================================================================
-  echo = "$@"
-  echo ========================================================================
+  echo "========================================================================"
+  echo "= $*"
+  echo "========================================================================"
 }
 
-# Ensure that puppet, curl, git, bundler, and sudo are installed.
+# Ensure that puppet (e.g. 3.7.3), curl, git, bundler, and sudo are installed.
 case `uname -s` in
   Linux)
     if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
