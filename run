@@ -13,11 +13,15 @@ if which sudo >/dev/null 2>/dev/null; then
   sudo=sudo
 else
   if which doas >/dev/null 2>/dev/null; then
-    if ! sudodoas true; then
-      echo You gotta enable doas first.
-      exit 1
+    if doas -n true; then
+      sudo=doas
+    else
+      if ! sudodoas true; then
+        echo You gotta enable doas first.
+        exit 1
+      fi
+      sudo=sudodoas
     fi
-    sudo=sudodoas
   fi
 fi
 
@@ -65,8 +69,7 @@ case `uname -s` in
     ;;
 
   OpenBSD)
-    echo TODO
-    exit 1
+    doas pkg_add ruby-facter ruby-puppet git curl ruby-bundler
     ;;
 
   *)
