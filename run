@@ -69,11 +69,22 @@ case `uname -s` in
     ;;
 
   OpenBSD)
+    pkg_info -q -e 'git->=0.0'            || packages="$packages git"
+    pkg_info -q -e 'curl->=0.0'           || packages="$packages curl"
+    pkg_info -q -e 'ruby22-bundler->=0.0' || packages="$packages ruby22-bundler"
+    pkg_info -q -e 'puppet->=0.0'         || packages="$packages puppet"
+
     case `uname -r` in
       5.8)
-        facter_version=-2.4.4p2 ;;
+        pkg_info -q -e facter-2.4.4p2 || packages="$packages facter-2.4.4p2"
+        ;;
+
+      *)
+        pkg_info -q -e 'facter->0.0'  || packages="$packages facter"
+        ;;
     esac
-    $sudo pkg_add facter${facter_version} puppet git curl ruby22-bundler
+
+    test -n "$packages" && $sudo pkg_add $packages
 
     for exe in bundle erb gem hiera irb rake rdoc ri ruby; do
       if [ ! -f /usr/local/bin/$exe ]; then
