@@ -11,7 +11,7 @@ class spraints::role::router(
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $turbo_sites = [ "10.10.10.0/31" ],
 ) {
-  include spraints::app::zig-or-att
+  #include spraints::app::zig-or-att
 
   $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin"
 
