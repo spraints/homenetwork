@@ -4,10 +4,10 @@ class spraints::services::visage {
   $visage_config_path = "/var/local/visage"
 
   file { "/etc/init/visage.conf":
-    ensure => present,
+    ensure  => present,
     content => template("spraints/etc/init/visage.conf.erb"),
-    owner => "root",
-    group => "root",
+    owner   => "root",
+    mode    => "444",
     require => File["/opt/visage/config.ru"],
   }
 

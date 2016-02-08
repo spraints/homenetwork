@@ -32,7 +32,6 @@ class spraints::role::router(
          ]:
     ensure  => present,
     owner   => "root",
-    group   => "root",
     mode    => "444",
     content => $hostname_ifs[$name],
     notify  => Exec["restart networking"],
@@ -42,7 +41,6 @@ class spraints::role::router(
     command => "sh /etc/netstart ${zig_if} && sh /etc/netstart ${att_if} && sh /etc/netstart ${int_if} && sh /etc/netstart ${mgm_if}",
     path    => $exec_path,
     user    => "root",
-    group   => "root",
   }
 
   # Firewall
@@ -50,7 +48,6 @@ class spraints::role::router(
   file { "/etc/pf.conf":
     ensure  => present,
     owner   => "root",
-    group   => "root",
     mode    => "444",
     content => template("spraints/etc/pf.conf.erb"),
     notify  => Exec["reload pf.conf"],
@@ -60,7 +57,6 @@ class spraints::role::router(
     command => "pfctl -e -f /etc/pf.conf",
     path    => $exec_path,
     user    => "root",
-    group   => "root",
   }
 
   # DNS mirror
@@ -69,13 +65,11 @@ class spraints::role::router(
     command => "rcctl enable unbound && rcctl stop unbound && rcctl start unbound",
     path    => $exec_path,
     user    => "root",
-    group   => "root",
   }
 
   file { "/var/unbound/etc/unbound.conf":
     ensure  => present,
     owner   => "root",
-    group   => "root",
     mode    => "444",
     content => template("spraints/var/unbound/etc/unbound.conf.erb"),
     notify  => Exec["start unbound"],
@@ -87,13 +81,11 @@ class spraints::role::router(
     command => "rcctl enable dhcpd && rcctl set dhcpd flags $int_if && rcctl stop dhcpd && rcctl start dhcpd",
     path    => $exec_path,
     user    => "root",
-    group   => "root",
   }
 
   file { "/etc/dhcpd.conf":
     ensure  => present,
     owner   => "root",
-    group   => "root",
     mode    => "444",
     content => template("spraints/etc/dhcpd.conf.erb"),
     notify  => Exec["start dhcpd $int_if"],

@@ -6,16 +6,16 @@ class spraints::role::att_wireless(
 
   file { "/etc/collectd/collectd.conf.d/att_wireless.conf":
     ensure => present,
-    owner => "root",
-    group => "root",
+    mode   => 644,
+    owner  => "root",
     source => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/att_wireless.conf",
     notify => Service["collectd"],
   }
 
   file { "/opt/collectd/att_wireless":
     ensure => present,
-    owner => "root",
-    group => "root",
+    owner  => "root",
+    mode   => 644,
     source => "puppet:///modules/spraints/opt/collectd/att_wireless",
     mode => "0555",
     require => [
@@ -27,8 +27,8 @@ class spraints::role::att_wireless(
 
   file { "/opt/collectd":
     ensure => directory,
-    owner => "root",
-    group => "root",
+    owner  => "root",
+    mode   => 644,
   }
 
   package { "jq":
