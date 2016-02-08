@@ -1,0 +1,12 @@
+# Based on http://www.openbsd.org/faq/pf/example1.html
+server:
+  interface: <%= @int_ip %>
+  interface: 127.0.0.1
+  access-control: <%= @int_net %>.0/24 allow
+  do-not-query-localhost: no
+  hide-identity: yes
+  hide-version: yes
+
+forward-zone:
+  name: "."
+  forward-addr: 8.8.8.8@53
