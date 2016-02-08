@@ -5,7 +5,7 @@ class spraints::role::router(
   $zig_if = "re0",
   $att_if = "re1",
   $inf_if = "re2",
-  $mgm_if = "re3"
+  $mgm_if = "re3",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
