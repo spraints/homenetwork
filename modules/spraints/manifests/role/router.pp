@@ -12,6 +12,8 @@ class spraints::role::router(
   $mgm_if = "re3",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
+  $collectd_master = undef,
+  $zig_test_routes = { },
 ) {
   #include spraints::app::zig-or-att
 
@@ -108,5 +110,21 @@ class spraints::role::router(
     mode    => "444",
     content => template("spraints/etc/dhcpd.conf.erb"),
     notify  => Exec["start dhcpd $int_if"],
+  }
+
+  ###
+  # Metrics
+
+  if $collectd_master != undef {
+    package { "collectd":
+      ensure => installed,
+    }
+
+    exec { "start collectd":
+      command     => "rcctl enable collectd && rcctl stop collectd && rcctl start collectd",
+      path        => $exec_path,
+      user        => "root"
+      refreshonly => true,
+    }
   }
 }
