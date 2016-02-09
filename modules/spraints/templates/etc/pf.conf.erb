@@ -1,7 +1,7 @@
 zig_if  = <%= @zig_if %>
 att_if  = <%= @att_if %>
 int_if  = <%= @int_if %>
-int_net = <%= @int_if %>:network
+int_net = $int_if:network
 ext_ifs = "{" $zig_if $att_if "}"
 
 turbo_ports = "{ ssh, domain }"
