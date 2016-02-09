@@ -32,7 +32,7 @@ match out on $att_if proto {udp,tcp} from any to any port $turbo_ports nat-to $a
 pass all
 block in on $ext_ifs
 # Let me ssh from the external networks. This might be useful some day?
-pass in on $ext_ifs from any to any port ssh
+pass in on $ext_ifs proto tcp from any to any port ssh
 # Everything outgoing is OK.
 pass out inet
 pass out on $ext_ifs proto tcp modulate state
