@@ -11,7 +11,7 @@ class spraints::role::router(
   $int_net = "192.168.100",
   $mgm_if = "re3",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
-  $dhcp_name_servers = [ "8.8.8.8", $int_ip, "192.168.100.81" ],
+  $dhcp_name_servers = [ "8.8.8.8", "192.168.100.2", "192.168.100.81" ],
 ) {
   #include spraints::app::zig-or-att
 
