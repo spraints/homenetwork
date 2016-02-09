@@ -3,11 +3,13 @@
 # AT&T for all of their traffic for a limited time.
 class spraints::role::router(
   $zig_if = "re0",
+  $zig_gw = "192.168.3.1",
   $att_if = "re1",
+  $att_gw = "192.168.0.1",
   $int_if = "re2",
-  $mgm_if = "re3",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
+  $mgm_if = "re3",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
 ) {
   #include spraints::app::zig-or-att
@@ -43,7 +45,7 @@ class spraints::role::router(
   }
 
   exec { "reload pf.conf":
-    command => "pfctl -f /etc/pf.conf",
+    command => "pfctl -n -f /etc/pf.conf && pfctl -f /etc/pf.conf",
     path    => $exec_path,
     user    => "root",
     refreshonly => true,
