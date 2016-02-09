@@ -15,9 +15,8 @@ class spraints::role::att_wireless(
   file { "/opt/collectd/att_wireless":
     ensure => present,
     owner  => "root",
-    mode   => 644,
     source => "puppet:///modules/spraints/opt/collectd/att_wireless",
-    mode => "0555",
+    mode   => "555",
     require => [
       File["/opt/collectd"],
       Package["jq"],
