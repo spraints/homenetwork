@@ -43,7 +43,7 @@ class spraints::role::router(
   }
 
   exec { "reload pf.conf":
-    command => "pfctl -e -f /etc/pf.conf",
+    command => "pfctl -f /etc/pf.conf",
     path    => $exec_path,
     user    => "root",
     refreshonly => true,
