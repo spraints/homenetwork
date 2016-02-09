@@ -14,8 +14,8 @@ class spraints::services::fowsr {
   file { "/etc/init/fowsr.conf":
     ensure => present,
     source => "puppet:///modules/spraints/etc/init/fowsr.conf",
-    owner => "root",
-    group => "root",
+    owner  => "root",
+    mode   => "444",
   }
 
   user { "fowsr":

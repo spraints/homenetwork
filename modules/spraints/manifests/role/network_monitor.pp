@@ -10,7 +10,6 @@ class spraints::role::network_monitor(
     notify  => Service["collectd"],
     mode    => 644,
     owner   => "root",
-    group   => "root",
     source  => "puppet:///modules/spraints/etc/default/collectd",
   }
 
@@ -19,7 +18,6 @@ class spraints::role::network_monitor(
       notify  => Service["collectd"],
       mode    => 644,
       owner   => "root",
-      group   => "root",
       source  => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/airport-snmp.conf",
       require => [
         Package["snmp-mibs-downloader"],
@@ -32,7 +30,6 @@ class spraints::role::network_monitor(
     notify  => Service["collectd"],
     mode    => 644,
     owner   => "root",
-    group   => "root",
     content => template("spraints/etc/collectd/collectd.conf.d/ping-the-world.conf.erb"),
   }
 
@@ -44,7 +41,6 @@ class spraints::role::network_monitor(
     file { "/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt":
       mode    => 644,
       owner   => "root",
-      group   => "root",
       source  => "puppet:///modules/spraints/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt",
     }
   }

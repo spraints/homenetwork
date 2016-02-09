@@ -13,7 +13,6 @@ class spraints::services::collectd {
     notify  => Service["collectd"],
     mode    => 644,
     owner   => "root",
-    group   => "root",
     source  => "puppet:///modules/spraints/etc/collectd/collectd.conf",
   }
 
@@ -21,7 +20,6 @@ class spraints::services::collectd {
     notify  => Service["collectd"],
     mode    => 644,
     owner   => "root",
-    group   => "root",
     source  => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/config.conf",
   }
 }

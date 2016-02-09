@@ -1,0 +1,57 @@
+zig_if  = <%= @zig_if %>
+zig_gw  = <%= @zig_gw %>
+att_if  = <%= @att_if %>
+att_gw  = <%= @att_gw %>
+int_if  = <%= @int_if %>
+int_net = $int_if:network
+
+zig_route = "(" $zig_if $zig_gw ")"
+att_route = "(" $att_if $att_gw ")"
+
+ext_ifs = "{" $zig_if $att_if "}"
+
+turbo_ports = "{ ssh, domain }"
+
+set block-policy drop
+set skip on lo0
+
+# This table will be manipulated at runtime
+table <turbo_hosts> counters
+
+# This table will also be manipulated at runtime, but maybe not as much.
+# stuff like dominion, screenhero, bluejeans?
+table <turbo_sites> counters
+
+match in all scrub (no-df random-id max-mss 1440)
+
+# NAT
+match out on $att_if from $int_net to any nat-to $att_if
+match out on $zig_if from $int_net to any nat-to $zig_if
+
+# Default to everything OK, except incoming traffic from the OUTSIDE
+pass all
+block in log on $ext_ifs
+# Let me ssh from the external networks. This might be useful some day,
+# like if I need to connect to the AT&T access point or something.
+pass in on $ext_ifs proto tcp from any to any port ssh
+
+# Everything outgoing is OK.
+pass out inet
+pass out on $ext_ifs proto tcp modulate state
+pass out on $ext_ifs proto udp     keep state
+
+# Default all traffic to zig
+pass in on $int_if all route-to $zig_route
+
+# <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
+pass in on $int_if from <turbo_hosts> to any route-to $att_route
+# <turbo_sites> is a list of sites that should always be FAST
+pass in on $int_if from any to <turbo_sites> route-to $att_route
+# Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
+pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $att_route
+
+# Send zig-specific stuff to zig and at&t specific stuff to at&t.
+pass in on $int_if from any to $att_if:network route-to $att_route
+pass in on $int_if from any to $zig_if:network route-to $zig_route
+
+pass in from any to self

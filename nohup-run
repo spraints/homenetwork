@@ -1,0 +1,2 @@
+#/ Usage: . nohup-run
+nohup sh -x run "$@" & tail -f nohup.out

@@ -1,10 +1,12 @@
 class spraints::services::ntp {
-  package { "ntp":
-    ensure => "present",
-  }
+  if $::operatingsystem != "OpenBSD" {
+    package { "ntp":
+      ensure => "present",
+    }
 
-  service { "ntp":
-    ensure => "running",
-    require => Package["ntp"],
+    service { "ntp":
+      ensure => "running",
+      require => Package["ntp"],
+    }
   }
 }

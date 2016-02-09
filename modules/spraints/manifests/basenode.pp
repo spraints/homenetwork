@@ -7,7 +7,6 @@ class spraints::basenode($location = "home") {
     ensure => present,
     mode => 644,
     owner => root,
-    group => root,
     content => template("spraints/etc/hosts.erb"),
   }
 }

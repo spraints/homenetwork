@@ -5,8 +5,8 @@ class spraints::role::weather_station {
   # fowsr + collectd
   file { "/etc/collectd/collectd.conf.d/fowsr.conf":
     ensure => present,
-    owner => "root",
-    group => "root",
+    owner  => "root",
+    mode   => "444",
     source => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/fowsr.conf",
   }
 
@@ -26,7 +26,7 @@ class spraints::role::weather_station {
   file { "/etc/init/fowsr-wunderground.conf":
     ensure => present,
     source => "puppet:///modules/spraints/etc/init/fowsr-wunderground.conf",
-    owner => "root",
-    group => "root",
+    owner  => "root",
+    mode   => "444",
   }
 }
