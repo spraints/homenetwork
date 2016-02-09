@@ -30,7 +30,7 @@ match out on $zig_if from $int_net to any nat-to $zig_if
 
 # Default to everything OK, except incoming traffic from the OUTSIDE
 pass all
-block in on $ext_ifs
+block in log on $ext_ifs
 # Let me ssh from the external networks. This might be useful some day,
 # like if I need to connect to the AT&T access point or something.
 pass in on $ext_ifs proto tcp from any to any port ssh
@@ -53,3 +53,5 @@ pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $a
 # Send zig-specific stuff to zig and at&t specific stuff to at&t.
 pass in on $int_if from any to $att_if:network route-to $att_route
 pass in on $int_if from any to $zig_if:network route-to $zig_route
+
+pass in from any to self
