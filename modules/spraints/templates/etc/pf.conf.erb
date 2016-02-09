@@ -26,7 +26,7 @@ match out on $att_if from <turbo_hosts> to any nat-to $att_if
 # <turbo_sites> is a list of sites that should always be FAST
 match out on $att_if from any to <turbo_sites> nat-to $att_if
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
-match out on $att_if inet from any to any port $turbo_ports nat-to $att_if
+match out on $att_if proto {udp,tcp} from any to any port $turbo_ports nat-to $att_if
 
 # Default to everything OK, except incoming traffic from the OUTSIDE
 pass all
