@@ -1,18 +1,24 @@
 define spraints::device::interface(
   $interface = $name,
-  $mode      = undef
+  $dhcp      = false,
+  $address   = undef,
+  $netmask   = undef,
+  $bcast     = undef,
 ) {
   if $::operatingsystem == "OpenBSD" {
-    if $mode == undef {
+    if $dhcp == false and $address == undef {
+
       file { "/etc/hostname.${interface}":
         ensure  => absent,
       }
+
     } else {
+
       file { "/etc/hostname.${interface}":
         ensure  => present,
         owner   => "root",
         mode    => "444",
-        content => $mode,
+        content => template("spraints/etc/hostname.if.erb"),
         notify  => Exec["restart ${interface}"],
       }
 

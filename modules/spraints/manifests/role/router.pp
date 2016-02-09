@@ -17,10 +17,12 @@ class spraints::role::router(
 
   # IP addresses
 
-  spraints::device::interface { $zig_if: mode => "dhcp" }
-  spraints::device::interface { $att_if: mode => "dhcp" }
-  spraints::device::interface { $int_if: mode => "inet $int_ip 255.255.255.0 $int_net.255" }
-  spraints::device::interface { $mgm_if: mode => "dhcp" }
+  spraints::device::interface { [$zig_if, $att_if, $mgm_if]:
+    dhcp => true,
+  }
+  spraints::device::interface { $int_if:
+    address => $int_ip,
+  }
 
   ###
   # Firewall
