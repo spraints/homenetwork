@@ -26,6 +26,7 @@ define spraints::device::interface(
         command => "sh /etc/netstart ${interface}",
         path    => "/bin:/usr/bin:/sbin:/usr/sbin",
         user    => "root",
+        refreshonly => true,
       }
     }
   }

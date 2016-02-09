@@ -46,6 +46,7 @@ class spraints::role::router(
     command => "pfctl -e -f /etc/pf.conf",
     path    => $exec_path,
     user    => "root",
+    refreshonly => true,
   }
 
   file { "/etc/sysctl.conf":
@@ -60,6 +61,7 @@ class spraints::role::router(
     command => "sysctl net.inet.ip.forwarding=1",
     path    => $exec_path,
     user    => "root",
+    onlyif  => "sysctl | grep net.inet.ip.forwarding=0",
   }
 
   ###
@@ -74,6 +76,7 @@ class spraints::role::router(
     path    => $exec_path,
     user    => "root",
     require => Package["unbound"],
+    refreshonly => true,
   }
 
   file { "/var/unbound/etc/unbound.conf":
@@ -93,6 +96,7 @@ class spraints::role::router(
     command => "rcctl enable dhcpd && rcctl set dhcpd flags $int_if && rcctl stop dhcpd && rcctl start dhcpd",
     path    => $exec_path,
     user    => "root",
+    refreshonly => true,
   }
 
   file { "/etc/dhcpd.conf":
