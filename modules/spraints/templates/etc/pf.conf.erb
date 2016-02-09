@@ -28,6 +28,10 @@ match out on $att_if from any to <turbo_sites> nat-to $att_if
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
 match out on $att_if proto {udp,tcp} from any to any port $turbo_ports nat-to $att_if
 
+# Send zig-specific stuff to zig and at&t specific stuff to at&t.
+match out on $att_if to $att_if:network nat-to $att_if
+match out on $zig_if to $zig_if:network nat-to $zig_if
+
 # Default to everything OK, except incoming traffic from the OUTSIDE
 pass all
 block in on $ext_ifs
