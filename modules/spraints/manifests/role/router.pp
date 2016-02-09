@@ -22,7 +22,10 @@ class spraints::role::router(
   spraints::device::interface { $int_if: mode => "inet $int_ip 255.255.255.0 $int_net.255" }
   spraints::device::interface { $mgm_if: mode => "dhcp" }
 
+  ###
   # Firewall
+
+  # pf is included in the base OS on OpenBSD.
 
   file { "/etc/pf.conf":
     ensure  => present,
@@ -38,6 +41,7 @@ class spraints::role::router(
     user    => "root",
   }
 
+  ###
   # DNS mirror
 
   package { "unbound":
@@ -59,7 +63,10 @@ class spraints::role::router(
     notify  => Exec["start unbound"],
   }
 
+  ###
   # DHCP server
+
+  # dhcpd is included in the base OS on OpenBSD.
 
   exec { "start dhcpd $int_if":
     command => "rcctl enable dhcpd && rcctl set dhcpd flags $int_if && rcctl stop dhcpd && rcctl start dhcpd",
