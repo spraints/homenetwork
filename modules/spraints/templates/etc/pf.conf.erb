@@ -1,7 +1,8 @@
-zig_if  = "<%= @zig_if %>"
-att_if  = "<%= @att_if %>"
-int_if  = "<%= @int_if %>"
-mgm_if  = "<%= @mgm_if %>"
+zig_if  = <%= @zig_if %>
+att_if  = <%= @att_if %>
+int_if  = <%= @int_if %>
+mgm_if  = <%= @mgm_if %>
+int_net = <%= @int_if %>:network
 
 ext_ifs="{" $zig_if $att_if "}"
 int_ifs=$int_if
@@ -19,16 +20,16 @@ table <turbo_sites> counters
 match in all scrub (no-df random-id max-mss 1440)
 
 # Default all traffic to zig
-match out on $zig_if inet proto tcp modulate state from $int_if:network to any nat-to $zig_if
-match out on $zig_if inet proto udp     keep state from $int_if:network to any nat-to $zig_if
-match out on $zig_if inet                          from $int_if:network to any nat-to $zig_if
+match out on $zig_if inet proto tcp modulate state from $int_net to any nat-to $zig_if
+match out on $zig_if inet proto udp     keep state from $int_net to any nat-to $zig_if
+match out on $zig_if inet                          from $int_net to any nat-to $zig_if
 
 # <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
 match out on $att_if inet from <turbo_hosts> to any nat-to $att_if
 # <turbo_sites> is a list of sites that should always be FAST
-match out on $att_if inet from $int_if:network to <turbo_sites> nat-to $att_if
+match out on $att_if inet from $int_net to <turbo_sites> nat-to $att_if
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
-match out on $att_if inet proto tcp from $int_if:network to any port 22 nat-to $att_if
+match out on $att_if inet proto tcp from $int_net to any port 22 nat-to $att_if
 
 block all
 pass out quick inet
