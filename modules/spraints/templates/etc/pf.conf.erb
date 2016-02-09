@@ -14,8 +14,8 @@ set skip on lo0
 table <turbo_hosts> counters
 
 # This table will also be manipulated at runtime, but maybe not as much.
-# dominion
-table <turbo_sites> counters { <%= @turbo_sites.join(" ") %> }
+# stuff like dominion, screenhero, bluejeans?
+table <turbo_sites> counters
 
 match in all scrub (no-df random-id max-mss 1440)
 
