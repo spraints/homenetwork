@@ -1,7 +1,6 @@
 zig_if  = <%= @zig_if %>
 att_if  = <%= @att_if %>
 int_if  = <%= @int_if %>
-mgm_if  = <%= @mgm_if %>
 int_net = <%= @int_if %>:network
 ext_ifs = "{" $zig_if $att_if "}"
 
@@ -29,9 +28,12 @@ match out on $att_if from any to <turbo_sites> nat-to $att_if
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
 match out on $att_if inet from any to any port $turbo_ports nat-to $att_if
 
-block all
+# Default to everything OK, except incoming traffic from the OUTSIDE
+pass all
+block in on $ext_ifs
+# Let me ssh from the external networks. This might be useful some day?
+pass in on $ext_ifs from any to any port ssh
+# Everything outgoing is OK.
 pass out inet
 pass out on $ext_ifs proto tcp modulate state
 pass out on $ext_ifs proto udp     keep state
-pass in on $int_if inet
-pass in on $mgm_if inet

@@ -16,6 +16,10 @@ class spraints::role::router(
 
   # IP addresses
 
+  # DHCP on these is nice, because there's less to configure manually.
+  # But DHCP on these bites because I can't choose a default route with /etc/mygate
+  # and pf will barf if the NIC isn't connected, because the interface won't have an IP
+  # address.
   spraints::device::interface { [$zig_if, $att_if, $mgm_if]:
     dhcp => true,
   }
