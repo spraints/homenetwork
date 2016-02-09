@@ -42,6 +42,20 @@ class spraints::role::router(
     user    => "root",
   }
 
+  file { "/etc/sysctl.conf":
+    ensure  => present,
+    owner   => "root",
+    mode    => "444",
+    content => "net.inet.ip.forwarding=1\n",
+    notify  => Exec["enable ip forwarding"],
+  }
+
+  exec { "enable ip forwarding":
+    command => "sysctl net.inet.ip.forwarding=1",
+    path    => $exec_path,
+    user    => "root",
+  }
+
   ###
   # DNS mirror
 
