@@ -17,7 +17,7 @@ define spraints::device::interface(
       file { "/etc/hostname.${interface}":
         ensure  => present,
         owner   => "root",
-        mode    => "444",
+        mode    => "440",
         content => template("spraints/etc/hostname.if.erb"),
         notify  => Exec["restart ${interface}"],
       }
