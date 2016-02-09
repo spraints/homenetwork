@@ -153,4 +153,4 @@ fi
 
 step Apply
 set -x
-$sudo puppet apply --show_diff "$@" --modulepath ${repo_path}/modules ${hiera_opts} ${repo_path}/manifests/
+$sudo puppet apply --show_diff --verbose "$@" --modulepath ${repo_path}/modules ${hiera_opts} ${repo_path}/manifests/
