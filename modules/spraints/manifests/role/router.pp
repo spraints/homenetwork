@@ -21,10 +21,12 @@ class spraints::role::router(
   # and pf will barf if the NIC isn't connected, because the interface won't have an IP
   # address.
   spraints::device::interface { [$zig_if, $att_if, $mgm_if]:
-    dhcp => true,
+    dhcp    => true,
+    notify  => Exec["reload pf.conf"],
   }
   spraints::device::interface { $int_if:
     address => $int_ip,
+    notify  => Exec["reload pf.conf"],
   }
 
   ###
