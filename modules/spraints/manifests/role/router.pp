@@ -4,7 +4,7 @@
 class spraints::role::router(
   $zig_if = "re0",
   $att_if = "re1",
-  $inf_if = "re2",
+  $int_if = "re2",
   $mgm_if = "re3",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
@@ -17,31 +17,10 @@ class spraints::role::router(
 
   # IP addresses
 
-  $hostname_ifs = {
-    "hostname.${zig_if}" => "dhcp",
-    "hostname.${att_if}" => "dhcp",
-    "hostname.${int_if}" => "inet $int_ip 255.255.255.0 $int_net.255",
-    "hostname.${mgm_if}" => "dhcp",
-  }
-
-  file { [
-           "/etc/hostname.${zig_if}",
-           "/etc/hostname.${att_if}",
-           "/etc/hostname.${int_if}",
-           "/etc/hostname.${mgm_if}",
-         ]:
-    ensure  => present,
-    owner   => "root",
-    mode    => "444",
-    content => $hostname_ifs[$name],
-    notify  => Exec["restart networking"],
-  }
-
-  exec { "restart networking":
-    command => "sh /etc/netstart ${zig_if} && sh /etc/netstart ${att_if} && sh /etc/netstart ${int_if} && sh /etc/netstart ${mgm_if}",
-    path    => $exec_path,
-    user    => "root",
-  }
+  spraints::device::interface { $zig_if: mode => "dhcp" }
+  spraints::device::interface { $att_if: mode => "dhcp" }
+  spraints::device::interface { $int_if: mode => "inet $int_ip 255.255.255.0 $int_net.255" }
+  spraints::device::interface { $mgm_if: mode => "dhcp" }
 
   # Firewall
 
