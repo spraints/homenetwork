@@ -40,10 +40,15 @@ class spraints::role::router(
 
   # DNS mirror
 
+  package { "unbound":
+    ensure => installed,
+  }
+
   exec { "start unbound":
     command => "rcctl enable unbound && rcctl stop unbound && rcctl start unbound",
     path    => $exec_path,
     user    => "root",
+    require => Package["unbound"],
   }
 
   file { "/var/unbound/etc/unbound.conf":
