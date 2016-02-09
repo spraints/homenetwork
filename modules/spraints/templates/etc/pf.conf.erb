@@ -54,4 +54,10 @@ pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $a
 pass in on $int_if from any to $att_if:network route-to $att_route
 pass in on $int_if from any to $zig_if:network route-to $zig_route
 
+<% if @collectd_master && @zig_test_routes.respond_to?(:each) %>
+  <% @zig_test_routes.each do |ip| %>
+pass in on $int_if proto icmp from <%= @collectd_master %> to <%= ip %> route-to $zig_route
+  <% end %>
+<% end %>
+
 pass in from any to self
