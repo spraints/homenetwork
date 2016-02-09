@@ -123,7 +123,7 @@ class spraints::role::router(
     exec { "start collectd":
       command     => "rcctl enable collectd && rcctl stop collectd && rcctl start collectd",
       path        => $exec_path,
-      user        => "root"
+      user        => "root",
       refreshonly => true,
     }
   }
