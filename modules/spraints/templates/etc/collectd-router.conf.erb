@@ -1,3 +1,4 @@
+Hostname "<%= @hostname %>"
 FQDNLookup false
 
 LoadPlugin syslog
@@ -11,7 +12,6 @@ LoadPlugin syslog
 LoadPlugin cpu
 LoadPlugin df
 LoadPlugin disk
-LoadPlugin dns
 LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
@@ -41,12 +41,6 @@ LoadPlugin network
 #	IgnoreSelected false
 #	UseBSDName false
 #	UdevNameAttr "DEVNAME"
-#</Plugin>
-
-#<Plugin dns>
-#	Interface "eth0"
-#	IgnoreSource "192.168.0.1"
-#	SelectNumericQueryTypes true
 #</Plugin>
 
 <Plugin interface>
