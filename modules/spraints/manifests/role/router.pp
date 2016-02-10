@@ -120,11 +120,20 @@ class spraints::role::router(
       ensure => installed,
     }
 
+    file { "/etc/collectd.conf":
+      ensure  => present,
+      owner   => "root",
+      mode    => "444",
+      content => template("spraints/etc/collectd-router.conf.erb"),
+      notify  => Exec["start collectd"],
+    }
+
     exec { "start collectd":
       command     => "rcctl enable collectd && rcctl stop collectd && rcctl start collectd",
       path        => $exec_path,
       user        => "root",
       refreshonly => true,
+      require     => Package["collectd"],
     }
   }
 }

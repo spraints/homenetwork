@@ -33,6 +33,13 @@ class spraints::role::network_monitor(
     content => template("spraints/etc/collectd/collectd.conf.d/ping-the-world.conf.erb"),
   }
 
+  file { "/etc/collectd/collectd.conf.d/server.conf":
+    notify  => Service["collectd"],
+    mode    => 644,
+    owner   => "root",
+    content => template("spraints/etc/collectd/collectd.conf.d/server.conf.erb"),
+  }
+
   #####
 
   if($airport) {
