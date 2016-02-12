@@ -73,7 +73,8 @@ class spraints::role::router(
   ###
   # Sprouter
 
-  $sprouter_root  = "/opt/sprouter"
+  $sprouter_root_parent = "/opt"
+  $sprouter_root  = "${sprouter_root_parent}/sprouter"
   $sprouter_gem   = "${sprouter_root}/vendored-gem"
   $sprouter_log   = "/var/log/sprouter.log"
   $sprouter_prefs = "/etc/sprouter.conf"
@@ -121,6 +122,11 @@ class spraints::role::router(
     ensure  => directory,
     owner   => "root",
     mode    => "555",
+    require => File[$sprouter_root_parent],
+  }
+
+  file { $sprouter_root_parent:
+    ensure  => directory,
   }
 
   ###
