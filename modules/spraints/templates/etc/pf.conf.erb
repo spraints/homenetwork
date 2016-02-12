@@ -56,7 +56,7 @@ pass in on $int_if from any to $zig_if:network route-to $zig_route
 
 pass in from any to self
 
-<% if @collectd_master && @zig_test_routes.respond_to?(:each) -%>
+<% if @collectd_master && @att_test_routes.respond_to?(:each) -%>
   <% @att_test_routes.each do |ip| -%>
 pass in on $int_if from <%= @collectd_master %> to <%= ip %> route-to $att_route
   <% end -%>
