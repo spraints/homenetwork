@@ -112,6 +112,7 @@ class spraints::role::router(
 
   exec { "bundle sprouter":
     command => "bundle --path .bundle --binstubs bin",
+    cwd     => $sprouter_root,
     unless  => "bundle check",
     path    => "/usr/local/bin",
     user    => "root",
