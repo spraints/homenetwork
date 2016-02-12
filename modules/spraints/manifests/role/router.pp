@@ -14,6 +14,7 @@ class spraints::role::router(
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
   $collectd_master = undef,
   $att_test_routes = { },
+  $sprouter_config = "",
 ) {
   #include spraints::app::zig-or-att
 
@@ -67,6 +68,59 @@ class spraints::role::router(
     path    => $exec_path,
     user    => "root",
     onlyif  => "sysctl | grep net.inet.ip.forwarding=0",
+  }
+
+  ###
+  # Sprouter
+
+  $sprouter_root  = "/opt/sprouter"
+  $sprouter_gem   = "${sprouter_root}/vendored-gem"
+  $sprouter_log   = "/var/log/sprouter.log"
+  $sprouter_prefs = "/etc/sprouter.conf"
+
+  cron { "sprouter":
+    ensure  => present,
+    command => "${sprouter_root}/bin/sprouter adjust ${sprouter_prefs} >${sprouter_log} 2>/${sprouter_log}",
+    user    => "root",
+    require => [ Exec["bundle sprouter"], File[$sprouter_prefs] ],
+  }
+
+  file { $sprouter_prefs:
+    ensure  => present,
+    user    => "root",
+    mode    => "444",
+    content => $sprouter_config,
+  }
+
+  vcsrepo { $sprouter_gem:
+    ensure => present,
+    provider => git,
+    user => "root",
+    source => "https://github.com/spraints/sprouter",
+    revision => "5ddb74d2c8f3f42a427964db55efecfba31a694a",
+    require => File[$sprouter_root],
+  }
+
+  file { "${sprouter_root}/Gemfile":
+    ensure  => present,
+    user    => "root",
+    mode    => "444",
+    content => "gem 'sprouter', path: '${sprouter_gem}'",
+    require => File[$sprouter_root],
+  }
+
+  exec { "bundle sprouter":
+    command => "bundle --path .bundle --binstubs bin",
+    unless  => "bundle check",
+    path    => "/usr/local/bin",
+    user    => "root",
+    require => [ File["${sprouter_root}/Gemfile"], File[$sprouter_gem] ],
+  }
+
+  file { $sprouter_root:
+    ensure  => directory,
+    owner   => "root",
+    mode    => "555",
   }
 
   ###
