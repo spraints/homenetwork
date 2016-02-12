@@ -81,7 +81,7 @@ class spraints::role::router(
 
   cron { "sprouter":
     ensure  => present,
-    command => "${sprouter_root}/bin/sprouter adjust ${sprouter_prefs} >${sprouter_log} 2>/${sprouter_log}",
+    command => "/usr/local/bin/ruby22 ${sprouter_root}/bin/sprouter adjust ${sprouter_prefs} >${sprouter_log} 2>/${sprouter_log}",
     user    => "root",
     require => [ Exec["bundle sprouter"], File[$sprouter_prefs] ],
   }
