@@ -42,7 +42,7 @@ class spraints::role::router(
   file { "/etc/pf.conf":
     ensure  => present,
     owner   => "root",
-    mode    => "444",
+    mode    => "600",
     content => template("spraints/etc/pf.conf.erb"),
     notify  => Exec["reload pf.conf"],
   }
