@@ -1,85 +1,45 @@
-#!/usr/bin/env ruby
+#!/bin/sh
 
-require "net/https"
-require "json"
-require "socket"
-require "yaml"
+set -e
 
-def main
-  fetch_hiera_data
-  write_hiera_config(hiera_files)
-end
+# If there's an argument, clone it for the new hieradata.
+if [ -n "$1" ]; then
+  rm -rf hieradata.tmp
+  git clone "$1" hieradata.tmp
+  test -d hieradata.tmp/.git
+  mkdir -p hieradata
+  rm -rf hieradata/extra
+  mv hieradata.tmp hieradata/extra
+fi
 
-def write_hiera_config(files)
-  config_file = File.join(root, "hiera.yaml")
-  if files.any?
-    config = {
-      :hierarchy => files,
-      :backends => ['yaml'],
-      :yaml => {:datadir => hiera_dir},
-    }
-    File.write config_file, YAML.dump(config)
-  elsif File.exist?(config_file)
-    File.unlink config_file
-  end
-end
+# If there's no hieradata, die now.
+if [ -d hieradata/extra/.git ]; then
+  (
+    # Get the latest data
+    set -e
+    cd hieradata/extra
+    git pull
+  )
+fi
 
-def fetch_hiera_data
-  run "mkdir", "-p", hiera_dir
-  if gist_id
-    gist_info["files"].each do |name, file_info|
-      run "curl", "-Lf", "-o", File.join(hiera_dir, name), file_info["raw_url"]
-    end
-  end
-end
 
-def hiera_files
-  ["common", shorthostname].select { |name| File.exist?("#{hiera_dir}/#{name}.yaml") }
-end
-
-def gist_info
-  http = Net::HTTP.new("api.github.com", 443)
-  http.use_ssl = true
-  http.start do |http|
-    res = http.request_get("/gists/#{gist_id}")
-    res.value # raises, if error
-    return JSON.load(res.body)
-  end
-end
-
-def run(*command)
-  puts "$ #{command.join(" ")}"
-  system(*command) or raise $!.inspect
-end
-
-def gist_id
-  ENV["HIERA_GIST_ID"]
-end
-
-def shorthostname
-  Socket.gethostname.split(".").first.encode("UTF-8")
-end
-
-def root
-  File.dirname(File.dirname(__FILE__))
-end
-
-def hiera_dir
-  File.join(root, "hieradata")
-end
-
-def hiera_config_path
-  File.join(root, ".hiera_config")
-end
-
-def load_config
-  if File.exist?(hiera_config_path)
-    File.read(hiera_config_path).lines.each do |line|
-      name, value = line.chomp.split("=", 2)
-      ENV[name] ||= value
-    end
-  end
-end
-
-load_config
-main
+# Write the config for puppet
+echo Writing hiera.yaml
+{
+cat <<YAML
+---
+:hierarchy:
+YAML
+name=`hostname | cut -d . -f 1`
+for f in common extra/common $name extra/$name; do
+  if [ -f "hieradata/${f}.yaml" ]; then
+    echo "- $f"
+  fi
+done
+cat <<YAML
+:backends:
+- yaml
+:yaml:
+  :datadir: "./hieradata"
+YAML
+} > hiera.yaml

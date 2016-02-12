@@ -12,6 +12,8 @@ class spraints::role::router(
   $mgm_if = "re3",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
+  $collectd_master = undef,
+  $att_test_routes = { },
 ) {
   #include spraints::app::zig-or-att
 
@@ -40,7 +42,7 @@ class spraints::role::router(
   file { "/etc/pf.conf":
     ensure  => present,
     owner   => "root",
-    mode    => "444",
+    mode    => "600",
     content => template("spraints/etc/pf.conf.erb"),
     notify  => Exec["reload pf.conf"],
   }
@@ -108,5 +110,30 @@ class spraints::role::router(
     mode    => "444",
     content => template("spraints/etc/dhcpd.conf.erb"),
     notify  => Exec["start dhcpd $int_if"],
+  }
+
+  ###
+  # Metrics
+
+  if $collectd_master != undef {
+    package { "collectd":
+      ensure => installed,
+    }
+
+    file { "/etc/collectd.conf":
+      ensure  => present,
+      owner   => "root",
+      mode    => "444",
+      content => template("spraints/etc/collectd-router.conf.erb"),
+      notify  => Exec["start collectd"],
+    }
+
+    exec { "start collectd":
+      command     => "rcctl enable collectd && rcctl stop collectd && rcctl start collectd",
+      path        => $exec_path,
+      user        => "root",
+      refreshonly => true,
+      require     => Package["collectd"],
+    }
   }
 }

@@ -144,8 +144,6 @@ script/bootstrap
 step hieradata
 hiera_config=${repo_path}/hiera.yaml
 if [ -f "${hiera_config}" ]; then
-  find ${repo_path}/hieradata -type f -ls
-  echo "Run script/update-hieradata to update it"
   hiera_opts="--hiera_config ${repo_path}/hiera.yaml"
 else
   echo Set HIERA_GIST_ID and run script/update-hieradata to create hiera.yaml

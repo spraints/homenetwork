@@ -1,0 +1,68 @@
+Hostname "<%= @hostname %>"
+FQDNLookup false
+
+LoadPlugin syslog
+
+<Plugin syslog>
+	LogLevel info
+</Plugin>
+
+##############################################################################
+
+LoadPlugin cpu
+LoadPlugin df
+LoadPlugin disk
+LoadPlugin interface
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin network
+LoadPlugin pf
+
+#<Plugin cpu>
+#  ReportByCpu true
+#  ReportByState true
+#  ValuesPercentage false
+#</Plugin>
+
+#<Plugin df>
+#	Device "/dev/hda1"
+#	Device "192.168.0.2:/mnt/nfs"
+#	MountPoint "/home"
+#	FSType "ext3"
+#	IgnoreSelected false
+#	ReportByDevice false
+#	ReportReserved false
+#	ReportInodes false
+#	ValuesAbsolute true
+#	ValuesPercentage false
+#</Plugin>
+
+#<Plugin disk>
+#	Disk "/^[hs]d[a-f][0-9]?$/"
+#	IgnoreSelected false
+#	UseBSDName false
+#	UdevNameAttr "DEVNAME"
+#</Plugin>
+
+<Plugin interface>
+  Interface "<%= @zig_if %>"
+  Interface "<%= @att_if %>"
+  Interface "<%= @int_if %>"
+</Plugin>
+
+#<Plugin load>
+#        ReportRelative true
+#</Plugin>
+
+#<Plugin memory>
+#	ValuesAbsolute true
+#	ValuesPercentage false
+#</Plugin>
+
+<Plugin network>
+  <Server "<%= @collectd_master %>" "25826">
+    SecurityLevel None
+    ResolveInterval 14400
+  </Server>
+  ReportStats true
+</Plugin>
