@@ -42,13 +42,16 @@ pass out on $ext_ifs proto udp     keep state
 
 # Default all traffic to zig
 pass in on $int_if all route-to $zig_route
+pass in on $int_if proto {udp,tcp} all route-to $zig_route keep state
 
 # <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
 pass in on $int_if from <turbo_hosts> to any route-to $att_route
+pass in on $int_if proto {udp,tcp} from <turbo_hosts> to any route-to $att_route keep state
 # <turbo_sites> is a list of sites that should always be FAST
 pass in on $int_if from any to <turbo_sites> route-to $att_route
+pass in on $int_if proto {udp,tcp} from any to <turbo_sites> route-to $att_route keep state
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
-pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $att_route
+pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $att_route keep state
 
 # Send zig-specific stuff to zig and at&t specific stuff to at&t.
 pass in on $int_if from any to $att_if:network route-to $att_route
