@@ -74,16 +74,24 @@ class spraints::role::router(
   # Sprouter
 
   $sprouter_root_parent = "/opt"
-  $sprouter_root  = "${sprouter_root_parent}/sprouter"
-  $sprouter_gem   = "${sprouter_root}/vendored-gem"
-  $sprouter_log   = "/var/log/sprouter.log"
-  $sprouter_prefs = "/etc/sprouter.conf"
+  $sprouter_root        = "${sprouter_root_parent}/sprouter"
+  $sprouter_wrapper     = "${sprouter_root}/run"
+  $sprouter_gem         = "${sprouter_root}/vendored-gem"
+  $sprouter_log         = "/var/log/sprouter.log"
+  $sprouter_prefs       = "/etc/sprouter.conf"
 
   cron { "sprouter":
     ensure  => present,
-    command => "/usr/local/bin/ruby22 ${sprouter_root}/bin/sprouter adjust ${sprouter_prefs} >${sprouter_log} 2>/${sprouter_log}",
+    command => $sprouter_wrapper,
     user    => "root",
     require => [ Exec["bundle sprouter"], File[$sprouter_prefs] ],
+  }
+
+  file { $sprouter_wrapper:
+    ensure  => present,
+    owner   => "root",
+    mode    => "555",
+    content => template("spraints/opt/sprouter/run.erb"),
   }
 
   file { $sprouter_prefs:

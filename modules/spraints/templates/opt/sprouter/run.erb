@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export PATH=/usr/local/bin:$PATH
+
+cd <%= @sprouter_root %>
+exec bin/sprouter adjust <%= @sprouter_prefs %> ><%= @sprouter_log %> 2><%= @sprouter_log %>
