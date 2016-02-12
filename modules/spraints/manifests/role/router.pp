@@ -82,7 +82,7 @@ class spraints::role::router(
 
   cron { "sprouter":
     ensure  => present,
-    command => $sprouter_wrapper,
+    command => "${sprouter_wrapper} >${sprouter_log} 2>${sprouter_log}",
     user    => "root",
     require => [ Exec["bundle sprouter"], File[$sprouter_prefs] ],
   }
