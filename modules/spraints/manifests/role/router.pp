@@ -87,23 +87,23 @@ class spraints::role::router(
 
   file { $sprouter_prefs:
     ensure  => present,
-    user    => "root",
+    owner   => "root",
     mode    => "444",
     content => $sprouter_config,
   }
 
   vcsrepo { $sprouter_gem:
-    ensure => present,
+    ensure   => present,
     provider => git,
-    user => "root",
-    source => "https://github.com/spraints/sprouter",
+    user     => "root",
+    source   => "https://github.com/spraints/sprouter",
     revision => "5ddb74d2c8f3f42a427964db55efecfba31a694a",
-    require => File[$sprouter_root],
+    require  => File[$sprouter_root],
   }
 
   file { "${sprouter_root}/Gemfile":
     ensure  => present,
-    user    => "root",
+    owner   => "root",
     mode    => "444",
     content => "gem 'sprouter', path: '${sprouter_gem}'",
     require => File[$sprouter_root],
@@ -114,7 +114,7 @@ class spraints::role::router(
     unless  => "bundle check",
     path    => "/usr/local/bin",
     user    => "root",
-    require => [ File["${sprouter_root}/Gemfile"], File[$sprouter_gem] ],
+    require => [ File["${sprouter_root}/Gemfile"], Vcsrepo[$sprouter_gem] ],
   }
 
   file { $sprouter_root:
