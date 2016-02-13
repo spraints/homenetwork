@@ -100,8 +100,8 @@ end
 def main
   config = Config.new
   running = true
-  trap(:INT) { running = false }
-  while running
+  trap(:INT) { exit 0 }
+  loop do
     report(config)
     sleep config.interval
   end
