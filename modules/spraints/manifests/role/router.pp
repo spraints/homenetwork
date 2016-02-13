@@ -200,7 +200,7 @@ class spraints::role::router(
     file { "/usr/local/bin/collectd-pf-tables":
       ensure  => present,
       owner   => "root",
-      mode    => "555",
+      mode    => "4555",
       content => template("spraints/usr/local/bin/collectd-pf-tables.erb"),
       notify  => Exec["start collectd"],
     }
