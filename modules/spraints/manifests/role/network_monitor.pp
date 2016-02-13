@@ -18,7 +18,7 @@ class spraints::role::network_monitor(
       notify  => Service["collectd"],
       mode    => 644,
       owner   => "root",
-      source  => template("spraints/etc/collectd/collectd.conf.d/airport-snmp.conf.erb"),
+      content => template("spraints/etc/collectd/collectd.conf.d/airport-snmp.conf.erb"),
       require => [
         Package["snmp-mibs-downloader"],
         File["/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt"],
