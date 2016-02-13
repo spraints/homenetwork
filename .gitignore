@@ -1,13 +1,13 @@
-.librarian
-.tmp
+/.librarian
+/.tmp
 
-.bundle
-bin/
+/.bundle
+/bin/
 
-modules/vcsrepo
+/modules/vcsrepo
 
-.branch
+/.branch
 
-hiera.yaml
-hieradata/extra/
-.hiera_config
+/hiera.yaml
+/hieradata/extra/
+/.hiera_config
