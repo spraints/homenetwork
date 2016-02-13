@@ -12,7 +12,7 @@ LoadPlugin syslog
 LoadPlugin cpu
 LoadPlugin df
 LoadPlugin disk
-LoadPlugin exec
+#LoadPlugin exec
 LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
@@ -45,9 +45,9 @@ LoadPlugin pf
 #	UdevNameAttr "DEVNAME"
 #</Plugin>
 
-<Plugin exec>
-  Exec root "/usr/local/bin/collectd-pf-tables"
-</Plugin>
+#<Plugin exec>
+#  Exec root "/usr/local/bin/collectd-pf-tables"
+#</Plugin>
 
 <Plugin interface>
   Interface "<%= @zig_if %>"
