@@ -11,9 +11,9 @@ class Config < Struct.new(:interval, :hostname)
 end
 
 class Emitter
-  def initialize(config, now: Time.now.to_i, io: $stdout)
+  def initialize(config, now: Time.now, io: $stdout)
     @config = config
-    @now = now
+    @now = now.to_i
     @io = io
   end
 
