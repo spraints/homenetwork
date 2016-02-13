@@ -41,8 +41,8 @@ def report(config)
     %w(Block Match Pass XPass).each do |rule_type|
       in_info  = info["In/#{rule_type}"]
       out_info = info["Out/#{rule_type}"]
-      emitter.emit type: "if_octets",  table: table, name: name, value: [in_info["Bytes"], out_info["Bytes"]]
-      emitter.emit type: "if_packets", table: table, name: name, value: [in_info["Packets"], out_info["Packets"]]
+      emitter.emit type: "if_octets",  table: table, name: rule_type.downcase, value: [in_info["Bytes"], out_info["Bytes"]]
+      emitter.emit type: "if_packets", table: table, name: rule_type.downcase, value: [in_info["Packets"], out_info["Packets"]]
     end
   end
 end
@@ -94,6 +94,7 @@ def read_table_info
       end
     end
   end
+  result
 end
 
 def main
