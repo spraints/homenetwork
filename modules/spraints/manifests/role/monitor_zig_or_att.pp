@@ -1,4 +1,4 @@
-class spraints::role::zig_or_att {
+class spraints::role::monitor_zig_or_att {
   # maybe put the collectd server/listen config here?
 
   include spraints::services::visage
