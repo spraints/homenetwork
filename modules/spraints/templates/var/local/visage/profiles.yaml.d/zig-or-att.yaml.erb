@@ -1,0 +1,19 @@
+pftablessizes:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - pftable-turbo_hosts/gauge-addresses
+  - pftable-turbo_sites/gauge-addresses
+  :percentiles:
+  :profile_name: pftablesizes
+  :url: pftablesizes
+
+pftablestraffic:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - pftable-turbo_hosts/if_octets-pass
+  - pftable-turbo_sites/if_octets-pass
+  :percentiles:
+  :profile_name: pftabletraffic
+  :url: pftabletraffic
