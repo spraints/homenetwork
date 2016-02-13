@@ -17,3 +17,41 @@ pftablestraffic:
   :percentiles:
   :profile_name: pftabletraffic
   :url: pftabletraffic
+
+zigatt:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - interface-re0/if_packets
+  - interface-re1/if_packets
+  - interface-re2/if_packets
+  :percentiles:
+  :profile_name: zigatt
+  :url: zigatt
+
+routerdisk:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - df-home/df_complex-free
+  - df-root/df_complex-free
+  - df-tmp/df_complex-free
+  - df-usr/df_complex-free
+  - df-usr-src/df_complex-free
+  - df-usr-obj/df_complex-free
+  - df-usr-local/df_complex-free
+  - df-var/df_complex-free
+  :percentiles:
+  :profile_name: routerdisk
+  :url: routerdisk
+
+routermemory:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - memory/memory-free
+  - memory/memory-inactive
+  - memory/memory-active
+  :percentiles:
+  :profile_name: routermemory
+  :url: routermemory
