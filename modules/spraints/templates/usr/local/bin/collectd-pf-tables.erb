@@ -20,42 +20,78 @@ class Emitter
   attr_reader :config, :now, :io
 
   def emit(table:, name:, value:, type:)
-    io.write "PUTVAL #{config.hostname}/pftable-#{table}/#{type}-#{name} interval=#{config.interval} #{now}:#{value}\n"
+    if table
+      value = value.join(":") if value.respond_to?(:join)
+      io.write "PUTVAL #{config.hostname}/pftable-#{table}/#{type}-#{name} interval=#{config.interval} #{now}:#{value}\n"
+    end
   end
 end
 
 def report(config)
   emitter = Emitter.new(config)
+  read_table_info.each do |table, info|
+    emitter.emit type: "gauge", table: table, name: "addresses", value: info["Addresses"]
+
+    emitter.emit type: "gauge", table: table, name: "anchors", value: info["References"]["Anchors"]
+    emitter.emit type: "gauge", table: table, name: "rules",   value: info["References"]["Rules"]
+
+    emitter.emit type: "gauge", table: table, name: "match",   value: info["Evaluations"]["Match"]
+    emitter.emit type: "gauge", table: table, name: "nomatch", value: info["Evaluations"]["NoMatch"]
+
+    %w(Block Match Pass XPass).each do |rule_type|
+      in_info  = info["In/#{rule_type}"]
+      out_info = info["Out/#{rule_type}"]
+      emitter.emit type: "if_octets",  table: table, name: name, value: [in_info["Bytes"], out_info["Bytes"]]
+      emitter.emit type: "if_packets", table: table, name: name, value: [in_info["Packets"], out_info["Packets"]]
+    end
+  end
+end
+
+# Runs pfctl to generate the following for each table:
+#
+# --a-r-C turbo_sites
+#         Addresses:   9
+#         Cleared:     Tue Feb  9 14:31:48 2016
+#         References:  [ Anchors: 0                  Rules: 1                  ]
+#         Evaluations: [ NoMatch: 195507             Match: 558                ]
+#         In/Block:    [ Packets: 0                  Bytes: 0                  ]
+#         In/Match:    [ Packets: 0                  Bytes: 0                  ]
+#         In/Pass:     [ Packets: 27850              Bytes: 2604820            ]
+#         In/XPass:    [ Packets: 0                  Bytes: 0                  ]
+#         Out/Block:   [ Packets: 0                  Bytes: 0                  ]
+#         Out/Match:   [ Packets: 0                  Bytes: 0                  ]
+#         Out/Pass:    [ Packets: 23810              Bytes: 12710655           ]
+#         Out/XPass:   [ Packets: 0                  Bytes: 0                  ]
+#
+# Returns a ruby hash to represent the above:
+#
+#   { "turbo_sites" =>
+#     { "Addresses" => "9",
+#       "Cleared" => "Tue Feb  9 14:31:48 2016",
+#       "References" => { "Anchors" => "0", "Rules" => "1" },
+#       "Evaluations" => { "NoMatch" => 195507, "Match" => 558 },
+#       ... }
+#   }
+def read_table_info
+  result = Hash.new { |h,k| h[k] = Hash.new { |h,k| h[k] = {} }}
   IO.popen(["/sbin/pfctl", "-vv", "-s", "Tables"]) do |pf|
     table = nil
     pf.each_line do |line|
       line = line.chomp
-      case line
-      # --a-r-C turbo_hosts
-      when /^\S+\s+(\w+)/
+      if line =~ /^\S+\s(\w+)/
         table = $1
-      #   Addresses:   9
-      when /^\s+Addresses:\s+(\d+)/
-        emitter.emit type: "gauge", table: table, name: "addresses", value: $1
-      #   Cleared:     Tue Feb  9 14:31:48 2016
-      when /^\s+Cleared:\s+(.*)/
-        # ignore
-      #   References:  [ Anchors: 0                  Rules: 1                  ]
-      when /^\s+References:.*Anchors: (\d+).*Rules: (\d+)/
-        anchors, rules = $1, $2
-        emitter.emit type: "gauge", table: table, name: "anchors", value: anchors
-        emitter.emit type: "gauge", table: table, name: "rules",   value: rules
-      #   Evaluations: [ NoMatch: 195507             Match: 558                ]
-      when /^\s+Evaluations:.*NoMatch: (\d+).*Match: (\d+)/
-        no_match, match = $1, $2
-        emitter.emit type: "gauge", table: table, name: "match",   value: match
-        emitter.emit type: "gauge", table: table, name: "nomatch", value: no_match
-      #   In/Block:    [ Packets: 0                  Bytes: 0                  ]
-      when /^\s+(In|Out)\/([^:]+):.*Packets: (\d+).*Bytes: (\d+)/
-        direction, rule_type, packets, bytes = $1, $2, $3, $4
-        name = "#{direction.downcase}_#{rule_type.downcase}"
-        emitter.emit type: "total_bytes", table: table, name: name, value: bytes
-        emitter.emit type: "packets",     table: table, name: name, value: packets
+      elsif table && line =~ /^\t([^:]+):\s+(.*)/
+        key = $1
+        value = $2
+        if value =~ /\[(.*)\]/
+          struct = $1
+          struct.scan(/([^:]+):\s*(\d+)/).each do |name, field_value|
+            result[table][key][name] = field_value
+          end
+        else
+          result[table][key] = value
+        end
+      end
     end
   end
 end
@@ -69,5 +105,7 @@ def main
     sleep config.interval
   end
 end
+
+main
 
 # vim: set filetype=ruby:
