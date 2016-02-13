@@ -1,0 +1,73 @@
+#!/usr/local/bin/ruby22
+
+require "socket"
+
+class Config < Struct.new(:interval, :hostname)
+  def initialize
+    self.interval = ENV["INTERVAL"].to_i
+    self.interval = 10 if interval < 1
+    self.hostname = Socket.gethostname.split(".").first
+  end
+end
+
+class Emitter
+  def initialize(config, now: Time.now.to_s, io: $stdout)
+    @config = config
+    @now = now
+    @io = io
+  end
+
+  attr_reader :config, :now, :io
+
+  def emit(table:, name:, value:, type:)
+    io.write "PUTVAL #{config.hostname}/pftable-#{table}/#{type}-#{name} interval=#{config.interval} #{now}:#{value}\n"
+  end
+end
+
+def report(config)
+  emitter = Emitter.new(config)
+  IO.popen(["/sbin/pfctl", "-vv", "-s", "Tables"]) do |pf|
+    table = nil
+    pf.each_line do |line|
+      line = line.chomp
+      case line
+      # --a-r-C turbo_hosts
+      when /^\S+\s+(\w+)/
+        table = $1
+      #   Addresses:   9
+      when /^\s+Addresses:\s+(\d+)/
+        emitter.emit type: "gauge", table: table, name: "addresses", value: $1
+      #   Cleared:     Tue Feb  9 14:31:48 2016
+      when /^\s+Cleared:\s+(.*)/
+        # ignore
+      #   References:  [ Anchors: 0                  Rules: 1                  ]
+      when /^\s+References:.*Anchors: (\d+).*Rules: (\d+)/
+        anchors, rules = $1, $2
+        emitter.emit type: "gauge", table: table, name: "anchors", value: anchors
+        emitter.emit type: "gauge", table: table, name: "rules",   value: rules
+      #   Evaluations: [ NoMatch: 195507             Match: 558                ]
+      when /^\s+Evaluations:.*NoMatch: (\d+).*Match: (\d+)/
+        no_match, match = $1, $2
+        emitter.emit type: "gauge", table: table, name: "match",   value: match
+        emitter.emit type: "gauge", table: table, name: "nomatch", value: no_match
+      #   In/Block:    [ Packets: 0                  Bytes: 0                  ]
+      when /^\s+(In|Out)\/([^:]+):.*Packets: (\d+).*Bytes: (\d+)/
+        direction, rule_type, packets, bytes = $1, $2, $3, $4
+        name = "#{direction.downcase}_#{rule_type.downcase}"
+        emitter.emit type: "total_bytes", table: table, name: name, value: bytes
+        emitter.emit type: "packets",     table: table, name: name, value: packets
+    end
+  end
+end
+
+def main
+  config = Config.new
+  running = true
+  trap(:INT) { running = false }
+  while running
+    report(config)
+    sleep config.interval
+  end
+end
+
+# vim: set filetype=ruby:
