@@ -86,6 +86,7 @@ def read_table_info
         if value =~ /\[(.*)\]/
           struct = $1
           struct.scan(/([^:]+):\s*(\d+)/).each do |name, field_value|
+            name = name.strip
             result[table][key][name] = field_value
           end
         else
