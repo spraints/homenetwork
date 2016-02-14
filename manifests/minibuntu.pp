@@ -5,4 +5,5 @@ node /^minibuntu/ {
   include spraints::role::weather_station
   include spraints::role::att_wireless
   include spraints::role::caching_dns
+  include spraints::role::monitor_zig_or_att
 }

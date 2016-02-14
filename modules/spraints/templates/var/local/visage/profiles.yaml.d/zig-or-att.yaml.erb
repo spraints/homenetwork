@@ -1,0 +1,57 @@
+pftablesizes:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - pftable-turbo_hosts/gauge-addresses
+  - pftable-turbo_sites/gauge-addresses
+  :percentiles:
+  :profile_name: pftablesizes
+  :url: pftablesizes
+
+pftabletraffic:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - pftable-turbo_hosts/if_octets-pass
+  - pftable-turbo_sites/if_octets-pass
+  :percentiles:
+  :profile_name: pftabletraffic
+  :url: pftabletraffic
+
+zigre0attre1:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - interface-re0/if_octets
+  - interface-re1/if_octets
+  - interface-re2/if_octets
+  :percentiles:
+  :profile_name: zigre0attre1
+  :url: zigre0attre1
+
+routerdisk:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - df-home/df_complex-free
+  - df-root/df_complex-free
+  - df-tmp/df_complex-free
+  - df-usr/df_complex-free
+  - df-usr-src/df_complex-free
+  - df-usr-obj/df_complex-free
+  - df-usr-local/df_complex-free
+  - df-var/df_complex-free
+  :percentiles:
+  :profile_name: routerdisk
+  :url: routerdisk
+
+routermemory:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - memory/memory-free
+  - memory/memory-inactive
+  - memory/memory-active
+  :percentiles:
+  :profile_name: routermemory
+  :url: routermemory

@@ -1,6 +1,6 @@
 class spraints::role::network_monitor(
   $wifi_hosts = {},
-  $airport = false,
+  $airport = undef,
   $weather = false,
   $ping_targets = [],
 ) {
@@ -13,12 +13,12 @@ class spraints::role::network_monitor(
     source  => "puppet:///modules/spraints/etc/default/collectd",
   }
 
-  if($airport) {
+  if($airport != undef) {
     file { "/etc/collectd/collectd.conf.d/airport-snmp.conf":
       notify  => Service["collectd"],
       mode    => 644,
       owner   => "root",
-      source  => "puppet:///modules/spraints/etc/collectd/collectd.conf.d/airport-snmp.conf",
+      content => template("spraints/etc/collectd/collectd.conf.d/airport-snmp.conf.erb"),
       require => [
         Package["snmp-mibs-downloader"],
         File["/usr/share/snmp/mibs/AIRPORT-BASESTATION-3-MIB.txt"],

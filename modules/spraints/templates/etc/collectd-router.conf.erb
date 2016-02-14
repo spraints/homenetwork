@@ -12,6 +12,7 @@ LoadPlugin syslog
 LoadPlugin cpu
 LoadPlugin df
 LoadPlugin disk
+LoadPlugin exec
 LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
@@ -43,6 +44,11 @@ LoadPlugin pf
 #	UseBSDName false
 #	UdevNameAttr "DEVNAME"
 #</Plugin>
+
+<Plugin exec>
+  # collectd won't exec as root. So run as nobody, but the binary is setuid. Just so it can read pf table stats. Silly.
+  Exec nobody "/usr/local/bin/collectd-pf-tables"
+</Plugin>
 
 <Plugin interface>
   Interface "<%= @zig_if %>"
