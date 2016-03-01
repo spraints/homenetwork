@@ -14,6 +14,7 @@ class spraints::role::router(
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
   $collectd_master = undef,
   $att_test_routes = { },
+  $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
   $sprouter_config = "",
 ) {
   #include spraints::app::zig-or-att
