@@ -52,7 +52,7 @@ pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $a
 
 # Send zig-specific stuff to zig and at&t specific stuff to at&t.
 pass in on $int_if from any to $att_if:network route-to $att_route
-pass in on $int_if from any to $zig_if:network route-to $zig_route
+pass in on $int_if from any to {$zig_if:network<%= (@zig_routes || []).map{|r|",#{r}"}.join %>} route-to $zig_route
 
 pass in from any to self
 
