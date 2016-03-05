@@ -22,11 +22,20 @@ table <turbo_hosts> counters
 # stuff like dominion, screenhero, bluejeans?
 table <turbo_sites> counters
 
+queue zig on $zig_if bandwidth 1024K
+queue zigack parent zig bandwidth 10K
+queue zigtcp parent zig bandwidth 100K
+queue zigudp parent zig bandwidth 100K
+
 match in all scrub (no-df random-id max-mss 1440)
 
 # NAT
 match out on $att_if from $int_net to any nat-to $att_if
 match out on $zig_if from $int_net to any nat-to $zig_if
+
+# Try not to saturate the zig link
+match on $zig_if proto tcp set queue(zigtcp, zigack)
+match on $zig_if proto udp set queue zigudp
 
 # Default to everything OK, except incoming traffic from the OUTSIDE
 pass all
