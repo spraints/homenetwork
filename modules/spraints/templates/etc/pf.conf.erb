@@ -22,7 +22,7 @@ table <turbo_hosts> counters
 # stuff like dominion, screenhero, bluejeans?
 table <turbo_sites> counters
 
-queue zig on $zig_if bandwidth 1024K
+queue zig on $zig_if bandwidth 512K
 queue zigack parent zig bandwidth 10K
 queue zigdata parent zig bandwidth 100K default
 
