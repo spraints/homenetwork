@@ -150,6 +150,8 @@ else
   echo Set HIERA_GIST_ID and run script/update-hieradata to create hiera.yaml
 fi
 
+config_version_cmd="git --git-dir '${repo_path}' rev-parse HEAD"
+
 step Apply
 set -x
-$sudo puppet apply --show_diff --verbose "$@" --modulepath ${repo_path}/modules ${hiera_opts} ${repo_path}/manifests/
+$sudo puppet apply --show_diff --verbose "$@" --config_version "${config_version_cmd}" --modulepath ${repo_path}/modules ${hiera_opts} ${repo_path}/manifests/
