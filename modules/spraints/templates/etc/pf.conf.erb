@@ -22,6 +22,10 @@ table <turbo_hosts> counters
 # stuff like dominion, screenhero, bluejeans?
 table <turbo_sites> counters
 
+# This table will also be manipulated at runtime, but maybe not as much.
+# stuff like app store downloads.
+table <slow_sites> counters
+
 match in all scrub (no-df random-id max-mss 1440)
 
 # NAT
@@ -47,6 +51,8 @@ pass in on $int_if all route-to $zig_route
 pass in on $int_if from <turbo_hosts> to any route-to $att_route
 # <turbo_sites> is a list of sites that should always be FAST
 pass in on $int_if from any to <turbo_sites> route-to $att_route
+# <slow_sites> is a list of sites that should never be fast
+pass in on $int_if from any to <slow_sites> route-to $zig_route
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.
 pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $att_route
 
