@@ -36,9 +36,9 @@ block in log on $ext_ifs
 pass in on $ext_ifs proto tcp from any to any port ssh
 
 # Everything outgoing is OK.
-pass out inet
-pass out on $ext_ifs proto tcp modulate state
-pass out on $ext_ifs proto udp     keep state
+pass out log inet
+pass out log on $ext_ifs proto tcp modulate state
+pass out log on $ext_ifs proto udp     keep state
 
 # Default all traffic to zig
 pass in on $int_if all route-to $zig_route
