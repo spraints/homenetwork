@@ -1,0 +1,13 @@
+daemon=/opt/sprouter-configurer/bin/rails
+daemon_flags="server --daemon --environment=production --binding=0.0.0.0 --port=4433"
+
+. /etc/rc.d/rc.subr
+
+rc_reload=NO
+pexp="/usr/local/bin/ruby22 ${daemon}${daemon_flags:+ ${daemon_flags}}"
+
+rc_start() {
+  ${rcexec} "cd /opt/sprouter-configurer; ${daemon} ${daemon_flags}"
+}
+
+rc_cmd $1
