@@ -1,4 +1,4 @@
 class spraints::mdns {
-  package { "avahi-daemon":
-    ensure => installed }
+  #package { "avahi-daemon":
+  #  ensure => installed }
 }
