@@ -1,5 +1,7 @@
-class spraints::role::sprouter_config {
-  vcsrepo { "/opt/sprouter_config":
+class spraints::role::sprouter_config(
+  $install_dir = "/opt/sprouter_config",
+){
+  vcsrepo { $install_dir:
     ensure   => present,
     provider => git,
     user     => "root",
@@ -13,8 +15,8 @@ class spraints::role::sprouter_config {
     command     => "/usr/bin/env bundle install --local --binstubs bin --path vendor/gems --without development:test",
     unless      => "/usr/bin/env bundle check",
     path        => $exec_path,
-    cwd         => "/opt/sprouter_config",
-    require     => Vcsrepo["/opt/sprouter_config"],
+    cwd         => $install_dir,
+    require     => Vcsrepo[$install_dir],
     notify      => Exec["start sprouter_config"],
   }
 
