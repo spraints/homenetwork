@@ -10,7 +10,7 @@ class spraints::role::sprouter_config {
   $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 
   exec { "bundle sprouter_config":
-    command     => "/usr/bin/env bundle install --binstubs bin --path vendor/gems",
+    command     => "/usr/bin/env bundle install --binstubs bin --path vendor/gems --without development:test",
     path        => $exec_path,
     cwd         => "/opt/sprouter_config",
     subscribe   => Vcsrepo["/opt/sprouter_config"],
