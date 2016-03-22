@@ -14,7 +14,7 @@ class spraints::role::sprouter_config {
     unless      => "/usr/bin/env bundle check",
     path        => $exec_path,
     cwd         => "/opt/sprouter_config",
-    subscribe   => Vcsrepo["/opt/sprouter_config"],
+    require     => Vcsrepo["/opt/sprouter_config"],
     notify      => Exec["start sprouter_config"],
   }
 
