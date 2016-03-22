@@ -4,13 +4,13 @@ class spraints::role::sprouter_config {
     provider => git,
     user     => "root",
     source   => "https://github.com/spraints/sprouter-configurer",
-    revision => "2ddde99c4397c51901005e80122ba8e7e850209a",
+    revision => "8f551e842482fcb29f251a0ce9c3e038c98d5e54",
   }
 
   $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 
   exec { "bundle sprouter_config":
-    command     => "/usr/bin/env bundle install --binstubs bin --path vendor/gems --without development:test",
+    command     => "/usr/bin/env bundle install --local --binstubs bin --path vendor/gems --without development:test",
     path        => $exec_path,
     cwd         => "/opt/sprouter_config",
     subscribe   => Vcsrepo["/opt/sprouter_config"],
