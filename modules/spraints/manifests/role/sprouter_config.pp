@@ -11,11 +11,11 @@ class spraints::role::sprouter_config {
 
   exec { "bundle sprouter_config":
     command     => "/usr/bin/env bundle install --local --binstubs bin --path vendor/gems --without development:test",
+    unless      => "/usr/bin/env bundle check",
     path        => $exec_path,
     cwd         => "/opt/sprouter_config",
     subscribe   => Vcsrepo["/opt/sprouter_config"],
     notify      => Exec["start sprouter_config"],
-    refreshonly => true,
   }
 
   if $::operatingsystem == "OpenBSD" {
