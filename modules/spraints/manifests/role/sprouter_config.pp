@@ -12,7 +12,7 @@ class spraints::role::sprouter_config(
   $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 
   exec { "bundle sprouter_config":
-    command     => "/usr/bin/env bundle install --local --binstubs bin --path vendor/gems --without development:test",
+    command     => "/usr/bin/env bundle install --local --path vendor/gems --without development:test",
     unless      => "/usr/bin/env bundle check",
     path        => $exec_path,
     cwd         => $install_dir,
