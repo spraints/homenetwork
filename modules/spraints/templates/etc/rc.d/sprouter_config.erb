@@ -6,6 +6,11 @@ daemon_flags="server --daemon --environment=production --binding=0.0.0.0 --port=
 rc_reload=NO
 pexp="/usr/local/bin/ruby22 ${daemon}${daemon_flags:+ ${daemon_flags}}"
 
+rc_pre() {
+  cd @install_dir
+  bin/rake db:migrate RAILS_ENV=production
+}
+
 rc_start() {
   ${rcexec} "cd <%= @install_dir %>; ${daemon} ${daemon_flags}"
 }
