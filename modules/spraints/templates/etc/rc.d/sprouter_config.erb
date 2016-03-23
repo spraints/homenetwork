@@ -6,7 +6,7 @@ rc_reload=NO
 pexp="ruby: puma .*"
 
 rc_pre() {
-  ${rcexec} "cd <%= @install_dir %> && export RAILS_ENV=production && bin/rake db:migrate
+  ${rcexec} "cd <%= @install_dir %> && bin/rake assets:precompile && export RAILS_ENV=production && bin/rake db:migrate
 }
 
 rc_start() {
