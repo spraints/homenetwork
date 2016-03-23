@@ -18,7 +18,7 @@ class spraints::role::sprouter_config(
     mode    => "555",
     content => template("spraints/opt/sprouter_config/run.sh.erb"),
     notify  => Exec["start sprouter_config"],
-    require => Vcsrepo[${install_dir}],
+    require => Vcsrepo[$install_dir],
   }
 
   if $::operatingsystem == "OpenBSD" {
