@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+cd <%= @install_dir %>
+# Configuration
+export RAILS_ENV=production
+export SECRET_KEY_BASE=<%= @secret_key_base %>
+cat <<DATABASE >config/database.yml 
+production:
+  adapter:  sqlite3
+  pool:     3
+  timeout:  5000
+  database: /var/db/sprouter_config.sqlite3
+DATABASE
+# Bootstrapping
+{
+  bundle check  || bundle install --local --path vendor/gems --without development:test
+  # Do this before setting RAILS_ENV. For some reason, it can't be done with RAILS_ENV=production.
+  bin/rake assets:precompile RAILS_ENV=development
+  bin/rake db:migrate
+} >>log/bootstrap.log 2>&1
+# Run
+exec bin/rails server --binding=0.0.0.0 --port=4433 "$@" >>log/sprouter_config.log 2>&1
