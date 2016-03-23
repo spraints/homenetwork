@@ -6,7 +6,7 @@ class spraints::role::sprouter_config(
     provider => git,
     user     => "root",
     source   => "https://github.com/spraints/sprouter-configurer",
-    revision => "a131f868e69ef3a2278d09547225343c0177549c",
+    revision => "9bfe46d98ce341094a5c6c6e1d695b9f4ca69e3b",
   }
 
   $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
