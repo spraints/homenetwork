@@ -1,5 +1,5 @@
 daemon=<%= @install_dir %>/bin/rails
-daemon_flags="server --daemon --environment=production --binding=0.0.0.0 --port=4433"
+daemon_flags="server --daemon --binding=0.0.0.0 --port=4433"
 
 . /etc/rc.d/rc.subr
 
@@ -7,11 +7,11 @@ rc_reload=NO
 pexp="/usr/local/bin/ruby22 ${daemon}${daemon_flags:+ ${daemon_flags}}"
 
 rc_pre() {
-  cd <%= @install_dir %> && bin/rake db:migrate RAILS_ENV=production
+  ${rcexec} "cd <%= @install_dir %> && export RAILS_ENV=production && bin/rake db:migrate assets:precompile"
 }
 
 rc_start() {
-  ${rcexec} "cd <%= @install_dir %> && ${daemon} ${daemon_flags}"
+  ${rcexec} "cd <%= @install_dir %> && export RAILS_ENV=production && ${daemon} ${daemon_flags}"
 }
 
 rc_cmd $1
