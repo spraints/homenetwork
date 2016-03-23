@@ -1,5 +1,6 @@
 class spraints::role::sprouter_config(
   $install_dir = "/opt/sprouter_config",
+  $secret_key_base = undef,
 ){
   vcsrepo { $install_dir:
     ensure   => present,
@@ -11,13 +12,13 @@ class spraints::role::sprouter_config(
 
   $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 
-  exec { "bundle sprouter_config":
-    command     => "/usr/bin/env bundle install --local --path vendor/gems --without development:test",
-    unless      => "/usr/bin/env bundle check",
-    path        => $exec_path,
-    cwd         => $install_dir,
-    require     => Vcsrepo[$install_dir],
-    notify      => Exec["start sprouter_config"],
+  file { "${install_dir}/run":
+    ensure  => present,
+    owner   => "root",
+    mode    => "555",
+    content => template("spraints/opt/sprouter_config/run.sh.erb"),
+    notify  => Exec["start sprouter_config"],
+    require => Vcsrepo[${install_dir}],
   }
 
   if $::operatingsystem == "OpenBSD" {
@@ -33,7 +34,7 @@ class spraints::role::sprouter_config(
       command     => "rcctl enable sprouter_config && rcctl stop sprouter_config && rcctl start sprouter_config",
       path        => $exec_path,
       user        => "root",
-      require     => [ Exec["bundle sprouter_config"], File["/etc/rc.d/sprouter_config"] ],
+      require     => [ File["${install_dir}/run"], File["/etc/rc.d/sprouter_config"] ],
       refreshonly => true,
     }
   } else {
