@@ -15,7 +15,9 @@ class spraints::role::router(
   $collectd_master = undef,
   $att_test_routes = { },
   $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
-  $sprouter_config = "",
+  $sprouter_config = undef,
+  $sprouter_config_fragment = undef,
+  $sprouter_config_url = undef,
 ) {
   #include spraints::app::zig-or-att
 
@@ -79,13 +81,14 @@ class spraints::role::router(
   $sprouter_wrapper     = "${sprouter_root}/run"
   $sprouter_gem         = "${sprouter_root}/vendored-gem"
   $sprouter_log         = "/var/log/sprouter.log"
-  $sprouter_prefs       = "/etc/sprouter.conf"
+  $sprouter_prefs          = "/etc/sprouter.conf"
+  $sprouter_prefs_fragment = "/etc/sprouter.conf.fragment"
 
   cron { "sprouter":
     ensure  => present,
     command => "${sprouter_wrapper} >${sprouter_log} 2>${sprouter_log}",
     user    => "root",
-    require => [ Exec["bundle sprouter"], File[$sprouter_prefs] ],
+    require => [ Exec["bundle sprouter"], File[$sprouter_wrapper] ],
   }
 
   file { $sprouter_wrapper:
@@ -95,11 +98,30 @@ class spraints::role::router(
     content => template("spraints/opt/sprouter/run.erb"),
   }
 
-  file { $sprouter_prefs:
-    ensure  => present,
-    owner   => "root",
-    mode    => "444",
-    content => $sprouter_config,
+  if $sprouter_config == undef {
+    file { $sprouter_prefs:
+      ensure => absent,
+    }
+  } else {
+    file { $sprouter_prefs:
+      ensure  => present,
+      owner   => "root",
+      mode    => "444",
+      content => $sprouter_config,
+    }
+  }
+
+  if $sprouter_config_fragment == undef {
+    file { $sprouter_prefs_fragment:
+      ensure => absent,
+    }
+  } else {
+    file { $sprouter_prefs_fragment:
+      ensure  => present,
+      owner   => "root",
+      mode    => "444",
+      content => $sprouter_config_fragment,
+    }
   }
 
   vcsrepo { $sprouter_gem:

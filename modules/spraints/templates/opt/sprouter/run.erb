@@ -2,5 +2,16 @@
 
 export PATH=/usr/local/bin:$PATH
 
-cd <%= @sprouter_root %>
-exec bin/sprouter adjust <%= @sprouter_prefs %>
+sprouter_config_url="<%= @sprouter_config_url %>"
+sprouter_prefs_fragment="<%= @sprouter_prefs_fragment %>"
+sprouter_prefs="<%= @sprouter_prefs %>"
+
+if [ -n "${sprouter_prefs_fragment}" ] && [ -f "${sprouter_prefs_fragment}" ] && [ -n "${sprouter_config_url}" ]; then
+  if curl --connect-timeout 1 -f "${sprouter_config_url}" > /tmp/sprouter.conf; then
+    cat "${sprouter_prefs_fragment}" >> /tmp/sprouter.conf
+    sprouter_prefs=/tmp/sprouter.conf
+  fi
+fi
+
+cd "<%= @sprouter_root %>"
+exec bin/sprouter adjust "${sprouter_prefs}"
