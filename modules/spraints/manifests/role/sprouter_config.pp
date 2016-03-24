@@ -8,6 +8,7 @@ class spraints::role::sprouter_config(
     user     => "root",
     source   => "https://github.com/spraints/sprouter-configurer",
     revision => "1316fe03f350fc2efd67b1993d60fe85d9b05656",
+    notify   => Exec["start sprouter_config"],
   }
 
   $exec_path = "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
