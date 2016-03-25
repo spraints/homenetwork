@@ -1,0 +1,12 @@
+daemon=<%= @install_dir %>/bin/rails
+
+. /etc/rc.d/rc.subr
+
+rc_reload=NO
+pexp="ruby: puma .*"
+
+rc_start() {
+  ${rcexec} "<%= @install_dir %>/run --daemon ${daemon_flags}"
+}
+
+rc_cmd $1
