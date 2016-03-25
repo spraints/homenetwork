@@ -4,8 +4,10 @@
 class spraints::role::router(
   $zig_if = "re0",
   $zig_gw = "192.168.3.1",
+  $zig_ip = "dhcp",
   $att_if = "re1",
   $att_gw = "192.168.0.1",
+  $att_ip = "dhcp",
   $int_if = "re2",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
@@ -29,13 +31,26 @@ class spraints::role::router(
   # But DHCP on these bites because I can't choose a default route with /etc/mygate
   # and pf will barf if the NIC isn't connected, because the interface won't have an IP
   # address.
-  spraints::device::interface { [$zig_if, $att_if, $mgm_if]:
-    dhcp    => true,
-    notify  => Exec["reload pf.conf"],
+  spraints::device::interface {
+    $int_if:
+      address => $int_ip,
+      notify  => Exec["reload pf.conf"];
+    $zig_if:
+      address => $zig_ip,
+      notify  => Exec["reload pf.conf"];
+    $att_if:
+      address => $att_ip,
+      notify  => Exec["reload pf.conf"];
+    $mgm_if:
+      address => "dhcp",
+      notify  => Exec["reload pf.conf"];
   }
-  spraints::device::interface { $int_if:
-    address => $int_ip,
-    notify  => Exec["reload pf.conf"],
+
+  file { "/etc/mygate":
+    ensure  => present,
+    owner   => "root",
+    mode    => "444",
+    content => "${att_gw}\n",
   }
 
   ###
