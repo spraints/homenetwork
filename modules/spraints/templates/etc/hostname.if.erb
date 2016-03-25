@@ -1,3 +1,3 @@
 <% if @address == "dhcp" %>dhcp
-<% else %>inet <%= @address %> <%= @netmask || "255.255.255.0" %> <%= @bcast || @address.to_s.sub(/\.[d+]$/, ".255") %>
+<% else %>inet <%= @address %> <%= @netmask || "255.255.255.0" %> <%= @bcast || @address.to_s.sub(/\.\d+$/, ".255") %>
 <% end %>
