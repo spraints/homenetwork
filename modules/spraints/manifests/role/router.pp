@@ -57,7 +57,7 @@ class spraints::role::router(
     ensure  => present,
     owner   => "root",
     mode    => "644",
-    content => "nameserver 127.0.0.1\nnameserver ${zig_gw}\nnameserver ${att_gw}\nlookup file bind\n",
+    content => "nameserver ${att_gw}\nnameserver ${zig_gw}\nlookup file bind\n",
   }
 
   ###
