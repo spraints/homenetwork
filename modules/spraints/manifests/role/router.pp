@@ -53,6 +53,13 @@ class spraints::role::router(
     content => "${att_gw}\n",
   }
 
+  file { "/etc/resolv.conf":
+    ensure  => present,
+    owner   => "root",
+    mode    => "644",
+    content => "nameserver 127.0.0.1\nnameserver ${zig_gw}\nnameserver ${att_gw}\nlookup file bind\n",
+  }
+
   ###
   # Firewall
 
