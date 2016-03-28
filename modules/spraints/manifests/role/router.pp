@@ -42,7 +42,6 @@ class spraints::role::router(
       address => $att_ip,
       notify  => Exec["reload pf.conf"];
     $mgm_if:
-      address => "dhcp",
       notify  => Exec["reload pf.conf"];
   }
 
