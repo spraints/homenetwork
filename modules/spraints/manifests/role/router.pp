@@ -42,7 +42,6 @@ class spraints::role::router(
       address => $att_ip,
       notify  => Exec["reload pf.conf"];
     $mgm_if:
-      address => "dhcp",
       notify  => Exec["reload pf.conf"];
   }
 
@@ -51,6 +50,13 @@ class spraints::role::router(
     owner   => "root",
     mode    => "444",
     content => "${att_gw}\n",
+  }
+
+  file { "/etc/resolv.conf":
+    ensure  => present,
+    owner   => "root",
+    mode    => "644",
+    content => "nameserver 127.0.0.1\nnameserver ${att_gw}\nnameserver ${zig_gw}\nlookup file bind\n",
   }
 
   ###
