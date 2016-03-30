@@ -1,0 +1,117 @@
+#!/usr/local/bin/ruby22
+
+require "socket"
+
+class Config < Struct.new(:interval, :hostname)
+  def initialize
+    self.interval = ENV["INTERVAL"].to_i
+    self.interval = 10 if interval < 1
+    self.hostname = Socket.gethostname.split(".").first
+  end
+end
+
+class Emitter
+  def initialize(config, now: Time.now, io: $stdout)
+    @config = config
+    @now = now.to_i
+    @io = io
+  end
+
+  attr_reader :config, :now, :io
+
+  def emit(queue:, name:, value:, type:)
+    if table
+      value = value.join(":") if value.respond_to?(:join)
+      io.write "PUTVAL #{config.hostname}/pfqueue-#{queue}/#{type}-#{name} interval=#{config.interval} #{now}:#{value}\n"
+    end
+  end
+end
+
+Types = {
+  :packets         => "packets",
+  :bytes           => "total_bytes",
+  :dropped_packets => "packets",
+  :dropped_bytes   => "total_bytes",
+  :queue_length    => "gauge",
+  :queue_size      => "gauge",
+}
+
+def report(config)
+  emitter = Emitter.new(config)
+  read_queue_info.each do |queue, info|
+    if queue != :default
+      info.each do |key, value|
+        emitter.emit \
+          queue: queue,
+          name:  key.to_s,
+          value: value,
+          type:  Types[key]
+      end
+    end
+  end
+end
+
+# Runs pfctl to generate the following:
+#
+#   [ pkts:          0  bytes:          0  dropped pkts:      0 bytes:      0 ]
+#   [ qlength:   0/ 50 ]
+# queue zig on re0 bandwidth 10K default qlimit 1000
+#   [ pkts:      13405  bytes:    2370796  dropped pkts:      0 bytes:      0 ]
+#   [ qlength:   0/1000 ]
+#
+# Returns a ruby hash to represent the above:
+#
+#   { :default => {
+#       :packets => 0,
+#       :bytes => 0,
+#       :dropped_packets => 0,
+#       :dropped_bytes => 0,
+#       :queue_length => 0,
+#       :queue_size => 50,
+#     },
+#     "zig" => {
+#       :packets => 13405,
+#       :bytes => 2370796,
+#       :dropped_packets => 0,
+#       :dropped_bytes => 0,
+#       :queue_length => 0,
+#       :queue_size => 1000,
+#     },
+#   }
+def read_queue_info
+  result = Hash.new { |h,k| h[k] = Hash.new { |h,k| h[k] = {} }}
+  IO.popen(["/sbin/pfctl", "-v", "-s", "queue"]) do |pf|
+    queue = :default
+    pf.each_line do |line|
+      case line.chomp
+      when /^queue (\S+)/
+        queue = $1
+      when /pkts:\s+(\d+)\s+bytes:\s+(\d+)\s+dropped pkts:\s+(\d+)\s+bytes:\s+(\d+)/
+        result[queue].update \
+          :packets         => $1.to_i,
+          :bytes           => $2.to_i,
+          :dropped_packets => $3.to_i,
+          :dropped_bytes   => $4.to_i
+      when /qlength:\s+(\d+)\/(\d+)/
+        result[queue].update \
+          :queue_length => $1.to_i,
+          :queue_size   => $2.to_i
+      end
+    end
+  end
+  result
+end
+
+def main
+  config = Config.new
+  running = true
+  trap(:INT) { exit 0 }
+  loop do
+    report(config)
+    sleep config.interval
+  end
+end
+
+main
+
+# vim: set filetype=ruby:
