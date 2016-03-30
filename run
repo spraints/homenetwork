@@ -150,7 +150,7 @@ else
   echo Set HIERA_GIST_ID and run script/update-hieradata to create hiera.yaml
 fi
 
-config_version_cmd="git --git-dir '${repo_path}' rev-parse HEAD"
+config_version_cmd="git --git-dir '${repo_path}/.git' rev-parse HEAD"
 
 step Apply
 set -x
