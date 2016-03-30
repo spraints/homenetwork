@@ -4,6 +4,7 @@ pftablesizes:
   :metrics:
   - pftable-turbo_hosts/gauge-addresses
   - pftable-turbo_sites/gauge-addresses
+  - pftable-slow_sites/gauge-addresses
   :percentiles:
   :profile_name: pftablesizes
   :url: pftablesizes
@@ -14,6 +15,7 @@ pftabletraffic:
   :metrics:
   - pftable-turbo_hosts/if_octets-pass
   - pftable-turbo_sites/if_octets-pass
+  - pftable-slow_sites/if_octets-pass
   :percentiles:
   :profile_name: pftabletraffic
   :url: pftabletraffic
@@ -28,6 +30,17 @@ zigre0attre1:
   :percentiles:
   :profile_name: zigre0attre1
   :url: zigre0attre1
+
+zigre0attre1packets:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - interface-re0/if_packets
+  - interface-re1/if_packets
+  - interface-re2/if_packets
+  :percentiles:
+  :profile_name: zigre0attre1packets
+  :url: zigre0attre1packets
 
 routerdisk:
   :hosts:

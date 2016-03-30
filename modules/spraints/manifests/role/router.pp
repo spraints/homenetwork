@@ -4,8 +4,10 @@
 class spraints::role::router(
   $zig_if = "re0",
   $zig_gw = "192.168.3.1",
+  $zig_ip = "dhcp",
   $att_if = "re1",
   $att_gw = "192.168.0.1",
+  $att_ip = "dhcp",
   $int_if = "re2",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
@@ -15,7 +17,9 @@ class spraints::role::router(
   $collectd_master = undef,
   $att_test_routes = { },
   $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
-  $sprouter_config = "",
+  $sprouter_config = undef,
+  $sprouter_config_fragment = undef,
+  $sprouter_config_url = undef,
 ) {
   #include spraints::app::zig-or-att
 
@@ -27,13 +31,32 @@ class spraints::role::router(
   # But DHCP on these bites because I can't choose a default route with /etc/mygate
   # and pf will barf if the NIC isn't connected, because the interface won't have an IP
   # address.
-  spraints::device::interface { [$zig_if, $att_if, $mgm_if]:
-    dhcp    => true,
-    notify  => Exec["reload pf.conf"],
+  spraints::device::interface {
+    $int_if:
+      address => $int_ip,
+      notify  => Exec["reload pf.conf"];
+    $zig_if:
+      address => $zig_ip,
+      notify  => Exec["reload pf.conf"];
+    $att_if:
+      address => $att_ip,
+      notify  => Exec["reload pf.conf"];
+    $mgm_if:
+      notify  => Exec["reload pf.conf"];
   }
-  spraints::device::interface { $int_if:
-    address => $int_ip,
-    notify  => Exec["reload pf.conf"],
+
+  file { "/etc/mygate":
+    ensure  => present,
+    owner   => "root",
+    mode    => "444",
+    content => "${att_gw}\n",
+  }
+
+  file { "/etc/resolv.conf":
+    ensure  => present,
+    owner   => "root",
+    mode    => "644",
+    content => "nameserver 127.0.0.1\nnameserver ${att_gw}\nnameserver ${zig_gw}\nlookup file bind\n",
   }
 
   ###
@@ -79,13 +102,14 @@ class spraints::role::router(
   $sprouter_wrapper     = "${sprouter_root}/run"
   $sprouter_gem         = "${sprouter_root}/vendored-gem"
   $sprouter_log         = "/var/log/sprouter.log"
-  $sprouter_prefs       = "/etc/sprouter.conf"
+  $sprouter_prefs          = "/etc/sprouter.conf"
+  $sprouter_prefs_fragment = "/etc/sprouter.conf.fragment"
 
   cron { "sprouter":
     ensure  => present,
-    command => "${sprouter_wrapper} >${sprouter_log} 2>${sprouter_log}",
+    command => "${sprouter_wrapper} >${sprouter_log} 2>&1",
     user    => "root",
-    require => [ Exec["bundle sprouter"], File[$sprouter_prefs] ],
+    require => [ Exec["bundle sprouter"], File[$sprouter_wrapper] ],
   }
 
   file { $sprouter_wrapper:
@@ -95,11 +119,30 @@ class spraints::role::router(
     content => template("spraints/opt/sprouter/run.erb"),
   }
 
-  file { $sprouter_prefs:
-    ensure  => present,
-    owner   => "root",
-    mode    => "444",
-    content => $sprouter_config,
+  if $sprouter_config == undef {
+    file { $sprouter_prefs:
+      ensure => absent,
+    }
+  } else {
+    file { $sprouter_prefs:
+      ensure  => present,
+      owner   => "root",
+      mode    => "444",
+      content => $sprouter_config,
+    }
+  }
+
+  if $sprouter_config_fragment == undef {
+    file { $sprouter_prefs_fragment:
+      ensure => absent,
+    }
+  } else {
+    file { $sprouter_prefs_fragment:
+      ensure  => present,
+      owner   => "root",
+      mode    => "444",
+      content => $sprouter_config_fragment,
+    }
   }
 
   vcsrepo { $sprouter_gem:
@@ -107,7 +150,7 @@ class spraints::role::router(
     provider => git,
     user     => "root",
     source   => "https://github.com/spraints/sprouter",
-    revision => "5ddb74d2c8f3f42a427964db55efecfba31a694a",
+    revision => "6401e80b1063b8a27d4cbeb027af7ca8c514df1b",
     require  => File[$sprouter_root],
   }
 
@@ -142,15 +185,16 @@ class spraints::role::router(
   ###
   # DNS mirror
 
-  package { "unbound":
-    ensure => installed,
-  }
+  # This reinstalls itself every time i run puppet!
+  #package { "unbound":
+  #  ensure => installed,
+  #}
 
   exec { "start unbound":
     command => "rcctl enable unbound && rcctl stop unbound && rcctl start unbound",
     path    => $exec_path,
     user    => "root",
-    require => Package["unbound"],
+    #require => Package["unbound"],
     refreshonly => true,
   }
 

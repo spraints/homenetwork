@@ -1,12 +1,11 @@
 define spraints::device::interface(
   $interface = $name,
-  $dhcp      = false,
   $address   = undef,
   $netmask   = undef,
   $bcast     = undef,
 ) {
   if $::operatingsystem == "OpenBSD" {
-    if $dhcp == false and $address == undef {
+    if $address == undef {
 
       file { "/etc/hostname.${interface}":
         ensure  => absent,
