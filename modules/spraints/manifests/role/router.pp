@@ -255,6 +255,7 @@ class spraints::role::router(
       owner   => "root",
       mode    => "4555",
       content => template("spraints/usr/local/bin/collectd-pf-queues.erb"),
+      notify  => Exec["start collectd"],
     }
 
     exec { "start collectd":
