@@ -26,16 +26,13 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
-queue zig on $zig_if bandwidth 10K qlimit 1000
+queue zig on $zig_if bandwidth 10K qlimit 1000 default
 
 match in all scrub (no-df random-id max-mss 1440)
 
 # NAT
 match out on $att_if from $int_net to any nat-to $att_if
 match out on $zig_if from $int_net to any nat-to $zig_if
-
-# Try not to saturate the zig link
-match on $zig_if proto tcp set queue zig
 
 # Default to everything OK, except incoming traffic from the OUTSIDE
 pass all
