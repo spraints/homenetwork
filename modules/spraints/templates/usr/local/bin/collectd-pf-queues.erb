@@ -20,7 +20,7 @@ class Emitter
   attr_reader :config, :now, :io
 
   def emit(queue:, name:, value:, type:)
-    if table
+    if queue
       value = value.join(":") if value.respond_to?(:join)
       io.write "PUTVAL #{config.hostname}/pfqueue-#{queue}/#{type}-#{name} interval=#{config.interval} #{now}:#{value}\n"
     end
