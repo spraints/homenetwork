@@ -6,6 +6,11 @@ sprouter_config_url="<%= @sprouter_config_url %>"
 sprouter_prefs_fragment="<%= @sprouter_prefs_fragment %>"
 sprouter_prefs="<%= @sprouter_prefs %>"
 
+if [ -f /etc/sprouter-disabled ]; then
+  ls -l /etc/sprouter-disabled
+  exit 0
+fi
+
 if [ -n "${sprouter_prefs_fragment}" ] && [ -f "${sprouter_prefs_fragment}" ] && [ -n "${sprouter_config_url}" ]; then
   if curl --connect-timeout 1 -f "${sprouter_config_url}" > /tmp/sprouter.conf; then
     cat "${sprouter_prefs_fragment}" >> /tmp/sprouter.conf
