@@ -26,15 +26,17 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
+table <att_net> const { $att_if:network }
+table <zig_net> const { $zig_if:network<%= (@zig_routes || []).map{|r|", #{r}"}.join %> }
 
 match in all scrub (no-df random-id max-mss 1440)
+match out on $zig_if scrub (max-mss 1000)
 
 # NAT
 match out on $att_if from $int_net to any nat-to $att_if
 match out on $zig_if from $int_net to any nat-to $zig_if
 
-# Default to everything OK, except incoming traffic from the OUTSIDE
-pass all
+# By default don't let any traffic from outside come in.
 block in log on $ext_ifs
 # Let me ssh from the external networks. This might be useful some day,
 # like if I need to connect to the AT&T access point or something.
@@ -42,8 +44,10 @@ pass in on $ext_ifs proto tcp from any to any port ssh
 
 # Everything outgoing is OK.
 pass out log inet
-pass out log on $ext_ifs proto tcp modulate state
-pass out log on $ext_ifs proto udp     keep state
+pass out log on $att_if proto tcp modulate state
+pass out log on $att_if proto udp     keep state
+pass out log on $zig_if proto tcp modulate state # queue ...
+pass out log on $zig_if proto udp     keep state # queue ...
 
 # Default all traffic to zig
 pass in on $int_if all route-to $zig_route
@@ -58,10 +62,10 @@ pass in on $int_if from any to <slow_sites> route-to $zig_route
 pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $att_route
 
 # Send zig-specific stuff to zig and at&t specific stuff to at&t.
-pass in on $int_if from any to $att_if:network route-to $att_route
-pass in on $int_if from any to {$zig_if:network<%= (@zig_routes || []).map{|r|",#{r}"}.join %>} route-to $zig_route
+pass in on $int_if from any to <att_net> route-to $att_route
+pass in on $int_if from any to <zig_net> route-to $zig_route
 
-pass in from any to self
+pass in on $int_if from any to $int_if
 
 <% if @collectd_master && @att_test_routes.respond_to?(:each) -%>
   <% @att_test_routes.each do |ip| -%>
