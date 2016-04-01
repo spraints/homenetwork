@@ -264,5 +264,14 @@ class spraints::role::router(
       group   => "_collectd",
       mode    => "775",
     }
+
+    file { ["/etc/collectd", "/etc/collectd/collectd.d"]:
+      ensure  => directory,
+      owner   => "root",
+      group   => "_collectd",
+      mode    => "555",
+    }
+
+    include spraints::role::network_monitor
   }
 }
