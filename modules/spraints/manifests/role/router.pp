@@ -258,7 +258,7 @@ class spraints::role::router(
       require     => Package["collectd"],
     }
 
-    file { ["/var/spool/collectd", "/var/spool/collectd/csv"]:
+    file { ["/var/spool/collectd", "/var/spool/collectd/csv", "/var/spool/collectd/rrd"]:
       ensure  => directory,
       owner   => "root",
       group   => "_collectd",

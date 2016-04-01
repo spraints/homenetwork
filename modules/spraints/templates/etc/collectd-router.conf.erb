@@ -20,6 +20,7 @@ LoadPlugin pf
 
 # Store data
 LoadPlugin csv
+LoadPlugin rrdtool
 LoadPlugin network
 
 #<Plugin cpu>
@@ -78,4 +79,8 @@ LoadPlugin network
 
 <Plugin csv>
   DataDir "/var/lib/collectd/csv"
+</Plugin>
+
+<Plugin rrdtool>
+  DataDir "/var/lib/collectd/rrd"
 </Plugin>
