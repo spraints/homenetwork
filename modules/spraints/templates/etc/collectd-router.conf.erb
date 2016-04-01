@@ -16,8 +16,12 @@ LoadPlugin exec
 LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
-LoadPlugin network
 LoadPlugin pf
+
+# Store data
+LoadPlugin csv
+LoadPlugin rrdtool
+LoadPlugin network
 
 #<Plugin cpu>
 #  ReportByCpu true
@@ -72,3 +76,13 @@ LoadPlugin pf
   </Server>
   ReportStats true
 </Plugin>
+
+<Plugin csv>
+  DataDir "/var/lib/collectd/csv"
+</Plugin>
+
+<Plugin rrdtool>
+  DataDir "/var/lib/collectd/rrd"
+</Plugin>
+
+Include "/etc/collectd/collectd.conf.d/ping-the-world.conf"
