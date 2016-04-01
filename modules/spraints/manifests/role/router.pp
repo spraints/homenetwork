@@ -263,6 +263,7 @@ class spraints::role::router(
       owner   => "root",
       group   => "_collectd",
       mode    => "775",
+      notify  => Exec["start collectd"],
     }
 
     file { ["/etc/collectd", "/etc/collectd/collectd.d"]:
@@ -270,6 +271,7 @@ class spraints::role::router(
       owner   => "root",
       group   => "_collectd",
       mode    => "555",
+      notify  => Exec["start collectd"],
     }
 
     include spraints::role::network_monitor
