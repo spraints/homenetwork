@@ -234,6 +234,16 @@ class spraints::role::router(
       ensure => installed,
     }
 
+    file { ["/etc/collectd", "/etc/collectd/collectd.d"]:
+      ensure  => directory,
+      owner   => "root",
+      group   => "_collectd",
+      mode    => "555",
+      notify  => Exec["start collectd"],
+    }
+
+    include spraints::role::network_monitor
+
     file { "/etc/collectd.conf":
       ensure  => present,
       owner   => "root",
@@ -265,15 +275,5 @@ class spraints::role::router(
       mode    => "775",
       notify  => Exec["start collectd"],
     }
-
-    file { ["/etc/collectd", "/etc/collectd/collectd.d"]:
-      ensure  => directory,
-      owner   => "root",
-      group   => "_collectd",
-      mode    => "555",
-      notify  => Exec["start collectd"],
-    }
-
-    include spraints::role::network_monitor
   }
 }
