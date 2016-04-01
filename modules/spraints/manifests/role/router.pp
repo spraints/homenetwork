@@ -267,13 +267,5 @@ class spraints::role::router(
       refreshonly => true,
       require     => Package["collectd"],
     }
-
-    file { ["/var/spool/collectd", "/var/spool/collectd/csv", "/var/spool/collectd/rrd"]:
-      ensure  => directory,
-      owner   => "root",
-      group   => "_collectd",
-      mode    => "775",
-      notify  => Exec["start collectd"],
-    }
   }
 }
