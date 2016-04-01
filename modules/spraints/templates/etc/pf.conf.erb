@@ -26,7 +26,6 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
-queue zig on $zig_if bandwidth 10K qlimit 1000 default
 
 match in all scrub (no-df random-id max-mss 1440)
 
