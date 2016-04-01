@@ -234,7 +234,7 @@ class spraints::role::router(
       ensure => installed,
     }
 
-    file { ["/etc/collectd", "/etc/collectd/collectd.d"]:
+    file { ["/etc/collectd", "/etc/collectd/collectd.conf.d"]:
       ensure  => directory,
       owner   => "root",
       group   => "_collectd",
