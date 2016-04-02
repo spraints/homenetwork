@@ -7,7 +7,7 @@ set -e
 : "${PASSWORD:=attadmin}"
 : "${INTERVAL:=10}"
 
-if which base64 >&/dev/null; then
+if which base64 >/dev/null 2>/dev/null; then
   B64_PASS="$(printf "%s" "${PASSWORD}" | base64)"
 else
   B64_PASS="$(ruby -e 'print [ARGV[0]].pack("m")' "${PASSWORD}")"
