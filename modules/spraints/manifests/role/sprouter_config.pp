@@ -7,7 +7,7 @@ class spraints::role::sprouter_config(
     provider => git,
     user     => "root",
     source   => "https://github.com/spraints/sprouter-configurer",
-    revision => "3422a59c71be965db2134cfe23a1ee7232254a00",
+    revision => "356bce347a6c07259e386125a24c06a34aa89b92",
     notify   => Exec["start sprouter_config"],
   }
 
