@@ -150,7 +150,7 @@ class spraints::role::router(
     provider => git,
     user     => "root",
     source   => "https://github.com/spraints/sprouter",
-    revision => "6401e80b1063b8a27d4cbeb027af7ca8c514df1b",
+    revision => "3d0b3821abad66dde44325855bf71fc8c2e2781c",
     require  => File[$sprouter_root],
   }
 
