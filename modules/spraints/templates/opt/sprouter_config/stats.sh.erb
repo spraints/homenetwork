@@ -12,8 +12,10 @@ df
 
 section Tables
 pfctl -vv -s Tables
-pfctl -v -t turbo_hosts -T show
-pfctl -v -t turbo_sites -T show
+for t in turbo_hosts turbo_sites; do
+  echo "$t"
+  pfctl -v -t "$t" -T show
+done
 
 section traffic
 today=$(date +%Y-%m-%d)
