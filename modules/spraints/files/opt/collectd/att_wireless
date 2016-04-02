@@ -14,10 +14,10 @@ B64_PASS="$(printf "%s" "${PASSWORD}" | base64)"
 #  /bin/sleep
 #  /bin/hostname
 #  /usr/bin/base64
-#  /usr/bin/jq
+#  /usr/bin/jq or /usr/local/bin/jq
 #  /usr/bin/curl
 #  /usr/bin/test
-export PATH=/bin:/usr/bin
+export PATH=/bin:/usr/bin:/usr/local/bin
 
 # The URL that tells us the data.
 CMDS="rssi%2Cfluxatt_cur_total_data%2Cfluxatt_allote_data"
