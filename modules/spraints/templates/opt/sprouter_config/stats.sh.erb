@@ -1,0 +1,22 @@
+#!/bin/sh
+
+section() {
+  echo ""
+  echo "$1" | sed -e 's/./=/g'
+  echo "$1"
+  echo "$1" | sed -e 's/./-/g'
+}
+
+section df
+df
+
+section Tables
+pfctl -vv -s Tables
+
+section traffic
+(
+set -e
+today=$(date +%Y-%m-%d)
+cd /var/lib/collectd/csv/zig-or-att
+tail "interface-re*/if_{octets,packets}-$today"
+)

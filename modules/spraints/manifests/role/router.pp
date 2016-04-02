@@ -119,6 +119,13 @@ class spraints::role::router(
     content => template("spraints/opt/sprouter/run.erb"),
   }
 
+  file { "${sprouter_root}/stats.sh":
+    ensure  => present,
+    owner   => "root",
+    mode    => "555",
+    content => template("spraints/opt/sprouter_config/stats.sh.erb"),
+  }
+
   if $sprouter_config == undef {
     file { $sprouter_prefs:
       ensure => absent,
