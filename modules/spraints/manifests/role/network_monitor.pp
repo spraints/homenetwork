@@ -27,7 +27,7 @@ class spraints::role::network_monitor(
   #}
 
   file { "/etc/collectd/collectd.conf.d/ping-the-world.conf":
-    notify  => Service["collectd"],
+    #notify  => Service["collectd"],
     mode    => 644,
     owner   => "root",
     content => template("spraints/etc/collectd/collectd.conf.d/ping-the-world.conf.erb"),
