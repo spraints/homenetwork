@@ -1,0 +1,4 @@
+#!/bin/sh
+
+<% @zig_routes.each do |net| %>
+route -qn add -net <%= net %> <%= @zig_gw %><% end %>

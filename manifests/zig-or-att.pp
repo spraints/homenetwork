@@ -6,4 +6,5 @@ node /^zig-or-att/ {
 
   # Probably temporary, until another mini is available
   include spraints::role::att_wireless
+  include spraints::role::network_monitor
 }
