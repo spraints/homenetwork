@@ -43,7 +43,8 @@ case `uname -s` in
       (
         set -e
         cd /tmp
-        deb=puppetlabs-release-trusty.deb
+        releasename=$(lsb_release -c | awk '{print $2}')
+        deb=puppetlabs-release--pc1-$releasename.deb
         curl -O https://apt.puppetlabs.com/${deb}
         sudo dpkg -i ${deb}
         rm ${deb}
