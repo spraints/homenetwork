@@ -38,8 +38,8 @@ banner() {
 # Ensure that puppet (e.g. 3.7.3), curl, git, bundler, and sudo are installed.
 case `uname -s` in
   Linux)
-    if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
-      step Install puppet per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
+    if ! dpkg -s puppetlabs-release-pc1 >/dev/null 2>/dev/null; then
+      step Install puppet apt source per https://docs.puppetlabs.com/guides/install_puppet/install_debian_ubuntu.html
       (
         set -e
         cd /tmp
@@ -49,6 +49,9 @@ case `uname -s` in
         sudo dpkg -i ${deb}
         rm ${deb}
       )
+    fi
+    if ! dpkg -s puppet-common >/dev/null 2>/dev/null; then
+      step Install puppet
       packages_to_install="${packages_to_install} puppet"
     fi
 
