@@ -34,7 +34,7 @@ class spraints::app::visage {
       ensure => installed;
     "bundler":
       ensure => installed;
-    "librrd-ruby":
+    "librrd4":
       ensure => installed;
     "ruby":
       ensure => installed;
