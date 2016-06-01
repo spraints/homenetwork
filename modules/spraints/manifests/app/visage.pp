@@ -23,7 +23,7 @@ class spraints::app::visage {
     require => [
       Package["build-essential"],
       Package["bundler"],
-      Package["librrd-ruby"],
+      Package["librrd4"],
       Package["ruby"],
       Package["ruby-dev"],
     ],
