@@ -6,16 +6,13 @@ class spraints::services::fowsr {
     subscribe => Vcsrepo["/opt/fowsr"],
     require => [
       User["fowsr"],
-      File["/etc/init/fowsr.conf"],
+      Spraints::ServiceConfig["fowsr"],
       Class["spraints::app::fowsr"],
     ],
   }
 
-  file { "/etc/init/fowsr.conf":
-    ensure => present,
-    source => "puppet:///modules/spraints/etc/init/fowsr.conf",
-    owner  => "root",
-    mode   => "444",
+  spraints::service_config { "fowsr":
+    notify => Service["fowsr"],
   }
 
   user { "fowsr":

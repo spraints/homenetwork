@@ -3,14 +3,6 @@ class spraints::services::visage {
 
   $visage_config_path = "/var/local/visage"
 
-  file { "/etc/init/visage.conf":
-    ensure  => present,
-    content => template("spraints/etc/init/visage.conf.erb"),
-    owner   => "root",
-    mode    => "444",
-    require => File["/opt/visage/config.ru"],
-  }
-
   file { "/opt/visage/config.ru":
     ensure => present,
     owner => "visage",
@@ -43,15 +35,18 @@ class spraints::services::visage {
   service { "visage":
     ensure => running,
     require => [
-      File["/etc/init/visage.conf"],
       User["visage"],
       Class["spraints::app::visage"],
       File["/var/local/visage"],
     ],
     subscribe => [
-      File["/etc/init/visage.conf"],
       Exec["bundle visage"],
+      File["/opt/visage/config.ru"],
     ],
+  }
+
+  spraints::service_config { "visage":
+    notify  => Service["visage"],
   }
 
   file { "$visage_config_path/profiles.yaml.d":

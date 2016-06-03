@@ -1,0 +1,68 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          visage
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+NAME="visage"
+DESC="Front-end for rrd data"
+ROOT_DIR="/opt/visage"
+DAEMON="$ROOT_DIR/bin/unicorn"
+PIDFILE="/run/visage.pid"
+
+test -x $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+
+# Override this variable by editing or creating /etc/default/visage.
+DAEMON_OPTS="--config-file unicorn.rb -p 12004 --env production config.ru"
+
+if [ -f /etc/default/visage ]; then
+    . /etc/default/visage
+fi
+
+case "$1" in
+    start)
+        log_daemon_msg "Starting $DESC" "$NAME"
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --name $NAME --startas $DAEMON --chdir $ROOT_DIR -- $DAEMON_OPTS; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    stop)
+        log_daemon_msg "Stopping $DESC" "$NAME"
+        if start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --name $NAME; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    reload|restart|force-reload)
+        log_daemon_msg "Restarting $DESC" "$NAME"
+        start-stop-daemon --stop --quiet --pidfile $PIDFILE --name $NAME --retry 5
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --name $NAME --startas $DAEMON --chdir $ROOT_DIR -- $DAEMON_OPTS; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    status)
+        status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
+        ;;
+
+    *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|status|reload|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
