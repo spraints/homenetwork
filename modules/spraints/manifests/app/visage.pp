@@ -17,6 +17,12 @@ class spraints::app::visage {
     require => File["/opt/visage"],
   }
 
+  if $::lsbdistcodename == "trusty" {
+    $rrdpackage = "librrd-ruby"
+  } else {
+    $rrdpackage = "rrd-ruby"
+  }
+
   exec { "bundle visage":
     command => "/usr/bin/env bundle install --binstubs bin --path vendor/gems",
     unless => "/usr/bin/env bundle check",
@@ -26,7 +32,7 @@ class spraints::app::visage {
     require => [
       Package["build-essential"],
       Package["bundler"],
-      Package["librrd4"],
+      Package[$rrdpackage],
       Package["ruby"],
       Package["ruby-dev"],
       User["visage"],
