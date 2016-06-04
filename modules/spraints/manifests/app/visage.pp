@@ -17,6 +17,7 @@ class spraints::app::visage {
 
   exec { "bundle visage":
     command => "/usr/bin/env bundle install --binstubs bin --path vendor/gems",
+    creates => "/opt/visage/Gemfile.lock",
     cwd => "/opt/visage",
     subscribe => File["/opt/visage/Gemfile"],
     refreshonly => true,
