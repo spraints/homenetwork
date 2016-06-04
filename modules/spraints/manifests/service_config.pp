@@ -14,6 +14,7 @@ define spraints::service_config {
         ensure  => present,
         content => template("spraints/etc/init.d/${name}-ubuntu.erb"),
         notify  => Exec["updaterc ${rcfile}"],
+        mode    => "755",
       }
 
       exec { "updaterc ${rcfile}":
