@@ -13,6 +13,7 @@ DESC="Front-end for rrd data"
 ROOT_DIR="/opt/visage"
 DAEMON="$ROOT_DIR/bin/unicorn"
 PIDFILE="/run/visage.pid"
+CONFIG_PATH="<%= @visage_config_path %>"
 
 test -x $DAEMON || exit 0
 
@@ -24,6 +25,8 @@ DAEMON_OPTS="--config-file unicorn.rb -p 12004 --env production config.ru"
 if [ -f /etc/default/visage ]; then
     . /etc/default/visage
 fi
+
+export CONFIG_PATH
 
 case "$1" in
     start)

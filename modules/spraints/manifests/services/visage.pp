@@ -46,7 +46,8 @@ class spraints::services::visage {
   }
 
   spraints::service_config { "visage":
-    notify  => Service["visage"],
+    notify             => Service["visage"],
+    visage_config_path => $visage_config_path,
   }
 
   file { "$visage_config_path/profiles.yaml.d":
