@@ -20,7 +20,7 @@ class spraints::app::visage {
   if $::lsbdistcodename == "trusty" {
     $rrdpackage = "librrd-ruby"
   } else {
-    $rrdpackage = "rrd-ruby"
+    $rrdpackage = "ruby-rrd"
   }
 
   exec { "bundle visage":
