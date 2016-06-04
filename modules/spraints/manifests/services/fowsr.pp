@@ -6,7 +6,7 @@ class spraints::services::fowsr {
     subscribe => Vcsrepo["/opt/fowsr"],
     require => [
       User["fowsr"],
-      Spraints::ServiceConfig["fowsr"],
+      #Spraints::ServiceConfig["fowsr"],
       Class["spraints::app::fowsr"],
     ],
   }
