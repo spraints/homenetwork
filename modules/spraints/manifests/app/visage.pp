@@ -1,7 +1,7 @@
 class spraints::app::visage {
   file { "/opt/visage":
     ensure => directory,
-    user   => "visage",
+    owner  => "visage",
     require => User["visage"],
   }
 
