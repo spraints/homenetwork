@@ -1,6 +1,8 @@
 class spraints::app::visage {
   file { "/opt/visage":
     ensure => directory,
+    user   => "visage",
+    require => User["visage"],
   }
 
   file { "/opt/visage/Gemfile":
@@ -17,16 +19,17 @@ class spraints::app::visage {
 
   exec { "bundle visage":
     command => "/usr/bin/env bundle install --binstubs bin --path vendor/gems",
-    creates => "/opt/visage/Gemfile.lock",
+    unless => "/usr/bin/env bundle check",
+    user => "visage",
     cwd => "/opt/visage",
     subscribe => File["/opt/visage/Gemfile"],
-    refreshonly => true,
     require => [
       Package["build-essential"],
       Package["bundler"],
       Package["librrd4"],
       Package["ruby"],
       Package["ruby-dev"],
+      User["visage"],
     ],
   }
 
