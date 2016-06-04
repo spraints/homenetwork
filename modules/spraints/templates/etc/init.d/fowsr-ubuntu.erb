@@ -33,7 +33,7 @@ fi
 case "$1" in
     start)
         log_daemon_msg "Starting $DESC" "$NAME"
-        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --name $NAME --startas $DAEMON -- $SCRIPT $DAEMON_OPTS; then
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --make-pidfile --background --startas $DAEMON -- $SCRIPT $DAEMON_OPTS; then
             log_end_msg 0
         else
             log_end_msg 1
@@ -42,7 +42,7 @@ case "$1" in
 
     stop)
         log_daemon_msg "Stopping $DESC" "$NAME"
-        if start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --name $NAME; then
+        if start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --remove-pidfile; then
             log_end_msg 0
         else
             log_end_msg 1
@@ -50,8 +50,8 @@ case "$1" in
         ;;
 
     reload|restart|force-reload)
-        start-stop-daemon --stop --quiet --pidfile $PIDFILE --name $NAME --retry 5
-        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --name $NAME --startas $DAEMON -- $SCRIPT $DAEMON_OPTS; then
+        start-stop-daemon --stop --quiet --pidfile $PIDFILE --remove-pidfile --retry 5
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --make-pidfile --background --startas $DAEMON -- $SCRIPT $DAEMON_OPTS; then
             log_end_msg 0
         else
             log_end_msg 1
