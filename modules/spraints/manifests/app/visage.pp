@@ -11,12 +11,6 @@ class spraints::app::visage {
     require => File["/opt/visage"],
   }
 
-  file { "/opt/visage/unicorn.rb":
-    ensure => present,
-    source => "puppet:///modules/spraints/opt/visage/unicorn.rb",
-    require => File["/opt/visage"],
-  }
-
   if $::lsbdistcodename == "trusty" {
     $rrdpackage = "librrd-ruby"
   } else {

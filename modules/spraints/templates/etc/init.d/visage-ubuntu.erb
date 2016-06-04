@@ -12,7 +12,7 @@ NAME="visage"
 DESC="Front-end for rrd data"
 ROOT_DIR="/opt/visage"
 DAEMON="$ROOT_DIR/bin/unicorn"
-PIDFILE="/run/visage.pid"
+PIDFILE="<%= @sc_config["visage_pidfile"] %>"
 CONFIG_PATH="<%= @sc_config["visage_config_path"] %>"
 
 test -x $DAEMON || exit 0

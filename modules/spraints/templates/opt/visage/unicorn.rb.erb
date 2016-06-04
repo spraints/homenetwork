@@ -1,5 +1,6 @@
 preload_app true
-worker_processes 4
+worker_processes 2
+pid "<%= @visage_pidfile %>"
 
 after_fork do |server, worker|
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)

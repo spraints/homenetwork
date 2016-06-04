@@ -1,6 +1,7 @@
 class spraints::services::visage {
   include spraints::app::visage
 
+  $visage_pidfile = "/var/run/visage.pid"
   $visage_config_path = "/var/local/visage"
 
   file { "/opt/visage/config.ru":
@@ -32,6 +33,12 @@ class spraints::services::visage {
     ],
   }
 
+  file { "/opt/visage/unicorn.rb":
+    ensure => present,
+    content => template("spraints/opt/visage/unicorn.rb.erb"),
+    require => File["/opt/visage"],
+  }
+
   service { "visage":
     ensure => running,
     require => [
@@ -47,7 +54,10 @@ class spraints::services::visage {
 
   spraints::service_config { "visage":
     notify    => Service["visage"],
-    sc_config => { visage_config_path => $visage_config_path },
+    sc_config => {
+      visage_pidfile     => $visage_pidfile,
+      visage_config_path => $visage_config_path,
+    },
   }
 
   file { "$visage_config_path/profiles.yaml.d":
