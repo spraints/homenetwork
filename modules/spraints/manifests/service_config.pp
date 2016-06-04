@@ -1,4 +1,7 @@
-define spraints::service_config {
+define spraints::service_config(
+  # data to pass to the service definition file templates.
+  $sc_config = {},
+) {
   if $::operatingsystem == "Ubuntu" {
     if $::lsbdistcodename == "trusty" {
       file { "/etc/init/${name}.conf":
