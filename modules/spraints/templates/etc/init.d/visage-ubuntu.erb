@@ -20,7 +20,7 @@ test -x $DAEMON || exit 0
 . /lib/lsb/init-functions
 
 # Override this variable by editing or creating /etc/default/visage.
-DAEMON_OPTS="--config-file unicorn.rb -p 12004 --env production config.ru"
+DAEMON_OPTS="--daemonize --config-file unicorn.rb -p 12004 --env production config.ru"
 
 if [ -f /etc/default/visage ]; then
     . /etc/default/visage
