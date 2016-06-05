@@ -1,6 +1,8 @@
 preload_app true
 worker_processes 2
 pid "<%= @visage_pidfile %>"
+stderr_path "<%= @visage_log_file %>"
+stdout_path "<%= @visage_log_file %>"
 
 after_fork do |server, worker|
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)

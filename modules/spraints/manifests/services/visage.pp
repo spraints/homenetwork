@@ -3,6 +3,7 @@ class spraints::services::visage {
 
   $visage_pidfile = "/var/run/visage.pid"
   $visage_config_path = "/var/local/visage"
+  $visage_log_file = "/opt/visage/log/visage.log"
 
   file { "/opt/visage/config.ru":
     ensure => present,
@@ -10,6 +11,14 @@ class spraints::services::visage {
     group => "visage",
     mode => 644,
     source => "puppet:///modules/spraints/opt/visage/config.ru",
+  }
+
+  file { "/opt/visage/log":
+    ensure => directory,
+    owner => "visage",
+    group => "visage",
+    mode => 755,
+    require => User["visage"],
   }
 
   user { "visage":
@@ -57,7 +66,12 @@ class spraints::services::visage {
     sc_config => {
       visage_pidfile     => $visage_pidfile,
       visage_config_path => $visage_config_path,
+      visage_log_file    => $visage_log_file,
     },
+  }
+
+  file { "/etc/logrotate.d/visage":
+    content => "${visage_log_file} {\n  daily\n  rotate 7\n  delaycompress\n  compress\n  notifempty\n  missingok\n  postrotate\n    invoke-rc.d visage restart >/dev/null\n}\n",
   }
 
   file { "$visage_config_path/profiles.yaml.d":
