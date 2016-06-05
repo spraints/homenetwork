@@ -71,6 +71,7 @@ class spraints::services::visage {
   }
 
   file { "/etc/logrotate.d/visage":
+    ensure => present,
     content => "${visage_log_file} {\n  daily\n  rotate 7\n  delaycompress\n  compress\n  notifempty\n  missingok\n  postrotate\n    invoke-rc.d visage restart >/dev/null\n}\n",
   }
 
