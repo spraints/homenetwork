@@ -1,0 +1,74 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          fowsr-wunderground
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+NAME="fowsr-wunderground.rb"
+DESC="Report weather data to wunderground"
+ROOT="/opt/fowsr/fowsr.src"
+SCRIPT="$ROOT/fowsr-wunderground.rb"
+DAEMON="/usr/bin/ruby2.3"
+PIDFILE="/run/fowsr-wunderground.pid"
+SOCK="/run/fowsr.socket"
+
+test -x $DAEMON || exit 0
+test -f $SCRIPT || exit 0
+
+. /lib/lsb/init-functions
+
+# Override this variable by editing or creating /etc/default/fowsr-wunderground.
+DAEMON_OPTS="$SOCK KINPICKA2"
+
+if [ -f /etc/default/fowsr-wunderground ]; then
+    . /etc/default/fowsr-wunderground
+fi
+if [ -f /etc/default/wunderground-password ]; then
+    . /etc/default/wunderground-password
+fi
+
+case "$1" in
+    start)
+        log_daemon_msg "Starting $DESC" "$NAME"
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --make-pidfile --background --startas $DAEMON -- $SCRIPT $DAEMON_OPTS; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    stop)
+        log_daemon_msg "Stopping $DESC" "$NAME"
+        if start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --remove-pidfile; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    reload|restart|force-reload)
+        log_daemon_msg "Restarting $DESC" "$NAME"
+        start-stop-daemon --stop --quiet --pidfile $PIDFILE --remove-pidfile --retry 5
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --make-pidfile --background --startas $DAEMON -- $SCRIPT $DAEMON_OPTS; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    status)
+        status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
+        ;;
+
+    *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|status|reload|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -18,15 +18,11 @@ class spraints::role::weather_station {
     subscribe => Vcsrepo["/opt/fowsr"],
     require => [
       User["fowsr"],
-      File["/etc/init/fowsr-wunderground.conf"],
       Class["spraints::services::fowsr"],
     ],
   }
 
-  file { "/etc/init/fowsr-wunderground.conf":
-    ensure => present,
-    source => "puppet:///modules/spraints/etc/init/fowsr-wunderground.conf",
-    owner  => "root",
-    mode   => "444",
+  spraints::service_config { "fowsr-wunderground":
+    notify => Service["fowsr-wunderground"],
   }
 }

@@ -7,7 +7,7 @@ stop on runlevel [06]
 env PATH=/usr/local/bin:/usr/bin:/bin
 
 env RAILS_ENV=production
-env CONFIG_PATH=<%= @visage_config_path %>
+env CONFIG_PATH=<%= @sc_config["visage_config_path"] %>
 
 setuid visage
 setgid visage
