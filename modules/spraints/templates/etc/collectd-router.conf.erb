@@ -19,7 +19,6 @@ LoadPlugin memory
 LoadPlugin pf
 
 # Store data
-LoadPlugin csv
 LoadPlugin network
 
 #<Plugin cpu>
@@ -74,8 +73,4 @@ LoadPlugin network
     ResolveInterval 14400
   </Server>
   ReportStats true
-</Plugin>
-
-<Plugin csv>
-  DataDir "/var/lib/collectd/csv"
 </Plugin>
