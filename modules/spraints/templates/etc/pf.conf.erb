@@ -52,9 +52,9 @@ pass out log on $zig_if proto udp     keep state
 pass in on $int_if all route-to $zig_route
 
 # <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
-pass in on $int_if from <turbo_hosts> to any route-to $att_route
+pass in log on $int_if from <turbo_hosts> to any route-to $att_route
 # <turbo_sites> is a list of sites that should always be FAST
-pass in on $int_if from any to <turbo_sites> route-to $att_route
+pass in log on $int_if from any to <turbo_sites> route-to $att_route
 # <slow_sites> is a list of sites that should never be fast
 pass in on $int_if from any to <slow_sites> route-to $zig_route
 # Send all ssh sessions over AT&T. They should be low bandwidth, and it'd be nice if they're fast.

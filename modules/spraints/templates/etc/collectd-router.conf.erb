@@ -79,3 +79,11 @@ LoadPlugin network
 <Plugin csv>
   DataDir "/var/lib/collectd/csv"
 </Plugin>
+
+<Plugin csv>
+  DataDir "/var/lib/collectd/csv-rates"
+  StoreRates true
+</Plugin>
+
+Include "/etc/collectd/collectd.conf.d/att_wireless.conf"
+Include "/etc/collectd/collectd.conf.d/ping-the-world.conf"

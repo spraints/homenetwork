@@ -1,0 +1,26 @@
+#!/bin/sh
+
+section() {
+  echo ""
+  echo "$1" | sed -e 's/./=/g'
+  echo "$1"
+  echo "$1" | sed -e 's/./-/g'
+}
+
+section df
+df
+
+section Tables
+pfctl -vv -s Tables
+for t in turbo_hosts turbo_sites; do
+  echo "$t"
+  pfctl -v -t "$t" -T show
+done
+
+section traffic
+today=$(date +%Y-%m-%d)
+stats_dir=/var/lib/collectd/csv/zig-or-att
+for file in $stats_dir/interface-re*/if_{octets,packets}-$today $stats_dir/attwireless/*-$today; do
+  echo "==> $file <=="
+  cat "$file" | ruby -ne 'n = n.to_i + 1; next unless n % 40 == 0; ts,rest = $_.split(",",2); ts = Time.at(ts.to_f); puts "#{ts.strftime("%H:%M:%S")},#{rest}"' | tail
+done

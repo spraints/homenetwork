@@ -1,21 +1,28 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
 # Input variables
-: ${ROUTER_IP:=192.168.0.1}
-: ${PASSWORD:=attadmin}
-: ${INTERVAL:=10}
+: "${ROUTER_IP:=192.168.0.1}"
+: "${PASSWORD:=attadmin}"
+: "${INTERVAL:=10}"
+
+if which base64 >/dev/null 2>/dev/null; then
+  B64_PASS="$(printf "%s" "${PASSWORD}" | base64)"
+else
+  B64_PASS="$(ruby -e 'print [ARGV[0]].pack("m")' "${PASSWORD}")"
+fi
+
 
 # Need to get these commands:
 #  /bin/echo
 #  /bin/sleep
 #  /bin/hostname
 #  /usr/bin/base64
-#  /usr/bin/jq
+#  /usr/bin/jq or /usr/local/bin/jq
 #  /usr/bin/curl
 #  /usr/bin/test
-export PATH=/bin:/usr/bin
+export PATH=/bin:/usr/bin:/usr/local/bin
 
 # The URL that tells us the data.
 CMDS="rssi%2Cfluxatt_cur_total_data%2Cfluxatt_allote_data"
@@ -32,10 +39,10 @@ req() {
 
 # produce a line for collectd
 report() {
-  local field="$1"
-  local metric_name="$2"
-  local type="$3"
-  echo PUTVAL ${HOSTNAME}/attwireless/${type}-${metric_name} interval=$INTERVAL ${now}:$(echo "${data}" | jq -r ".${field}")
+  report_field="$1"
+  report_metric_name="$2"
+  report_type="$3"
+  echo "PUTVAL ${HOSTNAME}/attwireless/${report_type}-${report_metric_name} interval=$INTERVAL ${now}:$(echo "${data}" | jq -r ".${report_field}")"
 }
 
 # get the data and report it
@@ -45,7 +52,6 @@ report_att_data() {
   data="$(req "${DATA_URL}")"
 
   if [ -z "$(echo "${data}" | jq -r .rssi)" ]; then
-    B64_PASS="$(echo -n "${PASSWORD}" | base64)"
     login="$(req -X POST -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" \
       -d "isTest=false&goformId=LOGIN&password=${B64_PASS}" \
       "http://${ROUTER_IP}/goform/goform_set_cmd_process")"
@@ -64,5 +70,5 @@ report_att_data() {
 
 while true; do
   test -f /var/lock/stop-attwireless || (report_att_data)
-  sleep ${INTERVAL}
+  sleep "${INTERVAL}"
 done

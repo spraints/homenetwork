@@ -52,6 +52,13 @@ class spraints::role::router(
     content => "${att_gw}\n",
   }
 
+  file { "/etc/rc.local":
+    ensure  => present,
+    owner   => "root",
+    mode    => "444",
+    content => template("spraints/etc/rc.local.erb"),
+  }
+
   file { "/etc/resolv.conf":
     ensure  => present,
     owner   => "root",
@@ -143,6 +150,13 @@ class spraints::role::router(
       mode    => "444",
       content => $sprouter_config_fragment,
     }
+  }
+
+  file { "/opt/sprouter_config/stats.sh":
+    ensure  => present,
+    owner   => "root",
+    mode    => "555",
+    content => template("spraints/opt/sprouter_config/stats.sh.erb"),
   }
 
   vcsrepo { $sprouter_gem:
