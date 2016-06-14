@@ -11,7 +11,7 @@
 NAME="visage"
 DESC="Front-end for rrd data"
 ROOT_DIR="/opt/visage"
-DAEMON="$ROOT_DIR/bin/unicorn"
+DAEMON="$ROOT_DIR/bin/puma"
 PIDFILE="<%= @sc_config["visage_pidfile"] %>"
 CONFIG_PATH="<%= @sc_config["visage_config_path"] %>"
 
@@ -20,7 +20,7 @@ test -x $DAEMON || exit 0
 . /lib/lsb/init-functions
 
 # Override this variable by editing or creating /etc/default/visage.
-DAEMON_OPTS="--daemonize --config-file unicorn.rb -p 12004 --env production config.ru"
+DAEMON_OPTS="--daemon --pid-file $PIDFILE --port 12004 --env production --redirect-stdout <%= @sc_config["visage_log_file"] %> --redirect-stderr <%= @sc_config["visage_log_file"] %>"
 
 if [ -f /etc/default/visage ]; then
     . /etc/default/visage
