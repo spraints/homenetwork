@@ -52,6 +52,13 @@ class spraints::role::router(
     content => "${att_gw}\n",
   }
 
+  file { "/etc/rc.local":
+    ensure  => present,
+    owner   => "root",
+    mode    => "444",
+    content => template("spraints/etc/rc.local.erb"),
+  }
+
   file { "/etc/resolv.conf":
     ensure  => present,
     owner   => "root",
