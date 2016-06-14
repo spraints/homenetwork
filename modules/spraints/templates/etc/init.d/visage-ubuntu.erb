@@ -20,7 +20,7 @@ test -x $DAEMON || exit 0
 . /lib/lsb/init-functions
 
 # Override this variable by editing or creating /etc/default/visage.
-DAEMON_OPTS="--daemon --pid-file $PIDFILE --port 12004 --env production --redirect-stdout <%= @sc_config["visage_log_file"] %> --redirect-stderr <%= @sc_config["visage_log_file"] %>"
+DAEMON_OPTS="--daemon --pidfile $PIDFILE --port 12004 --env production --control 127.0.0.1:12005 --control-token sekrit --redirect-stdout <%= @sc_config["visage_log_file"] %> --redirect-stderr <%= @sc_config["visage_log_file"] %>"
 
 if [ -f /etc/default/visage ]; then
     . /etc/default/visage
