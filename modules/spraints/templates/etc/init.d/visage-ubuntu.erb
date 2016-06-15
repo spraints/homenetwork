@@ -14,13 +14,17 @@ ROOT_DIR="/opt/visage"
 DAEMON="$ROOT_DIR/bin/puma"
 PIDFILE="<%= @sc_config["visage_pidfile"] %>"
 CONFIG_PATH="<%= @sc_config["visage_config_path"] %>"
+PORT="12004"
+RAILS_ENV="production"
+PUMA_STATE="/var/run/visage-puma.state"
+LOG_FILE="<%= @sc_config["visage_log_file"] %>"
 
 test -x $DAEMON || exit 0
 
 . /lib/lsb/init-functions
 
 # Override this variable by editing or creating /etc/default/visage.
-DAEMON_OPTS="--daemon --pidfile $PIDFILE --port 12004 --env production --control 127.0.0.1:12005 --control-token sekrit --redirect-stdout <%= @sc_config["visage_log_file"] %> --redirect-stderr <%= @sc_config["visage_log_file"] %>"
+DAEMON_OPTS="--daemon --pidfile $PIDFILE --port $PORT --env $RAILS_ENV --state $PUMA_STATE --redirect-stdout $LOG_FILE --redirect-stderr $LOG_FILE"
 
 if [ -f /etc/default/visage ]; then
     . /etc/default/visage
