@@ -12,6 +12,7 @@ class spraints::role::router(
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
   $hbb_if = "re3",
+  $hbb_gw = "38.65.252.1",
   $hbb_ip = "dhcp",
   $hbb_bcast = undef,
   $hbb_net = undef,

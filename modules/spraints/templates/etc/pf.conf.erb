@@ -3,12 +3,15 @@ zig_gw  = <%= @zig_gw %>
 att_if  = <%= @att_if %>
 att_gw  = <%= @att_gw %>
 int_if  = <%= @int_if %>
+hbb_gw  = <%= @hbb_gw %>
+hbb_if  = <%= @hbb_if %>
 int_net = $int_if:network
 
 zig_route = "(" $zig_if $zig_gw ")"
 att_route = "(" $att_if $att_gw ")"
+hbb_route = "(" $hbb_if $hbb_gw ")"
 
-ext_ifs = "{" $zig_if $att_if "}"
+ext_ifs = "{" $zig_if $att_if $hbb_if "}"
 
 turbo_ports = "{ ssh, domain }"
 
@@ -26,14 +29,20 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
+# This is the experimental "use hoosier broadband" list
+# I'm going to manually mess with this
+table <hbb_hosts> counters
+
 table <att_net> const { $att_if:network }
 table <zig_net> const { $zig_if:network<%= (@zig_routes || []).map{|r|", #{r}"}.join %> }
+table <hbb_net> const { $hbb_if:network }
 
 match in all scrub (no-df random-id max-mss 1440)
 
 # NAT
 match out on $att_if from $int_net to any nat-to $att_if
 match out on $zig_if from $int_net to any nat-to $zig_if
+match out on $hbb_if from $int_net to any nat-to $hbb_if
 
 # By default don't let any traffic from outside come in.
 block in log on $ext_ifs
@@ -47,12 +56,16 @@ pass out log on $att_if proto tcp modulate state
 pass out log on $att_if proto udp     keep state
 pass out log on $zig_if proto tcp modulate state
 pass out log on $zig_if proto udp     keep state
+pass out log on $hbb_if proto tcp modulate state
+pass out log on $hbb_if proto udp     keep state
 
 # Default all traffic to zig
 pass in on $int_if all route-to $zig_route
 
 # <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
 pass in on $int_if from <turbo_hosts> to any route-to $att_route
+# Send the experimental hosts to hbb
+pass in on $inf_if from <hbb_hosts> to any route-to $hbb_route
 # <turbo_sites> is a list of sites that should always be FAST
 pass in on $int_if from any to <turbo_sites> route-to $att_route
 # <slow_sites> is a list of sites that should never be fast
@@ -63,11 +76,19 @@ pass in on $int_if proto {udp,tcp} from any to any port $turbo_ports route-to $a
 # Send zig-specific stuff to zig and at&t specific stuff to at&t.
 pass in on $int_if from any to <att_net> route-to $att_route
 pass in on $int_if from any to <zig_net> route-to $zig_route
+pass in on $int_if from any to <hbb_net> route-to $hbb_route
 
 pass in on $int_if from any to $int_if
 
-<% if @collectd_master && @att_test_routes.respond_to?(:each) -%>
-  <% @att_test_routes.each do |ip| -%>
+<% if @collectd_master -%>
+  <% if @att_test_routes.respond_to?(:each) -%>
+    <% @att_test_routes.each do |ip| -%>
 pass in on $int_if from <%= @collectd_master %> to <%= ip %> route-to $att_route
+    <% end -%>
+  <% end -%>
+  <% if @hbb_test_routes.respond_to?(:each) -%>
+    <% @hbb_test_routes.each do |ip| -%>
+pass in on $int_if from <%= @collectd_master %> to <%= ip %> route-to $hbb_route
+    <% end -%>
   <% end -%>
 <% end -%>
