@@ -11,12 +11,17 @@ class spraints::role::router(
   $int_if = "re2",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
-  $mgm_if = "re3",
+  $hbb_if = "re3",
+  $hbb_gw = "38.65.252.1",
+  $hbb_ip = "dhcp",
+  $hbb_bcast = undef,
+  $hbb_net = undef,
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
   $collectd_master = undef,
   $att_test_routes = { },
   $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
+  $hbb_test_routes = { },
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
   $sprouter_config_url = undef,
@@ -41,7 +46,10 @@ class spraints::role::router(
     $att_if:
       address => $att_ip,
       notify  => Exec["reload pf.conf"];
-    $mgm_if:
+    $hbb_if:
+      address => $hbb_ip,
+      netmask => $hbb_net,
+      bcast   => $hbb_bcast,
       notify  => Exec["reload pf.conf"];
   }
 
