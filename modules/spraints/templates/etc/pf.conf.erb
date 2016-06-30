@@ -42,7 +42,7 @@ match in all scrub (no-df random-id max-mss 1440)
 # NAT
 match out on $att_if from $int_net to any nat-to $att_if
 match out on $zig_if from $int_net to any nat-to $zig_if
-match out on $hbb_if from $int_net to any nat-to $hbb_if
+match out on $hbb_if from $int_net to any nat-to ($hbb_if)
 
 # By default don't let any traffic from outside come in.
 block in log on $ext_ifs
