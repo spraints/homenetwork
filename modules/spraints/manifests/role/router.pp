@@ -11,6 +11,9 @@ class spraints::role::router(
   $int_if = "re2",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
+  $hbb_if = "re3",
+  $hbb_ip = "dhcp",
+  $hbb_net = undef,
   $mgm_if = "re3",
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
@@ -40,6 +43,9 @@ class spraints::role::router(
       notify  => Exec["reload pf.conf"];
     $att_if:
       address => $att_ip,
+      notify  => Exec["reload pf.conf"];
+    $hbb_if:
+      address => $hbb_ip,
       notify  => Exec["reload pf.conf"];
     $mgm_if:
       notify  => Exec["reload pf.conf"];
