@@ -65,7 +65,7 @@ pass in on $int_if all route-to $zig_route
 # <turbo_hosts> is an opt-in list of hosts that want a burst of SPEED
 pass in on $int_if from <turbo_hosts> to any route-to $att_route
 # Send the experimental hosts to hbb
-pass in on $inf_if from <hbb_hosts> to any route-to $hbb_route
+pass in on $int_if from <hbb_hosts> to any route-to $hbb_route
 # <turbo_sites> is a list of sites that should always be FAST
 pass in on $int_if from any to <turbo_sites> route-to $att_route
 # <slow_sites> is a list of sites that should never be fast
