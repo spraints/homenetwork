@@ -13,6 +13,7 @@ class spraints::role::router(
   $int_net = "192.168.100",
   $hbb_if = "re3",
   $hbb_ip = "dhcp",
+  $hbb_bcast = undef,
   $hbb_net = undef,
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
@@ -44,7 +45,10 @@ class spraints::role::router(
       address => $att_ip,
       notify  => Exec["reload pf.conf"];
     $hbb_if:
-      address => $hbb_ip;
+      address => $hbb_ip,
+      netmask => $hbb_net,
+      bcast   => $hbb_bcast,
+      notify  => Exec["reload pf.conf"];
   }
 
   file { "/etc/mygate":
