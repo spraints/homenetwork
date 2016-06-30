@@ -21,6 +21,7 @@ class spraints::role::router(
   $collectd_master = undef,
   $att_test_routes = { },
   $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
+  $hbb_test_routes = { },
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
   $sprouter_config_url = undef,
