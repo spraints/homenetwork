@@ -43,9 +43,7 @@ class spraints::services::visage {
   }
 
   file { "/opt/visage/unicorn.rb":
-    ensure => present,
-    content => template("spraints/opt/visage/unicorn.rb.erb"),
-    require => File["/opt/visage"],
+    ensure => absent,
   }
 
   service { "visage":
