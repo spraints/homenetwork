@@ -44,8 +44,7 @@ class spraints::role::router(
       address => $att_ip,
       notify  => Exec["reload pf.conf"];
     $hbb_if:
-      address => $hbb_ip,
-      notify  => Exec["reload pf.conf"];
+      address => $hbb_ip;
   }
 
   file { "/etc/mygate":
