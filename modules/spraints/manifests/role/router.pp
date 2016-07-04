@@ -26,6 +26,7 @@ class spraints::role::router(
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
   $sprouter_config_url = undef,
+  $nfsen = true,
 ) {
   #include spraints::app::zig-or-att
 
@@ -52,12 +53,6 @@ class spraints::role::router(
       netmask => $hbb_net,
       bcast   => $hbb_bcast,
       notify  => Exec["reload pf.conf"];
-  }
-
-  spraints::device::pflow { "pflow0":
-    flowdst     => "${collectd_master}:2055",
-    flowsrc     => "${int_ip}",
-    pflowproto  => "10",
   }
 
   file { "/etc/mygate":
@@ -279,5 +274,29 @@ class spraints::role::router(
       refreshonly => true,
       require     => Package["collectd"],
     }
+  }
+
+  if $pflow == true {
+
+    spraints::device::pflow { "pflow0":
+      flowdst     => "${collectd_master}:2055",
+      flowsrc     => "${int_ip}",
+      pflowproto  => "10",
+    }
+
+    package { "nfsen":
+      ensure => installed
+    }
+
+  } else {
+
+    spraints::device::pflow { "pflow0":
+      flowsrc => undef
+    }
+
+    package { "nfsen":
+      ensure => absent
+    }
+
   }
 }
