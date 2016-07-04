@@ -58,7 +58,7 @@ class spraints::role::router(
     ensure  => present,
     owner   => "root",
     mode    => "444",
-    content => "${att_gw}\n",
+    content => "${hbb_gw}\n",
   }
 
   file { "/etc/rc.local":
