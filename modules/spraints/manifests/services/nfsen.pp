@@ -21,6 +21,8 @@ class spraints::services::nfsen {
     require => Exec["download nfsen"],
   }
 
+  $nfsen_basedir = "/var/local/nfsen"
+
   file { "/etc/nfsen.conf":
     ensure  => present,
     mode    => 444,
@@ -29,9 +31,19 @@ class spraints::services::nfsen {
   }
 
   exec { "install nfsen":
-    command => "/var/www/nfsen/install.pl /etc/nfsen.conf && touch /var/www/nfsen.installed",
+    command => "/var/www/nfsen/install.pl /etc/nfsen.conf && touch ${nfsen_basedir}.installed",
     path    => "/usr/bin:/bin",
-    creates => "/var/www/nfsen.installed",
+    creates => "${nfsen_basedir}.installed",
     require => [ Exec["untar nfsen"], File["/etc/nfsen.conf"] ],
+  }
+
+  file { "/etc/init.d/nfsen":
+    ensure  => link,
+    target  => "${nfsen_basedir}/bin/nfsen",
+    require => Exec["install nfsen"],
+  }
+
+  exec { "nfsen rc.d":
+    command => "/usr/sbin/update-rc.d nfsen defaults 20",
   }
 }
