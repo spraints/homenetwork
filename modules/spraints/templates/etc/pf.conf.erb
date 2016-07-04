@@ -29,8 +29,9 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
-queue hbb on $hbb_if bandwidth 50K, max 60K
-queue hbbdefault parent hbb bandwidth 40K qlimit 1000 default
+queue hbb on $hbb_if bandwidth 200K
+queue hbbdefault parent hbb bandwidth 150K  default
+queue hbbprio parent hbb min 5K
 
 table <att_net> const { $att_if:network }
 table <zig_net> const { $zig_if:network<%= (@zig_routes || []).map{|r|", #{r}"}.join %> }
@@ -57,6 +58,8 @@ pass out log on $zig_if proto tcp modulate state
 pass out log on $zig_if proto udp     keep state
 pass out log on $hbb_if proto tcp modulate state
 pass out log on $hbb_if proto udp     keep state
+pass out log on $hbb_if proto tcp from any to any port $turbo_ports modulate state queue hbbprio
+pass out log on $hbb_if proto udp from any to any port $turbo_ports     keep state queue hbbprio
 
 # Default all traffic to zig
 pass in on $int_if all route-to $hbb_route
