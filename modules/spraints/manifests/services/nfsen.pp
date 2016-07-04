@@ -20,4 +20,18 @@ class spraints::services::nfsen {
     cwd     => "/var/www",
     require => Exec["download nfsen"],
   }
+
+  file { "/etc/nfsen.conf":
+    ensure  => present,
+    mode    => 444,
+    owner   => root,
+    content => template("spraints/etc/nfsen.conf.erb"),
+  }
+
+  exec { "install nfsen":
+    command => "/var/www/nfsen/install.pl /etc/nfsen.conf && touch /var/www/nfsen.installed",
+    path    => "/usr/bin:/bin",
+    creates => "/var/www/nfsen.installed",
+    require => [ Exec["untar nfsen"], File["/etc/nfsen.conf"] ],
+  }
 }
