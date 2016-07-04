@@ -1,0 +1,77 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          visage
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+NAME="visage"
+DESC="Front-end for rrd data"
+ROOT_DIR="/opt/visage"
+DAEMON="$ROOT_DIR/bin/puma"
+PIDFILE="<%= @sc_config["visage_pidfile"] %>"
+CONFIG_PATH="<%= @sc_config["visage_config_path"] %>"
+PORT="12004"
+RAILS_ENV="production"
+PUMA_STATE="/var/run/visage-puma.state"
+CONTROL_URL="tcp://127.0.0.1:12005"
+CONTROL_TOKEN="visage"
+LOG_FILE="<%= @sc_config["visage_log_file"] %>"
+
+test -x $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+
+# Override this variable by editing or creating /etc/default/visage.
+DAEMON_OPTS="--daemon --pidfile $PIDFILE --port $PORT --env $RAILS_ENV --control $CONTROL_URL --control-token $CONTROL_TOKEN --state $PUMA_STATE --redirect-stdout $LOG_FILE --redirect-stderr $LOG_FILE"
+
+if [ -f /etc/default/visage ]; then
+    . /etc/default/visage
+fi
+
+export CONFIG_PATH
+
+case "$1" in
+    start)
+        log_daemon_msg "Starting $DESC" "$NAME"
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --startas $DAEMON --chdir $ROOT_DIR -- $DAEMON_OPTS; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    stop)
+        log_daemon_msg "Stopping $DESC" "$NAME"
+        if start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    reload|restart|force-reload)
+        log_daemon_msg "Restarting $DESC" "$NAME"
+        start-stop-daemon --stop --quiet --pidfile $PIDFILE --retry 5
+        if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --startas $DAEMON --chdir $ROOT_DIR -- $DAEMON_OPTS; then
+            log_end_msg 0
+        else
+            log_end_msg 1
+        fi
+        ;;
+
+    status)
+        status_of_proc -p $PIDFILE $DAEMON $NAME && exit 0 || exit $?
+        ;;
+
+    *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|status|reload|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

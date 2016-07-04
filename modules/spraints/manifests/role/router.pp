@@ -11,11 +11,17 @@ class spraints::role::router(
   $int_if = "re2",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
-  $mgm_if = "re3",
+  $hbb_if = "re3",
+  $hbb_gw = "38.65.252.1",
+  $hbb_ip = "dhcp",
+  $hbb_bcast = undef,
+  $hbb_net = undef,
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
   $collectd_master = undef,
+  $zig_test_routes = { },
   $att_test_routes = { },
+  $hbb_test_routes = { },
   $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
@@ -41,7 +47,10 @@ class spraints::role::router(
     $att_if:
       address => $att_ip,
       notify  => Exec["reload pf.conf"];
-    $mgm_if:
+    $hbb_if:
+      address => $hbb_ip,
+      netmask => $hbb_net,
+      bcast   => $hbb_bcast,
       notify  => Exec["reload pf.conf"];
   }
 
@@ -49,7 +58,14 @@ class spraints::role::router(
     ensure  => present,
     owner   => "root",
     mode    => "444",
-    content => "${att_gw}\n",
+    content => "${hbb_gw}\n",
+  }
+
+  file { "/etc/rc.local":
+    ensure  => present,
+    owner   => "root",
+    mode    => "444",
+    content => template("spraints/etc/rc.local.erb"),
   }
 
   file { "/etc/resolv.conf":
@@ -150,7 +166,7 @@ class spraints::role::router(
     provider => git,
     user     => "root",
     source   => "https://github.com/spraints/sprouter",
-    revision => "6401e80b1063b8a27d4cbeb027af7ca8c514df1b",
+    revision => "3d0b3821abad66dde44325855bf71fc8c2e2781c",
     require  => File[$sprouter_root],
   }
 

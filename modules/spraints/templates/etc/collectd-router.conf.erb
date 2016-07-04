@@ -16,8 +16,10 @@ LoadPlugin exec
 LoadPlugin interface
 LoadPlugin load
 LoadPlugin memory
-LoadPlugin network
 LoadPlugin pf
+
+# Store data
+LoadPlugin network
 
 #<Plugin cpu>
 #  ReportByCpu true
@@ -55,6 +57,7 @@ LoadPlugin pf
   Interface "<%= @zig_if %>"
   Interface "<%= @att_if %>"
   Interface "<%= @int_if %>"
+  Interface "<%= @hbb_if %>"
 </Plugin>
 
 #<Plugin load>

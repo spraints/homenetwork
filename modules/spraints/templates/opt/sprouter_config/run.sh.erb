@@ -4,6 +4,7 @@ cd <%= @install_dir %>
 # Configuration
 export RAILS_ENV=production
 export SECRET_KEY_BASE=<%= @secret_key_base %>
+test -n "$LOGFILE" || LOGFILE=/dev/null
 cat <<DATABASE >config/database.yml 
 production:
   adapter:  sqlite3
@@ -17,6 +18,6 @@ DATABASE
   # Do this before setting RAILS_ENV. For some reason, it can't be done with RAILS_ENV=production.
   bin/rake assets:precompile RAILS_ENV=development
   bin/rake db:migrate
-} >>log/bootstrap.log 2>&1
+} >>$LOGFILE 2>&1
 # Run
-exec bin/rails server --binding=0.0.0.0 --port=4433 "$@" >>log/sprouter_config.log 2>&1
+exec bin/rails server --binding=0.0.0.0 --port=4433 "$@" >>$LOGFILE 2>&1
