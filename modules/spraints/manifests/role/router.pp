@@ -54,6 +54,12 @@ class spraints::role::router(
       notify  => Exec["reload pf.conf"];
   }
 
+  spraints::device::pflow { "pflow0":
+    flowdst     => "${collectd_master}:2055",
+    flowsrc     => "${int_ip}",
+    pflowproto  => "10",
+  }
+
   file { "/etc/mygate":
     ensure  => present,
     owner   => "root",
