@@ -29,9 +29,9 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
-queue hbb on $hbb_if bandwidth 180K
-queue hbbdefault parent hbb bandwidth 150K  default
-queue hbbprio parent hbb min 5K
+queue hbb on $hbb_if bandwidth 1440K
+queue hbbdefault parent hbb bandwidth 1200K  default
+queue hbbprio parent hbb min 50K
 
 table <att_net> const { $att_if:network }
 table <zig_net> const { $zig_if:network<%= (@zig_routes || []).map{|r|", #{r}"}.join %> }
