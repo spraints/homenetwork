@@ -29,7 +29,7 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
-queue hbb on $hbb_if bandwidth 200K
+queue hbb on $hbb_if bandwidth 180K
 queue hbbdefault parent hbb bandwidth 150K  default
 queue hbbprio parent hbb min 5K
 
