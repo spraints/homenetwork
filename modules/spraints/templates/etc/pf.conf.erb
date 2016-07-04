@@ -17,6 +17,7 @@ turbo_ports = "{ ssh, domain }"
 
 set block-policy drop
 set skip on lo0
+set state-defaults pflow
 
 # This table will be manipulated at runtime
 table <turbo_hosts> counters
@@ -52,12 +53,12 @@ pass in on $ext_ifs proto tcp from any to any port ssh
 
 # Everything outgoing is OK.
 pass out log inet
-pass out log on $att_if proto tcp modulate state (pflow)
-pass out log on $att_if proto udp     keep state (pflow)
-pass out log on $zig_if proto tcp modulate state (pflow)
-pass out log on $zig_if proto udp     keep state (pflow)
-pass out log on $hbb_if proto tcp modulate state (pflow)
-pass out log on $hbb_if proto udp     keep state (pflow)
+pass out log on $att_if proto tcp modulate state
+pass out log on $att_if proto udp     keep state
+pass out log on $zig_if proto tcp modulate state
+pass out log on $zig_if proto udp     keep state
+pass out log on $hbb_if proto tcp modulate state
+pass out log on $hbb_if proto udp     keep state
 
 # Default all traffic to zig
 pass in on $int_if all route-to $hbb_route
