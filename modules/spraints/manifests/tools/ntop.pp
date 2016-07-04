@@ -3,7 +3,7 @@ class spraints::tools::ntop {
     exec { "install ntop apt source":
       command => "/usr/bin/wget http://apt-stable.ntop.org/17.04/all/apt-ntop-stable.deb && /usr/bin/dpkg -i apt-ntop-stable.deb",
       cwd     => "/tmp",
-      unless  => "dpkg -l apt-ntop-stable | grep ^ii",
+      unless  => "/usr/bin/dpkg -l apt-ntop-stable | /bin/grep ^ii",
     }
   }
 
