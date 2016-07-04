@@ -1,0 +1,13 @@
+class spraints::tools::ntop {
+  if $::lsbdistcodename == "xenial" {
+    exec { "install ntop apt source":
+      command => "/usr/bin/wget http://apt-stable.ntop.org/17.04/all/apt-ntop-stable.deb && /usr/bin/dpkg -i apt-ntop-stable.deb",
+      cwd     => "/tmp",
+    }
+  }
+
+  package { ["nprobe", "ntopng"]:
+    ensure  => present,
+    require => Exec["install ntop apt source"],
+  }
+}
