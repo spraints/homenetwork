@@ -18,6 +18,6 @@ class spraints::services::nfsen {
     command => "/bin/tar zxvf ${nfsen_tarfile} && /bin/mv nfsen-${nfsen_version} nfsen",
     creates => "nfsen",
     cwd     => "/var/www",
-    requires=> Exec["download nfsen"],
+    require => Exec["download nfsen"],
   }
 }
