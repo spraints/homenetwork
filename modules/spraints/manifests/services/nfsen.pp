@@ -16,7 +16,7 @@ class spraints::services::nfsen {
 
   exec { "untar nfsen":
     command => "/bin/tar zxvf ${nfsen_tarfile} && /bin/mv nfsen-${nfsen_version} nfsen",
-    creates => "nfsen",
+    creates => "/var/www/nfsen",
     cwd     => "/var/www",
     require => Exec["download nfsen"],
   }
