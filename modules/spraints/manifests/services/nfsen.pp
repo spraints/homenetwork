@@ -46,4 +46,10 @@ class spraints::services::nfsen {
   exec { "nfsen rc.d":
     command => "/usr/sbin/update-rc.d nfsen defaults 20",
   }
+
+  file { "/var/www/nfsen/index.php":
+    ensure  => link,
+    target  => "/var/www/nfsen/nfsen.php",
+    require => Exec["install nfsen"],
+  }
 }
