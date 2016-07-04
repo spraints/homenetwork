@@ -29,15 +29,14 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
-queue zig on $zig_if bandwidth 50K, max 60K
-queue zigdefault parent zig bandwidth 40K qlimit 1000 default
+queue hbb on $hbb_if bandwidth 50K, max 60K
+queue hbbdefault parent hbb bandwidth 40K qlimit 1000 default
 
 table <att_net> const { $att_if:network }
 table <zig_net> const { $zig_if:network<%= (@zig_routes || []).map{|r|", #{r}"}.join %> }
 table <hbb_net> const { $hbb_if:network }
 
 match in all scrub (no-df random-id max-mss 1440)
-match out on $zig_if scrub (max-mss 1000)
 
 # NAT
 match out on $att_if from $int_net to any nat-to $att_if
