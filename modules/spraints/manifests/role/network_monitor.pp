@@ -54,7 +54,7 @@ class spraints::role::network_monitor(
 
   #####
 
-  include spraints::tools::ntop
+  include spraints::tools::nfdump
 
   #####
 
