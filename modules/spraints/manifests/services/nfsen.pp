@@ -34,6 +34,7 @@ class spraints::services::nfsen {
 
   exec { "install nfsen":
     command => "/var/www/nfsen/install.pl /etc/nfsen.conf && touch ${nfsen_basedir}.installed",
+    cwd     => "/var/www/nfsen",
     path    => "/usr/bin:/bin",
     creates => "${nfsen_basedir}.installed",
     require => [ Exec["untar nfsen"], File["/etc/nfsen.conf"] ],
