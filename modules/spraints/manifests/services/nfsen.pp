@@ -22,6 +22,8 @@ class spraints::services::nfsen {
   }
 
   $nfsen_basedir = "/var/local/nfsen"
+  $nfsen_user = "www-data"
+  $nfsen_group = "www-data"
 
   file { "/etc/nfsen.conf":
     ensure  => present,

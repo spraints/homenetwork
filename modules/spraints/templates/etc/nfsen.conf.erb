@@ -81,12 +81,12 @@ $PREFIX  = '/usr/local/bin';
 # This may be a different or the same uid than your web server.
 # Note: This user must be in group $WWWGROUP, otherwise nfcapd
 #       is not able to write data files!
-$USER    = "matt";
+$USER    = "<%= @nfsen_user %>";
 
 # user and group of the web server process
 # All netflow processing will be done with this user
-$WWWUSER  = "matt";
-$WWWGROUP = "matt";
+$WWWUSER  = "<%= @nfsen_user %>";
+$WWWGROUP = "<%= @nfsen_group %>";
 
 # Receive buffer size for nfcapd - see man page nfcapd(1)
 $BUFFLEN = 200000;
