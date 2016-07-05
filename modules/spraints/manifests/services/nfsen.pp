@@ -1,5 +1,5 @@
 class spraints::services::nfsen {
-  package { ["apache2", "libapache2-mod-php5", "php5-common",
+  package { ["apache2", "libapache2-mod-php", "php-common",
     "rrdtool", "libmailtools-perl", "librrds-perl", "libio-socket-ssl-perl"]:
       ensure => installed;
     "nfdump":
