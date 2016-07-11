@@ -17,6 +17,7 @@ turbo_ports = "{ ssh, domain }"
 
 set block-policy drop
 set skip on lo0
+set state-defaults pflow
 
 # This table will be manipulated at runtime
 table <turbo_hosts> counters

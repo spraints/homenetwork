@@ -54,6 +54,10 @@ class spraints::role::network_monitor(
 
   #####
 
+  include spraints::tools::nfdump
+
+  #####
+
   include spraints::services::visage
 
   file { "/var/local/visage/profiles.yaml.d/network_monitor.yaml":
