@@ -22,7 +22,7 @@ class spraints::role::router(
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
   $sprouter_config_url = undef,
-  $nameservers => [$att_gw, "8.8.8.8"],
+  $nameservers = [$att_gw, "8.8.8.8"],
 ) {
   #include spraints::app::zig-or-att
 
