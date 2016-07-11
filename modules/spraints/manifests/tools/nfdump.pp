@@ -4,7 +4,7 @@ class spraints::tools::nfdump {
       ensure => "installed";
   }
 
-  service { "nfcapd":
+  service { "nfdump":
     ensure  => "running",
     require => Package["nfdump"],
   }
