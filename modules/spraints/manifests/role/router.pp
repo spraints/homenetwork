@@ -2,9 +2,6 @@
 # are routed to AT&T always. Some hosts can self-select
 # AT&T for all of their traffic for a limited time.
 class spraints::role::router(
-  $zig_if = "re0",
-  $zig_gw = "192.168.3.1",
-  $zig_ip = "dhcp",
   $att_if = "re1",
   $att_gw = "192.168.0.1",
   $att_ip = "dhcp",
@@ -22,10 +19,10 @@ class spraints::role::router(
   $zig_test_routes = { },
   $att_test_routes = { },
   $hbb_test_routes = { },
-  $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
   $sprouter_config_url = undef,
+  $nameservers = ["8.8.8.8"],
 ) {
   #include spraints::app::zig-or-att
 
@@ -42,7 +39,6 @@ class spraints::role::router(
       address => $int_ip,
       notify  => Exec["reload pf.conf"];
     $zig_if:
-      address => $zig_ip,
       notify  => Exec["reload pf.conf"];
     $att_if:
       address => $att_ip,
@@ -67,18 +63,11 @@ class spraints::role::router(
     content => "${hbb_gw}\n",
   }
 
-  file { "/etc/rc.local":
-    ensure  => present,
-    owner   => "root",
-    mode    => "444",
-    content => template("spraints/etc/rc.local.erb"),
-  }
-
   file { "/etc/resolv.conf":
     ensure  => present,
     owner   => "root",
     mode    => "644",
-    content => "nameserver 127.0.0.1\nnameserver ${att_gw}\nnameserver ${zig_gw}\nlookup file bind\n",
+    content => template("spraints/etc/resolv.conf.router.erb"),
   }
 
   ###
