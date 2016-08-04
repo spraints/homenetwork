@@ -27,9 +27,9 @@ table <turbo_sites> counters
 # stuff like app store downloads.
 table <slow_sites> counters
 
-# This is the experimental "use hoosier broadband" list
-# I'm going to manually mess with this
-table <hbb_hosts> counters
+queue hbb on $hbb_if bandwidth 1440K
+queue hbbdefault parent hbb bandwidth 1200K default
+queue hbbprio    parent hbb bandwidth  240K min 50K
 
 table <att_net> const { $att_if:network }
 table <hbb_net> const { $hbb_if:network }
@@ -52,6 +52,8 @@ pass out log on $att_if proto tcp modulate state
 pass out log on $att_if proto udp     keep state
 pass out log on $hbb_if proto tcp modulate state
 pass out log on $hbb_if proto udp     keep state
+pass out log on $hbb_if proto tcp from any to any port $turbo_ports modulate state queue hbbprio
+pass out log on $hbb_if proto udp from any to any port $turbo_ports     keep state queue hbbprio
 
 # Default all traffic to hbb
 pass in on $int_if all route-to $hbb_route
