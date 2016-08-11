@@ -20,6 +20,7 @@ class spraints::role::router(
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
   $sprouter_config_url = undef,
+  $nameservers = ["8.8.8.8"],
 ) {
   #include spraints::app::zig-or-att
 
@@ -36,7 +37,6 @@ class spraints::role::router(
       address => $int_ip,
       notify  => Exec["reload pf.conf"];
     "re0":
-      address => undef,
       notify  => Exec["reload pf.conf"];
     $att_if:
       address => $att_ip,
@@ -54,18 +54,11 @@ class spraints::role::router(
     pflowproto  => "10",
   }
 
-  file { "/etc/rc.local":
-    ensure  => present,
-    owner   => "root",
-    mode    => "444",
-    content => template("spraints/etc/rc.local.erb"),
-  }
-
   file { "/etc/resolv.conf":
     ensure  => present,
     owner   => "root",
     mode    => "644",
-    content => "nameserver 127.0.0.1\nnameserver 8.8.8.8\nnameserver 8.8.4.4\nlookup file bind\n",
+    content => template("spraints/etc/resolv.conf.router.erb"),
   }
 
   ###
