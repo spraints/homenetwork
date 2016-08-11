@@ -5,7 +5,7 @@ set -e
 table=hbb_gw
 iface=<%= @hbb_if %>
 
-pf_gw=`pfctl -t $table -T show`
+pf_gw=`pfctl -t $table -T show | head -1 | awk '{print $1}'`
 dhcp_gw=`cat /var/db/dhclient.leases.$iface | grep -oE 'option routers [^;]*' | cut -d ' ' -f 3`
 
 if [ -n "$dhcp_gw" ] && [ "$pf_gw" != "$dhcp_gw" ]; then
