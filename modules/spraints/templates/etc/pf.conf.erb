@@ -9,7 +9,7 @@ int_net = $int_if:network
 
 zig_route = "(" $zig_if $zig_gw ")"
 att_route = "(" $att_if $att_gw ")"
-hbb_route = "(" $hbb_if $hbb_gw ")"
+hbb_route = "(" $hbb_if " <hbb_gw>)"
 
 ext_ifs = "{" $zig_if $att_if $hbb_if "}"
 
@@ -33,6 +33,9 @@ table <slow_sites> counters
 # This is the experimental "use hoosier broadband" list
 # I'm going to manually mess with this
 table <hbb_hosts> counters
+
+# This is the table that should hold exactly one address, the current HBB gateway
+table <hbb_gw>
 
 table <att_net> const { $att_if:network }
 table <zig_net> const { $zig_if:network<%= (@zig_routes || []).map{|r|", #{r}"}.join %> }

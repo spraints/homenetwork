@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+table=hbb_gw
+iface=<%= @hbb_if %>
+
+pf_gw=`pfctl -t $table -T show`
+dhcp_gw=`cat /var/db/dhclient.leases.$iface | grep -oE 'option routers [^;]*' | cut -d ' ' -f 3`
+
+if [ -n "$dhcp_gw" ] && [ "$pf_gw" != "$dhcp_gw" ]; then
+  pfctl -q -t $table -T flush
+  pfctl -q -t $table -T add $dhcp_gw
+fi

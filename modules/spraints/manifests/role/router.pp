@@ -94,6 +94,20 @@ class spraints::role::router(
     notify  => Exec["reload pf.conf"],
   }
 
+  cron { "hbbgw":
+    ensure  => present,
+    command => "/opt/updatehbbgw",
+    user    => "root",
+    require => [ File["/opt/updatehbbgw"] ],
+  }
+
+  file { "/opt/updatehbbgw":
+    ensure  => present,
+    owner   => "root",
+    mode    => "555",
+    content => template("spraints/opt/updatehbbgw.erb"),
+  }
+
   exec { "reload pf.conf":
     command => "pfctl -n -f /etc/pf.conf && pfctl -f /etc/pf.conf",
     path    => $exec_path,
