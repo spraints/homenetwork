@@ -2,9 +2,6 @@
 # are routed to AT&T always. Some hosts can self-select
 # AT&T for all of their traffic for a limited time.
 class spraints::role::router(
-  $zig_if = "re0",
-  $zig_gw = "192.168.3.1",
-  $zig_ip = "dhcp",
   $att_if = "re1",
   $att_gw = "192.168.0.1",
   $att_ip = "dhcp",
@@ -19,10 +16,8 @@ class spraints::role::router(
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
   $collectd_master = undef,
-  $zig_test_routes = { },
   $att_test_routes = { },
   $hbb_test_routes = { },
-  $zig_routes = [ "10.5.0.0/16", "10.249.0.0/16" ],
   $sprouter_config = undef,
   $sprouter_config_fragment = undef,
   $sprouter_config_url = undef,
@@ -41,8 +36,8 @@ class spraints::role::router(
     $int_if:
       address => $int_ip,
       notify  => Exec["reload pf.conf"];
-    $zig_if:
-      address => $zig_ip,
+    "re0":
+      address => undef,
       notify  => Exec["reload pf.conf"];
     $att_if:
       address => $att_ip,
