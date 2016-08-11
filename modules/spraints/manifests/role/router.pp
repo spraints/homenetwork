@@ -9,14 +9,12 @@ class spraints::role::router(
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
   $hbb_if = "re3",
-  $hbb_gw = "38.65.252.1",
   $hbb_ip = "dhcp",
   $hbb_bcast = undef,
   $hbb_net = undef,
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
   $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
   $collectd_master = undef,
-  $zig_test_routes = { },
   $att_test_routes = { },
   $hbb_test_routes = { },
   $sprouter_config = undef,
@@ -38,7 +36,7 @@ class spraints::role::router(
     $int_if:
       address => $int_ip,
       notify  => Exec["reload pf.conf"];
-    $zig_if:
+    "re0":
       notify  => Exec["reload pf.conf"];
     $att_if:
       address => $att_ip,
@@ -54,13 +52,6 @@ class spraints::role::router(
     flowdst     => "${collectd_master}:2055",
     flowsrc     => "${int_ip}",
     pflowproto  => "10",
-  }
-
-  file { "/etc/mygate":
-    ensure  => present,
-    owner   => "root",
-    mode    => "444",
-    content => "${hbb_gw}\n",
   }
 
   file { "/etc/resolv.conf":
@@ -81,6 +72,20 @@ class spraints::role::router(
     mode    => "600",
     content => template("spraints/etc/pf.conf.erb"),
     notify  => Exec["reload pf.conf"],
+  }
+
+  cron { "hbbgw":
+    ensure  => present,
+    command => "/opt/updatehbbgw",
+    user    => "root",
+    require => [ File["/opt/updatehbbgw"] ],
+  }
+
+  file { "/opt/updatehbbgw":
+    ensure  => present,
+    owner   => "root",
+    mode    => "555",
+    content => template("spraints/opt/updatehbbgw.erb"),
   }
 
   exec { "reload pf.conf":

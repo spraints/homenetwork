@@ -1,12 +1,11 @@
 att_if  = <%= @att_if %>
 att_gw  = <%= @att_gw %>
 int_if  = <%= @int_if %>
-hbb_gw  = <%= @hbb_gw %>
 hbb_if  = <%= @hbb_if %>
 int_net = $int_if:network
 
 att_route = "(" $att_if $att_gw ")"
-hbb_route = "(" $hbb_if $hbb_gw ")"
+hbb_route = "(" $hbb_if " <hbb_gw>)"
 
 ext_ifs = "{" $att_if $hbb_if "}"
 
@@ -30,6 +29,9 @@ table <slow_sites> counters
 # This is the experimental "use hoosier broadband" list
 # I'm going to manually mess with this
 table <hbb_hosts> counters
+
+# This is the table that should hold exactly one address, the current HBB gateway
+table <hbb_gw>
 
 table <att_net> const { $att_if:network }
 table <hbb_net> const { $hbb_if:network }
