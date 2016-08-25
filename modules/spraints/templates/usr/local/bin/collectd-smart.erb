@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 ###
 # ABOUT  : collectd monitoring script for smartmontools (using smartctl)
 # AUTHOR : Samuel B. <samuel_._behan_(at)_dob_._sk> (c) 2012
@@ -57,6 +57,7 @@
 #                        Improve docs.
 #                        Add a few metrics to output.
 #                        Re-order & standardise output lines for easier review & updating.
+#   2016-08 ff         - @spraints - modified for OpenBSD and whatever other stuff I need.
 ###
 
 if [ -z "$*" ]; then
@@ -72,7 +73,7 @@ for disk in "$@"; do
 	fi
 done
 
-HOST=`hostname -f`
+HOST=`hostname -s`
 INTERVAL=300
 while true; do
 	for disk in "$@"; do
@@ -87,7 +88,7 @@ while true; do
 			drv=
 		fi
 
-		eval `sudo /usr/sbin/smartctl $drv -A "/dev/$dsk" | awk '$3 ~ /^0x/ && $2 ~ /^[a-zA-Z0-9_-]+$/ { gsub(/-/, "_"); print "SMART_" $2 "=" $10 }' 2>/dev/null`
+		eval `/usr/local/sbin/smartctl $drv -A "/dev/$dsk" | awk '$3 ~ /^0x/ && $2 ~ /^[a-zA-Z0-9_-]+$/ { gsub(/-/, "_"); print "SMART_" $2 "=" $10 }' 2>/dev/null`
 
 		[ -n "$SMART_Command_Timeout" ] &&
 			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-command_timeout interval=$INTERVAL N:${SMART_Command_Timeout:-U}"
