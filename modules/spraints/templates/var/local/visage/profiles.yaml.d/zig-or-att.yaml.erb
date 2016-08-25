@@ -68,3 +68,30 @@ routermemory:
   :percentiles:
   :profile_name: routermemory
   :url: routermemory
+
+routerdisklife:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - smartmon-wd0c/percent-media_wearout_indicator
+  :percentiles:
+  :profile_name: routerdisklife
+  :url: routerdisklife
+
+routerdisktemp:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - smartmon-wd0c/temperature-temperature
+  :percentiles:
+  :profile_name: routerdisktemp
+  :url: routerdisktemp
+
+routerdiskliferaw:
+  :hosts:
+  - zig-or-att
+  :metrics:
+  - smartmon-wd0c/gauge-media_wearout_indicator
+  :percentiles:
+  :profile_name: routerdiskliferaw
+  :url: routerdiskliferaw
