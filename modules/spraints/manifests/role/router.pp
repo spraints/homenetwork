@@ -266,6 +266,14 @@ class spraints::role::router(
       notify  => Exec["start collectd"],
     }
 
+    file { "/usr/local/bin/collectd-smart":
+      ensure  => present,
+      owner   => "root",
+      mode    => "4555",
+      content => template("spraints/usr/local/bin/collectd-smart.erb"),
+      notify  => Exec["start collectd"],
+    }
+
     exec { "start collectd":
       command     => "rcctl enable collectd && rcctl stop collectd && rcctl start collectd",
       path        => $exec_path,
