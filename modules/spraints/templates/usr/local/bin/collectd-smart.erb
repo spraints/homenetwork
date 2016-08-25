@@ -73,6 +73,21 @@ for disk in "$@"; do
 	fi
 done
 
+emit() {
+  local attr="$1"
+  local col="$2"
+  local name="$3"
+  local line=$(echo "$ATTRS" | grep " 0x00" | grep -w "$attr" | head -1)
+  if [ -n "$line" ]; then
+    local value=
+    case "$col" in
+      raw) value=$(echo "$line" | awk '{print $10}' ;;
+      *)   value=$(echo "$line" | awk '{print $4 }' ;;
+    esac
+    echo "PUTVAL $HOST/smartmon-$dsk$id/$name interval=$INTERVAL N:${value:-U}"
+  fi
+}
+
 HOST=`hostname -s`
 INTERVAL=300
 while true; do
@@ -88,32 +103,21 @@ while true; do
 			drv=
 		fi
 
-		eval `/usr/local/sbin/smartctl $drv -A "/dev/$dsk" | awk '$3 ~ /^0x/ && $2 ~ /^[a-zA-Z0-9_-]+$/ { gsub(/-/, "_"); print "SMART_" $2 "=" $10 }' 2>/dev/null`
+                ATTRS="$(/usr/local/sbin/smartctl $drv -A "/dev/$dsk")"
 
-		[ -n "$SMART_Command_Timeout" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-command_timeout interval=$INTERVAL N:${SMART_Command_Timeout:-U}"
-		[ -n "$SMART_Current_Pending_Sector" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-current_pending_sector interval=$INTERVAL N:${SMART_Current_Pending_Sector:-U}"
-		[ -n "$SMART_End_to_End_Error" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-end_to_end_error interval=$INTERVAL N:${SMART_End_to_End_Error:-U}"
-		[ -n "$SMART_Hardware_ECC_Recovered" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-hardware_ecc_recovered interval=$INTERVAL N:${SMART_Hardware_ECC_Recovered:-U}"
-		[ -n "$SMART_Offline_Uncorrectable" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-offline_uncorrectable interval=$INTERVAL N:${SMART_Offline_Uncorrectable:-U}"
-		[ -n "$SMART_Raw_Read_Error_Rate" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-raw_read_error_rate interval=$INTERVAL N:${SMART_Raw_Read_Error_Rate:-U}"
-		[ -n "$SMART_Reallocated_Sector_Ct" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-reallocated_sector_count interval=$INTERVAL N:${SMART_Reallocated_Sector_Ct:-U}"
-		[ -n "$SMART_Reported_Uncorrect" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-reported_uncorrect interval=$INTERVAL N:${SMART_Reported_Uncorrect:-U}"
-		[ -n "$SMART_Spin_Up_Time" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/gauge-spin_up_time interval=$INTERVAL N:${SMART_Spin_Up_Time:-U}"
-		[ -n "$SMART_Airflow_Temperature_Cel" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/temperature-airflow interval=$INTERVAL N:${SMART_Airflow_Temperature_Cel:-U}"
-		[ -n "$SMART_Temperature_Celsius" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/temperature-temperature interval=$INTERVAL N:${SMART_Temperature_Celsius:-U}"
-		[ -n "$SMART_Media_Wearout_Indicator" ] &&
-			echo "PUTVAL $HOST/smartmon-$dsk$id/guage-media_wearout_indicator interval=$INTERVAL N:${SMART_Media_Wearout_Indicator:-U}"
+		emit Command_Timeout         raw gauge-command_timeout
+		emit Current_Pending_Sector  raw gauge-current_pending_sector
+		emit End_to_End_Error        raw gauge-end_to_end_error
+		emit Hardware_ECC_Recovered  raw gauge-hardware_ecc_recovered
+		emit Offline_Uncorrectable   raw gauge-offline_uncorrectable
+		emit Raw_Read_Error_Rate     raw gauge-raw_read_error_rate
+		emit Reallocated_Sector_Ct   raw gauge-reallocated_sector_count
+		emit Reported_Uncorrect      raw gauge-reported_uncorrect
+		emit Spin_Up_Time            raw gauge-spin_up_time
+		emit Airflow_Temperature_Cel raw temperature-airflow
+		emit Temperature_Celsius     raw temperature-temperature
+		emit Media_Wearout_Indicator raw gauge-media_wearout_indicator
+		emit Media_Wearout_Indicator val percent-media_wearout_indicator
 	done
 
 	sleep $INTERVAL || true
