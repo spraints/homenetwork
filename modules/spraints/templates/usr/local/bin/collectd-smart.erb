@@ -61,14 +61,14 @@
 ###
 
 if [ -z "$*" ]; then
-	echo "Usage: ${basename $0} <disk> <disk>..." >&2
+	echo "Usage: $(basename $0) <disk> <disk>..." >&2
 	exit 1
 fi
 
 for disk in "$@"; do
 	disk=${disk%:*}
 	if ! [ -e "/dev/$disk" ]; then
-		echo "${basename $0}: disk /dev/$disk not found !" >&2
+		echo "$(basename $0): disk /dev/$disk not found !" >&2
 		exit 1
 	fi
 done
@@ -81,8 +81,8 @@ emit() {
   if [ -n "$line" ]; then
     local value=
     case "$col" in
-      raw) value=$(echo "$line" | awk '{print $10}' ;;
-      *)   value=$(echo "$line" | awk '{print $4 }' ;;
+      raw) value=$(echo "$line" | awk '{print $10}') ;;
+      *)   value=$(echo "$line" | awk '{print $4 }') ;;
     esac
     echo "PUTVAL $HOST/smartmon-$dsk$id/$name interval=$INTERVAL N:${value:-U}"
   fi
