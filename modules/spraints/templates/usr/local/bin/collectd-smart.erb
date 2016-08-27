@@ -1,0 +1,124 @@
+#!/bin/sh
+###
+# ABOUT  : collectd monitoring script for smartmontools (using smartctl)
+# AUTHOR : Samuel B. <samuel_._behan_(at)_dob_._sk> (c) 2012
+# LICENSE: GNU GPL v3
+# SOURCE: http://devel.dob.sk/collectd-scripts/
+#
+# This script monitors SMART pre-fail attributes of disk drives using smartmon tools.
+# Generates output suitable for Exec plugin of collectd.
+###
+# Requirements:
+#   * smartmontools installed (and smartctl binary)
+#   * User & group for collector:collector
+#       groupadd collector
+#       useradd -d /var/lib/collector -g collector -l -m -s /bin/sh collector
+#   * sudo entry for binary (ie. for sys account):
+#       collector ALL=(root) NOPASSWD:/usr/sbin/smartctl *
+#   * Configuration for collectd.conf
+#       LoadPlugin exec
+#       <Plugin exec>
+#         Exec "collector:collector" "/usr/local/bin/collectd-smartmon" "sda" "sdb"
+#       </Plugin>
+###
+# Parameters:
+#   <disk>[:<driver>,<id> ] ...
+###
+# Typical usage:
+#   /etc/collect/smartmon.sh "sda:megaraid,4" "sdb"
+#
+#   Will monitor disk 4, of megaraid adapter mapped as /dev/sda and additionaly
+#   normal disk /dev/sdb. See smartctl manual for more info about adapter driver names.
+###
+# Typical output:
+#   PUTVAL <host>/smartmon-sda4/gauge-raw_read_error_rate interval=300 N:30320489
+#   PUTVAL <host>/smartmon-sda4/gauge-spin_up_time interval=300 N:0
+#   PUTVAL <host>/smartmon-sda4/gauge-reallocated_sector_count interval=300 N:472
+#   PUTVAL <host>/smartmon-sda4/gauge-end_to_end_error interval=300 N:0
+#   PUTVAL <host>/smartmon-sda4/gauge-reported_uncorrect interval=300 N:1140
+#   PUTVAL <host>/smartmon-sda4/gauge-command_timeout interval=300 N:85900918876
+#   PUTVAL <host>/smartmon-sda4/temperature-airflow interval=300 N:31
+#   PUTVAL <host>/smartmon-sda4/temperature-temperature interval=300 N:31
+#   PUTVAL <host>/smartmon-sda4/gauge-offline_uncorrectable interval=300 N:5
+#   PUTVAL <host>/smartmon-sdb/gauge-raw_read_error_rate interval=300 N:0
+#   PUTVAL <host>/smartmon-sdb/gauge-spin_up_time interval=300 N:4352
+#   ...
+#
+# Monitoring additional attributes:
+#   If it is needed to monitor additional SMART attributes provided by smartctl, you
+#   can do it simply by echoing SMART_<Attribute-Name> environment variable as its output
+#   by smartctl -A. It's nothing complicated ;)
+#
+# History:
+#   2012-04-17 v0.1.0  - public release
+#   2012-09-03 v0.1.1  - fixed dash replacemenet (thx to R.Buehl)
+#   2013-08-28 v0.2.0  - Fix sudo command.
+#                        Use dash as it's lower overhead.
+#                        Improve docs.
+#                        Add a few metrics to output.
+#                        Re-order & standardise output lines for easier review & updating.
+#   2016-08 ff         - @spraints - modified for OpenBSD and whatever other stuff I need.
+###
+
+if [ -z "$*" ]; then
+	echo "Usage: $(basename $0) <disk> <disk>..." >&2
+	exit 1
+fi
+
+for disk in "$@"; do
+	disk=${disk%:*}
+	if ! [ -e "/dev/$disk" ]; then
+		echo "$(basename $0): disk /dev/$disk not found !" >&2
+		exit 1
+	fi
+done
+
+emit() {
+  local attr="$1"
+  local col="$2"
+  local name="$3"
+  local line=$(echo "$ATTRS" | grep " 0x00" | grep -w "$attr" | head -1)
+  if [ -n "$line" ]; then
+    local value=
+    case "$col" in
+      raw) value=$(echo "$line" | awk '{print $10}') ;;
+      *)   value=$(echo "$line" | awk '{print $4 }') ;;
+    esac
+    echo "PUTVAL $HOST/smartmon-$dsk$id/$name interval=$INTERVAL N:${value:-U}"
+  fi
+}
+
+HOST=`hostname -s`
+INTERVAL=300
+while true; do
+	for disk in "$@"; do
+		dsk=${disk%:*}
+		drv=${disk#*:}
+		id=
+
+		if [ "$disk" != "$drv" ]; then
+			drv="-d $drv"
+			id=${drv#*,}
+		else
+			drv=
+		fi
+
+                ATTRS="$(/usr/local/sbin/smartctl $drv -A "/dev/$dsk")"
+
+		emit Command_Timeout         raw gauge-command_timeout
+		emit Current_Pending_Sector  raw gauge-current_pending_sector
+		emit End_to_End_Error        raw gauge-end_to_end_error
+		emit Hardware_ECC_Recovered  raw gauge-hardware_ecc_recovered
+		emit Offline_Uncorrectable   raw gauge-offline_uncorrectable
+		emit Raw_Read_Error_Rate     raw gauge-raw_read_error_rate
+		emit Reallocated_Sector_Ct   raw gauge-reallocated_sector_count
+		emit Reported_Uncorrect      raw gauge-reported_uncorrect
+		emit Spin_Up_Time            raw gauge-spin_up_time
+		emit Airflow_Temperature_Cel raw temperature-airflow
+		emit Temperature_Celsius     raw temperature-temperature
+		emit Media_Wearout_Indicator raw gauge-media_wearout_indicator
+		emit Media_Wearout_Indicator val percent-media_wearout_indicator
+	done
+
+	sleep $INTERVAL || true
+done
