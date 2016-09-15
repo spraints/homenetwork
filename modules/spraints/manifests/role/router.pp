@@ -2,9 +2,6 @@
 # are routed to AT&T always. Some hosts can self-select
 # AT&T for all of their traffic for a limited time.
 class spraints::role::router(
-  $att_if = "re1",
-  $att_gw = "192.168.0.1",
-  $att_ip = "dhcp",
   $int_if = "re2",
   $int_ip = "192.168.100.2",
   $int_net = "192.168.100",
@@ -13,13 +10,9 @@ class spraints::role::router(
   $hbb_bcast = undef,
   $hbb_net = undef,
   $dhcp_reservations = { "host" => {"ip" => "192.168.100.49", "mac" => "11:22:33:44:55:66"} },
-  $dhcp_name_servers = [ "192.168.100.2", "192.168.100.81" ],
+  $dhcp_name_servers = [ "192.168.100.2", "8.8.8.8" ],
   $collectd_master = undef,
-  $att_test_routes = { },
   $hbb_test_routes = { },
-  $sprouter_config = undef,
-  $sprouter_config_fragment = undef,
-  $sprouter_config_url = undef,
   $nameservers = ["8.8.8.8"],
 ) {
   #include spraints::app::zig-or-att
@@ -38,8 +31,7 @@ class spraints::role::router(
       notify  => Exec["reload pf.conf"];
     "re0":
       notify  => Exec["reload pf.conf"];
-    $att_if:
-      address => $att_ip,
+    "re1":
       notify  => Exec["reload pf.conf"];
     $hbb_if:
       address => $hbb_ip,
@@ -122,80 +114,21 @@ class spraints::role::router(
   $sprouter_prefs_fragment = "/etc/sprouter.conf.fragment"
 
   cron { "sprouter":
-    ensure  => present,
+    ensure  => absent,
     command => "${sprouter_wrapper} >${sprouter_log} 2>&1",
     user    => "root",
-    require => [ Exec["bundle sprouter"], File[$sprouter_wrapper] ],
   }
 
-  file { $sprouter_wrapper:
-    ensure  => present,
-    owner   => "root",
-    mode    => "555",
-    content => template("spraints/opt/sprouter/run.erb"),
+  file { $sprouter_prefs:
+    ensure => absent,
   }
 
-  if $sprouter_config == undef {
-    file { $sprouter_prefs:
-      ensure => absent,
-    }
-  } else {
-    file { $sprouter_prefs:
-      ensure  => present,
-      owner   => "root",
-      mode    => "444",
-      content => $sprouter_config,
-    }
-  }
-
-  if $sprouter_config_fragment == undef {
-    file { $sprouter_prefs_fragment:
-      ensure => absent,
-    }
-  } else {
-    file { $sprouter_prefs_fragment:
-      ensure  => present,
-      owner   => "root",
-      mode    => "444",
-      content => $sprouter_config_fragment,
-    }
-  }
-
-  vcsrepo { $sprouter_gem:
-    ensure   => present,
-    provider => git,
-    user     => "root",
-    source   => "https://github.com/spraints/sprouter",
-    revision => "3d0b3821abad66dde44325855bf71fc8c2e2781c",
-    require  => File[$sprouter_root],
-  }
-
-  file { "${sprouter_root}/Gemfile":
-    ensure  => present,
-    owner   => "root",
-    mode    => "444",
-    content => "gem 'sprouter', path: '${sprouter_gem}'",
-    require => File[$sprouter_root],
-  }
-
-  exec { "bundle sprouter":
-    command => "bundle --path .bundle --binstubs bin",
-    cwd     => $sprouter_root,
-    unless  => "bundle check && test -f bin/sprouter",
-    path    => "/usr/local/bin",
-    user    => "root",
-    require => [ File["${sprouter_root}/Gemfile"], Vcsrepo[$sprouter_gem] ],
+  file { $sprouter_prefs_fragment:
+    ensure => absent,
   }
 
   file { $sprouter_root:
-    ensure  => directory,
-    owner   => "root",
-    mode    => "555",
-    require => File[$sprouter_root_parent],
-  }
-
-  file { $sprouter_root_parent:
-    ensure  => directory,
+    ensure  => absent,
   }
 
   ###
