@@ -34,35 +34,34 @@ LoadPlugin snmp
     Values "IF-MIB::ifOutOctets"
   </Data>
 
-  <Data "dhcp_clients">
-    Type "current_sessions"
-    Table false
-    Instance "dhcp_clients"
-    Values "SNMPv2-SMI::enterprises.apple.airport.baseStation3.dhcpServer.dhcpNumber.0"
-  </Data>
   <Data "wireless_clients">
     Type "current_connections"
     Table false
     Instance "wireless_clients"
-    Values "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessNumber.0"
+    #Values "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessNumber.0"
+    Values ".1.3.6.1.4.1.63.501.3.2.1.0"
   </Data>
   <Data "wireless_strength">
     Type "signal_power"
     Table true
-    Instance "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessPhysAddress"
-    Values "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessStrength"
+    #Instance "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessPhysAddress"
+    #Values "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessStrength"
+    Instance ".1.3.6.1.4.1.63.501.3.2.2.1.1"
+    Values   ".1.3.6.1.4.1.63.501.3.2.2.1.6"
   </Data>
   <Data "wireless_noise">
     Type "signal_noise"
     Table true
-    Instance "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessPhysAddress"
-    Values "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessNoise"
+    #Instance "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessPhysAddress"
+    #Values "SNMPv2-SMI::enterprises.apple.airport.baseStation3.wireless.wirelessClientsTable.wirelessClient.wirelessNoise"
+    Instance ".1.3.6.1.4.1.63.501.3.2.2.1.1"
+    Values   ".1.3.6.1.4.1.63.501.3.2.2.1.7"
   </Data>
-
+  
   <Host "airport">
     Address "<%= @airport == true ? "192.168.0.1" : @airport %>"
     Version 2
     Community "public"
-    Collect "std_traffic" "std_packets" "std_errors" "traffic_gauge_in" "traffic_gauge_out" "dhcp_clients" "wireless_clients" "wireless_strength" "wireless_noise"
+    Collect "std_traffic" "std_packets" "std_errors" "traffic_gauge_in" "traffic_gauge_out" "wireless_clients" "wireless_strength" "wireless_noise"
   </Host>
 </Plugin>
